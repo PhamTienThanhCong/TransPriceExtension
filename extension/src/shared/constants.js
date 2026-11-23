@@ -11,16 +11,19 @@ export const MSG = Object.freeze({
   GET_STATE: 'get-state', //           {}                              → { settings, rates }
   REFRESH_RATES: 'refresh-rates', //   {}                              → { rates }   (force a live fetch)
   UPDATE_SETTINGS: 'update-settings', // { patch }                     → { settings }
-  SET_SITE_DISABLED: 'set-site-disabled', // { hostname, disabled }   → { settings }
+  SET_SITE_ACTIVE: 'set-site-active', // { hostname, active }          → { settings }  (allowlist: add/remove siteKey(host) in enabledSites; all: remove/add in disabledSites)
   SET_SITE_CURRENCY: 'set-site-currency', // { hostname, symbol: 'dollar'|'yen', currency: string|null } → { settings }
   REPORT_COUNT: 'report-count', //     { count }  (content → bg, sets the per-tab toolbar badge) → {}
   OPEN_OPTIONS: 'open-options', //     { section? }                    → {}
   // ── handled by the content script (top frame) ──
-  GET_PAGE_INFO: 'get-page-info', //   {}  → { hostname, active, count, currencies: {CODE: n}, ambiguous: AmbiguityInfo[] }
+  GET_PAGE_INFO: 'get-page-info', //   {}  → { hostname, siteKey, active, count, currencies: {CODE: n}, ambiguous: AmbiguityInfo[], detected?: { count, currencies } }
   RESCAN: 'rescan', //                 {}  → { count }
 });
 
 export const DISPLAY_MODES = Object.freeze(['replace', 'append']);
+/** 'allowlist' (default): convert ONLY on sites the user turned on (remembered in enabledSites).
+ *  'all': convert everywhere except disabledSites. */
+export const SITE_MODES = Object.freeze(['allowlist', 'all']);
 export const THEMES = Object.freeze(['auto', 'light', 'dark']);
 export const UI_LANGUAGES = Object.freeze(['auto', 'en', 'vi']);
 
@@ -36,14 +39,16 @@ export const AMBIGUOUS_SYMBOLS = Object.freeze({
  * from the browser locale when the user never chose one.
  */
 export const DEFAULT_SETTINGS = Object.freeze({
-  enabled: true, //            master switch for automatic in-page conversion (toolbar icon toggles it)
+  enabled: true, //            global master switch (pause everything); per-site activation is siteMode + lists below
   homeCurrency: '', //         ISO 4217; '' = not chosen yet → guessed from the browser locale (vi → VND)
   displayMode: 'replace', //   'replace': show only the converted price (original on hover) | 'append': "¥189 ≈ 730.000 ₫"
   compact: false, //           compact numbers: "730 N ₫" / "$1.2K"
   highlight: true, //          subtle dotted underline + tint on converted prices
   defaultDollar: 'USD', //     what a bare "$" means when the page gives no hint
   defaultYen: 'CNY', //        what a bare "¥" means when the page gives no hint (Taobao/1688 users → CNY)
-  disabledSites: Object.freeze([]), // hostnames (exact host or any subdomain) where conversion never runs
+  siteMode: 'allowlist', //    see SITE_MODES — off everywhere until the user turns a site on
+  enabledSites: Object.freeze([]), //  siteKeys turned on by the user (allowlist mode); a rule covers the host + subdomains
+  disabledSites: Object.freeze([]), // siteKeys turned off by the user ('all' mode)
   siteCurrency: Object.freeze({}), //  { [hostname]: { dollar?: code, yen?: code } } per-site pins for ambiguous symbols
   theme: 'auto', //            'auto' | 'light' | 'dark' — popup, options, welcome
   uiLanguage: 'auto', //       'auto' | 'en' | 'vi' — extension pages' display language

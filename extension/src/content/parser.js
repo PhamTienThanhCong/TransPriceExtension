@@ -57,17 +57,57 @@
   // With equal gaps and equal "price-likeness", these prefer the number BEFORE them ("12,99 € 5,99 €").
   const SUFFIX_FIRST = (info) => info.kind === 'code' || /^(?:€|kr|₫)$/.test(info.token);
 
-  // One regex for every token, longest first ("US$" before "$", "CN¥" before "¥", "日元" before "元"), escaped.
-  // Tokens starting/ending with a word letter get letter boundaries ("USD" yes, "USDT"/"Skr" no).
+  // One regex for every token, built once as a PREFIX TRIE, e.g. `U(?:S(?:\$|D(?![…]))|…)`:
+  // - longest first: at every node the longer continuations are tried before "the token ends here", so "US$" beats
+  //   "$", "CN¥" beats "¥", "kr." beats "kr", "日元" beats "元" — exactly like a longest-first alternation;
+  // - letter boundaries: whether a token needs a lookbehind depends only on its FIRST char, so all tokens starting
+  //   with a word letter share ONE `(?<![letters])` in front of their sub-trie; a token ending with a word letter gets
+  //   `(?![letters])` on its last node ("USD" yes, "USDT" / "Skr" no).
+  // Why a trie: a flat alternation of ~260 literals wrapped in lookarounds is 15–75× slower on older V8 (Node 22 /
+  // Chrome ≤ 124, still allowed by the manifest), which tries every branch at every position; the trie lets the
+  // engine dispatch on the first character (1 MB scan: ~750 ms → ~10 ms on Node 22).
   const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
-  const TOKEN_SOURCE = [...TOKEN_INFO.keys()]
-    .sort((a, b) => b.length - a.length || (a < b ? -1 : 1))
-    .map((tok) =>
-      (isWL(tok.charCodeAt(0)) ? `(?<![${WL}])` : '') + escapeRe(tok) + (isWL(tok.charCodeAt(tok.length - 1)) ? `(?![${WL}])` : ''))
-    .join('|');
+  const escapeClass = (s) => s.replace(/[\\\]^-]/g, '\\$&');
+  const LOOKBEHIND = `(?<![${WL}])`;
+  const LOOKAHEAD = `(?![${WL}])`;
+
+  /** Trie of UTF-16 code units: node = { kids: Map<char, node>, end: boolean, ch: string }. */
+  function buildTrie(tokens) {
+    const root = { kids: new Map(), end: false, ch: '' };
+    for (const tok of tokens) {
+      let node = root;
+      for (let i = 0; i < tok.length; i++) {
+        const ch = tok[i];
+        if (!node.kids.has(ch)) node.kids.set(ch, { kids: new Map(), end: false, ch });
+        node = node.kids.get(ch);
+      }
+      node.end = true;
+    }
+    return root;
+  }
+
+  /** Regex source for everything below `node` (its own char already emitted). Children first = longest first. */
+  function emitNode(node) {
+    const parts = [...node.kids.keys()].sort().map((ch) => escapeRe(ch) + emitNode(node.kids.get(ch)));
+    if (node.end) parts.push(isWL(node.ch.charCodeAt(0)) ? LOOKAHEAD : '');
+    if (parts.length === 0) return '';
+    return parts.length === 1 && !node.end ? parts[0] : `(?:${parts.join('|')})`;
+  }
+
+  const TRIE = buildTrie(TOKEN_INFO.keys());
+  const FIRST_CHARS = [...TRIE.kids.keys()].sort();
+  const branch = (ch) => escapeRe(ch) + emitNode(TRIE.kids.get(ch));
+  const letterFirst = FIRST_CHARS.filter((ch) => isWL(ch.charCodeAt(0)));
+  const otherFirst = FIRST_CHARS.filter((ch) => !isWL(ch.charCodeAt(0)));
+  const TOKEN_SOURCE = [
+    ...(letterFirst.length ? [`${LOOKBEHIND}(?:${letterFirst.map(branch).join('|')})`] : []),
+    ...otherFirst.map(branch),
+  ].join('|');
   const TOKEN_G = new RegExp(TOKEN_SOURCE, 'g'); // scanning (findPrices)
   const TOKEN_Y = new RegExp(TOKEN_SOURCE, 'y'); // "is there a token exactly here?"
   const TOKEN_TEST = new RegExp(TOKEN_SOURCE); // stateless test (quickTest / hasToken)
+  // Cheap prefilter: one character class of every token's first char (case-sensitive, like the tokens).
+  const FIRST_CHAR_TEST = new RegExp(`[${FIRST_CHARS.map(escapeClass).join('')}]`);
   const DIGIT_TEST = /[0-9\uFF10-\uFF19]/;
 
   const tokenAt = (s, i) => {
@@ -566,12 +606,12 @@
 
   /** Very cheap prefilter (runs on every text node): a digit AND a currency token. */
   function quickTest(text) {
-    return typeof text === 'string' && DIGIT_TEST.test(text) && TOKEN_TEST.test(text);
+    return typeof text === 'string' && DIGIT_TEST.test(text) && FIRST_CHAR_TEST.test(text) && TOKEN_TEST.test(text);
   }
 
   /** Contains any currency token (starts split-price climbing in the content script). */
   function hasToken(text) {
-    return typeof text === 'string' && TOKEN_TEST.test(text);
+    return typeof text === 'string' && FIRST_CHAR_TEST.test(text) && TOKEN_TEST.test(text);
   }
 
   // ── context resolution ──

@@ -50,6 +50,8 @@
     highlight: true,
     defaultDollar: 'USD',
     defaultYen: 'CNY',
+    siteMode: 'allowlist',
+    enabledSites: Object.freeze([]),
     disabledSites: Object.freeze([]),
     siteCurrency: Object.freeze({}),
   });
@@ -248,10 +250,30 @@
   const coversWhole = (text, m) =>
     !!m && String(text).slice(0, m.start).trim() === '' && String(text).slice(m.end).trim() === '';
 
-  /** Lowercase hostname without a leading `www.` (same rule as storage.js normalizeHostname). */
-  const normalizeHost = (h) => String(h || '').trim().toLowerCase().replace(/\.$/, '').replace(/^www\./, '');
+  /* Site activation — MIRROR of src/shared/storage.js (normalizeHostname, isSiteMatch, siteKey, isSiteActive),
+     docs/ARCHITECTURE.md §3.5. Content scripts can't import modules; tests/content/site.test.mjs keeps the two
+     implementations equal on a table of hosts × settings. KEEP IN SYNC. */
 
-  /** Exact host or any subdomain of a listed host (same rule as storage.js isSiteMatch). */
+  /**
+   * Normalise a hostname (or URL) for site rules: lowercase, punycode, no port/path, no leading `www.` / `*.`.
+   * "https://www.Taobao.com/item?id=1" → "taobao.com"; '' for anything that is not a hostname.
+   */
+  function normalizeHost(input) {
+    if (typeof input !== 'string') return '';
+    let s = input.trim().toLowerCase();
+    if (!s) return '';
+    s = s.replace(/^\*\./, '');
+    try {
+      s = new URL(/^[a-z][a-z0-9+.-]*:\/\//.test(s) ? s : `http://${s}`).hostname;
+    } catch {
+      return '';
+    }
+    if (/^\[[0-9a-f:.]+\]$/.test(s)) return s; // IPv6 literal, as location.hostname reports it ("[::1]")
+    s = s.replace(/\.$/, '').replace(/^www\./, '');
+    return /^[a-z0-9_-]+(\.[a-z0-9_-]+)*$/.test(s) ? s : '';
+  }
+
+  /** Exact host or any subdomain of a listed host (a rule for `taobao.com` covers `world.taobao.com`). */
   function isSiteMatch(hostname, list) {
     const host = normalizeHost(hostname);
     if (!host || !Array.isArray(list)) return false;
@@ -259,6 +281,61 @@
       const r = normalizeHost(rule);
       return !!r && (host === r || host.endsWith(`.${r}`));
     });
+  }
+
+  /** Two-label public suffixes where the registrable domain has three labels (no public-suffix list on purpose). */
+  const MULTI_PART_SUFFIXES = Object.freeze(new Set([
+    // contract list (§3.5)
+    'co.uk', 'com.au', 'com.vn', 'co.jp', 'com.cn', 'com.hk', 'com.tw', 'com.sg', 'co.kr', 'co.nz', 'com.br', 'com.mx',
+    'co.id', 'co.th', 'com.my', 'com.ph', 'co.in', 'ac.uk', 'gov.uk', 'org.uk', 'net.au', 'edu.vn', 'gov.vn', 'net.vn',
+    'org.vn',
+    // common extras
+    'me.uk', 'ltd.uk', 'plc.uk', 'net.uk', 'sch.uk', 'nhs.uk',
+    'org.au', 'edu.au', 'gov.au', 'asn.au', 'id.au',
+    'ac.vn', 'int.vn', 'info.vn', 'biz.vn', 'name.vn', 'pro.vn', 'health.vn',
+    'ne.jp', 'or.jp', 'ac.jp', 'go.jp', 'gr.jp', 'ad.jp', 'ed.jp', 'lg.jp',
+    'net.cn', 'org.cn', 'gov.cn', 'edu.cn', 'ac.cn',
+    'net.hk', 'org.hk', 'edu.hk', 'gov.hk', 'idv.hk',
+    'net.tw', 'org.tw', 'edu.tw', 'gov.tw', 'idv.tw',
+    'net.sg', 'org.sg', 'edu.sg', 'gov.sg', 'per.sg',
+    'ne.kr', 'or.kr', 'ac.kr', 'go.kr', 're.kr',
+    'net.nz', 'org.nz', 'ac.nz', 'govt.nz', 'gen.nz',
+    'net.br', 'org.br', 'gov.br', 'edu.br',
+    'net.mx', 'org.mx', 'gob.mx', 'edu.mx',
+    'or.id', 'ac.id', 'go.id', 'web.id', 'my.id',
+    'in.th', 'or.th', 'ac.th', 'go.th',
+    'net.my', 'org.my', 'gov.my', 'edu.my',
+    'net.ph', 'org.ph', 'gov.ph', 'edu.ph',
+    'net.in', 'org.in', 'gov.in', 'ac.in', 'firm.in', 'gen.in', 'ind.in',
+    'co.za', 'org.za', 'gov.za', 'ac.za',
+    'com.tr', 'com.ar', 'com.co', 'com.pe', 'com.ve', 'com.ec', 'com.uy', 'com.py', 'com.bo',
+    'com.sa', 'com.eg', 'com.pk', 'com.bd', 'com.np', 'com.lk', 'com.kh', 'com.mm', 'com.ng', 'com.gh', 'co.ke',
+    'co.il', 'org.il', 'ac.il', 'com.ua', 'com.pl', 'com.es', 'com.pt', 'com.gr', 'co.at', 'or.at',
+    'com.qa', 'com.kw', 'com.om', 'com.bh', 'com.lb', 'com.jo', 'com.tn', 'co.ma', 'com.do', 'com.gt', 'com.pa',
+  ]));
+
+  /**
+   * Registrable domain used as the per-site key: 's.taobao.com' → 'taobao.com', 'shopee.com.vn' → 'shopee.com.vn';
+   * IPs, `localhost` and single-label hosts as-is.
+   */
+  function siteKey(hostname) {
+    const host = normalizeHost(hostname);
+    if (!host || host.startsWith('[') || /^\d{1,3}(\.\d{1,3}){3}$/.test(host) || !host.includes('.')) return host;
+    const labels = host.split('.');
+    const lastTwo = labels.slice(-2).join('.');
+    return labels.length > 2 && MULTI_PART_SUFFIXES.has(lastTwo) ? labels.slice(-3).join('.') : lastTwo;
+  }
+
+  /**
+   * THE activation rule (§3.5): global switch on AND ('allowlist': a rule covers this host | any other mode — 'all' —:
+   * no disabledSites rule covers it).
+   * @param {{enabled?: boolean, siteMode?: string, enabledSites?: string[], disabledSites?: string[]}} settings
+   */
+  function isSiteActive(settings, hostname) {
+    if (!settings || !settings.enabled) return false;
+    return settings.siteMode === 'allowlist'
+      ? isSiteMatch(hostname, settings.enabledSites)
+      : !isSiteMatch(hostname, settings.disabledSites);
   }
 
   /**
@@ -402,6 +479,9 @@
     coversWhole,
     normalizeHost,
     isSiteMatch,
+    MULTI_PART_SUFFIXES,
+    siteKey,
+    isSiteActive,
     createThrottle,
     pruneRoots,
     symbolOf,

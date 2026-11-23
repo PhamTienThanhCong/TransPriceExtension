@@ -8,7 +8,7 @@ import '../content/parser.js'; // side effect: globalThis.TransPriceParser
 import { AMBIGUOUS_SYMBOLS, MSG, STORAGE_KEYS, UI_LANGUAGES } from '../shared/constants.js';
 import { formatDate, formatRelativeTime, initI18n, localizeDocument, reloadOnUiLanguageChange, t } from '../shared/i18n.js';
 import { send } from '../shared/messaging.js';
-import { getSettings, getStoredRates, onSettingsChanged, updateSettings } from '../shared/storage.js';
+import { getSettings, getStoredRates, onSettingsChanged, siteKey, updateSettings } from '../shared/storage.js';
 import { applyTheme } from '../ui/theme.js';
 import {
   DEFAULT_SHORTCUTS,
@@ -36,7 +36,7 @@ import {
   setupLogos,
   setupRadioGroup,
 } from './ui-kit.js';
-import { RATE_SOURCE_LABELS, hueFor, shortcutKeys, siteFromInput, siteLabel, sitePinList } from './ui-helpers.js';
+import { RATE_SOURCE_LABELS, hueFor, ruleCovers, shortcutKeys, siteFromInput, siteLabel, sitePinList } from './ui-helpers.js';
 
 const root = document.documentElement;
 root.classList.add('is-loading');
@@ -147,6 +147,7 @@ function setupControls() {
     controls[key] = setupRadioGroup(group, (value) => save({ [key]: value }));
   });
   controls.displayMode = setupRadioGroup($('#mode-cards'), (value) => save({ displayMode: value }));
+  controls.siteMode = setupRadioGroup($('#site-mode'), (value) => save({ siteMode: value }));
 
   homePicker = createCurrencyPicker({
     label: t('options_home_title'),
@@ -226,7 +227,7 @@ function render(settings) {
   homePicker.setValue(s.homeCurrency);
 
   renderPreview(s);
-  renderSites(s.disabledSites);
+  renderSiteCard(s);
   renderPins(s.siteCurrency);
   if (prevHome !== s.homeCurrency) renderRates();
 }
@@ -402,31 +403,83 @@ function setSiteError(message) {
   $('#site-input').setAttribute('aria-invalid', message ? 'true' : 'false');
 }
 
+/**
+ * Site mode (ARCHITECTURE §3.5): allowlist → the card lists enabledSites ("Turned on for"); 'all' → disabledSites
+ * ("Turned off on"). Everything mode-dependent lives here.
+ */
+const SITE_LISTS = {
+  allowlist: {
+    key: 'enabledSites',
+    icon: 'check-circle',
+    title: 'options_enabled_list_title',
+    desc: 'options_enabled_list_desc',
+    emptyTitle: 'options_enabled_empty_title',
+    emptyDesc: 'options_enabled_empty_desc',
+    remove: 'options_enabled_remove',
+  },
+  all: {
+    key: 'disabledSites',
+    icon: 'ban',
+    title: 'options_disabled_title',
+    desc: 'options_disabled_desc',
+    emptyTitle: 'options_sites_empty_title',
+    emptyDesc: 'options_sites_empty_desc',
+    remove: 'options_sites_remove',
+  },
+};
+const siteList = (s = state.settings) => SITE_LISTS[s?.siteMode === 'all' ? 'all' : 'allowlist'];
+
+function renderSiteCard(s) {
+  const conf = siteList(s);
+  const card = $('#site-card');
+  if (card.dataset.mode !== conf.key) {
+    card.dataset.mode = conf.key;
+    $('#site-card-icon').replaceChildren(anyIcon(conf.icon, { size: 18 }));
+    $('#site-card-icon').classList.toggle('card-head-icon--on', conf.key === 'enabledSites');
+    $('#sites-list-title').textContent = t(conf.title);
+    $('#sites-list-desc').textContent = t(conf.desc);
+    $('#site-empty-title').textContent = t(conf.emptyTitle);
+    $('#site-empty-desc').textContent = t(conf.emptyDesc);
+    setSiteError('');
+  }
+  renderSites(s[conf.key], conf);
+}
+
 function addSite() {
   const input = $('#site-input');
-  const host = siteFromInput(input.value);
+  const typed = siteFromInput(input.value);
+  // Rules are stored as siteKeys (s.taobao.com → taobao.com), exactly like the popup switch stores them.
+  const host = typed && (siteKey(typed) || typed);
   if (!host) {
     setSiteError(t('options_sites_error_invalid'));
     input.focus();
     return;
   }
-  const list = state.settings?.disabledSites || [];
+  const { key } = siteList();
+  const list = state.settings?.[key] || [];
   if (list.includes(host)) {
     setSiteError(t('options_sites_error_duplicate', [host]));
+    input.select();
+    return;
+  }
+  const parent = list.find((rule) => ruleCovers(rule, host));
+  if (parent) {
+    setSiteError(t('options_sites_error_covered', [host, parent]));
     input.select();
     return;
   }
   state.lastAddedSite = host;
   input.value = '';
   setSiteError('');
-  save((cur) => ({ disabledSites: [...cur.disabledSites.filter((h) => h !== host), host] }));
-  render({ ...state.settings, disabledSites: [...list, host] });
+  render({ ...state.settings, [key]: [...list, host] });
+  save((cur) => ({ [key]: [...cur[key].filter((h) => h !== host), host] }));
   input.focus();
 }
 
 function removeSite(host) {
-  render({ ...state.settings, disabledSites: state.settings.disabledSites.filter((h) => h !== host) });
-  save((cur) => ({ disabledSites: cur.disabledSites.filter((h) => h !== host) }));
+  const { key } = siteList();
+  render({ ...state.settings, [key]: state.settings[key].filter((h) => h !== host) });
+  save((cur) => ({ [key]: cur[key].filter((h) => h !== host) }));
 }
 
 function removePin(host) {
@@ -459,14 +512,14 @@ function siteAvatar(host) {
   return avatar;
 }
 
-function renderSites(list = []) {
+function renderSites(list = [], conf = siteList()) {
   const ul = $('#site-list');
-  const key = list.join('\n');
+  const key = `${conf.key}\n${list.join('\n')}`;
   if (ul.dataset.key === key) return; // unchanged → keep DOM (and focus) intact
   ul.dataset.key = key;
   ul.replaceChildren(
     ...[...list].reverse().map((host) => {
-      const label = t('options_sites_remove', [host]);
+      const label = t(conf.remove, [host]);
       const item = el(
         'li',
         { class: 'site-item' },

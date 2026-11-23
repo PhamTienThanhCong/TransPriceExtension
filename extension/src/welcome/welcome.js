@@ -183,12 +183,8 @@ function renderIllustrations() {
           el('span', { class: 'il-cursor' }, anyIcon('pointer', { size: 18 })),
         ),
       ),
-      el(
-        'span',
-        { class: 'il-switch' },
-        el('span', { class: 'il-switch-knob' }, anyIcon('power', { size: 11 })),
-        t('welcome_illus_on'),
-      ),
+      // The popup's "This site" switch, turned on.
+      el('span', { class: 'il-switch' }, t('welcome_illus_on'), el('span', { class: 'il-mini-switch' })),
     ),
   );
 }

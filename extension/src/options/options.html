@@ -185,11 +185,36 @@
               <p class="section-desc" data-i18n="options_sites_desc">Turn TransPrice off on specific websites, and review the currencies you picked per site.</p>
             </header>
             <div class="card">
+              <div class="card-block">
+                <span class="block-label" id="sitemode-label" data-i18n="options_sitemode_label">Where to convert</span>
+                <div class="choice-list" id="site-mode" role="radiogroup" aria-labelledby="sitemode-label">
+                  <button type="button" class="choice" role="radio" aria-checked="false" data-value="allowlist" aria-describedby="sitemode-allowlist-desc">
+                    <span class="choice-radio" aria-hidden="true"></span>
+                    <span class="choice-body">
+                      <span class="choice-title">
+                        <span data-i18n="options_sitemode_allowlist_title">Only sites I turn on</span>
+                        <span class="badge" data-i18n="options_sitemode_recommended">Recommended</span>
+                      </span>
+                      <span class="choice-desc" id="sitemode-allowlist-desc" data-i18n="options_sitemode_allowlist_desc">Switch a site on from the toolbar popup and TransPrice remembers it.</span>
+                    </span>
+                  </button>
+                  <button type="button" class="choice" role="radio" aria-checked="false" data-value="all" aria-describedby="sitemode-all-desc">
+                    <span class="choice-radio" aria-hidden="true"></span>
+                    <span class="choice-body">
+                      <span class="choice-title"><span data-i18n="options_sitemode_all_title">Every site, except the ones I turn off</span></span>
+                      <span class="choice-desc" id="sitemode-all-desc" data-i18n="options_sitemode_all_desc">Prices are converted automatically on every website you visit.</span>
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card card--spaced" id="site-card">
               <div class="card-head">
-                <span class="card-head-icon" aria-hidden="true"><i data-icon="ban" data-icon-size="18"></i></span>
+                <span class="card-head-icon" aria-hidden="true" id="site-card-icon"></span>
                 <div class="row-text">
-                  <span class="row-title" id="disabled-title" data-i18n="options_disabled_title">Turned off on</span>
-                  <p class="row-desc" data-i18n="options_disabled_desc">Prices on these sites are left untouched. Subdomains are included.</p>
+                  <span class="row-title" id="sites-list-title"></span>
+                  <p class="row-desc" id="sites-list-desc"></p>
                 </div>
               </div>
               <div class="card-block card-block--form">
@@ -216,10 +241,10 @@
                 </form>
                 <p class="field-error" id="site-error" aria-live="polite"></p>
               </div>
-              <ul class="site-list" id="site-list" aria-labelledby="disabled-title"></ul>
+              <ul class="site-list" id="site-list" aria-labelledby="sites-list-title"></ul>
               <div class="empty" id="site-empty" hidden>
-                <p class="empty-title" data-i18n="options_sites_empty_title">TransPrice works on every website</p>
-                <p class="empty-desc" data-i18n="options_sites_empty_desc">Add a site above, or use the switch in the popup while you are on it.</p>
+                <p class="empty-title" id="site-empty-title"></p>
+                <p class="empty-desc" id="site-empty-desc"></p>
               </div>
             </div>
 

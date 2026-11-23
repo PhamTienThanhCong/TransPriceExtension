@@ -6,13 +6,15 @@
  * (alarms, commands, action, tabs events, session storage) are guarded and no service-worker global is assumed.
  */
 import { AMBIGUOUS_SYMBOLS, ERROR_CODES, LIMITS, MSG, STORAGE_KEYS } from '../shared/constants.js';
-import { createHandler, makeError } from '../shared/messaging.js';
+import { createHandler, makeError, sendToTab } from '../shared/messaging.js';
 import {
   getSettings,
+  isSiteActive,
   isSiteMatch,
   mirrorUiLanguage,
   normalizeHostname,
   normalizeSettings,
+  siteKey,
   updateSettings,
 } from '../shared/storage.js';
 import { createRatesService } from './rates.js';
@@ -55,12 +57,48 @@ function requireHostname(msg, sender) {
   return host;
 }
 
-/** Turn conversion off/on for a site. Turning a site on removes every rule covering it (exact host or parent). */
-function setSiteDisabled(hostname, disabled) {
+/**
+ * The per-site part of isSiteActive() (ignores the global master switch): is the host turned on by the site rules?
+ * @param {object} settings  validated settings
+ * @param {string} hostname
+ */
+export function isSiteRuleActive(settings, hostname) {
+  return isSiteActive({ ...settings, enabled: true }, hostname);
+}
+
+/**
+ * Patch that turns conversion on/off for a site (§3.5), or null if nothing changes.
+ *  - allowlist: on → add siteKey(host) to enabledSites; off → remove every enabledSites rule covering the host.
+ *  - all:       off → add siteKey(host) to disabledSites; on → remove every disabledSites rule covering the host.
+ * Adding a key also drops the entries it now covers (`world.taobao.com` once `taobao.com` is added).
+ * PURE (exported for tests).
+ * @param {object} settings  validated settings
+ * @param {string} hostname  normalised hostname
+ * @param {boolean} active
+ * @returns {object|null}
+ */
+export function siteActivePatch(settings, hostname, active) {
+  const listName = settings.siteMode === 'allowlist' ? 'enabledSites' : 'disabledSites';
+  const list = settings[listName];
+  const addRule = settings.siteMode === 'allowlist' ? active : !active;
+  if (addRule) {
+    if (isSiteMatch(hostname, list)) return null; // already covered by a rule
+    const key = siteKey(hostname) || hostname;
+    return { [listName]: [...list.filter((site) => !isSiteMatch(site, [key])), key] };
+  }
+  const kept = list.filter((site) => !isSiteMatch(hostname, [site]));
+  return kept.length === list.length ? null : { [listName]: kept };
+}
+
+/**
+ * SET_SITE_ACTIVE (atomic w.r.t. other updates from this worker). `resume`: turning a site on also lifts the
+ * global pause (used by the keyboard command, where "on" must visibly mean on).
+ */
+function setSiteActive(hostname, active, { resume = false } = {}) {
   return updateSettings((current) => {
-    const list = current.disabledSites;
-    if (disabled) return isSiteMatch(hostname, list) ? null : { disabledSites: [...list, hostname] };
-    return { disabledSites: list.filter((site) => !isSiteMatch(hostname, [site])) };
+    const patch = siteActivePatch(current, hostname, active) || {};
+    if (active && resume && !current.enabled) patch.enabled = true;
+    return patch;
   });
 }
 
@@ -97,9 +135,30 @@ async function openOptions(section) {
   await chrome.tabs.create({ url: chrome.runtime.getURL(`${page}${clean ? `#${clean}` : ''}`) });
 }
 
-/** Flip settings.enabled (keyboard command). Atomic w.r.t. other updates from this worker. */
-export function toggleEnabled() {
-  return updateSettings((current) => ({ enabled: !current.enabled }));
+/**
+ * Keyboard command `toggle-enabled` (§3.5): toggle conversion on the CURRENT site. The hostname comes from the
+ * tab's content script (GET_PAGE_INFO, top frame) — no `tabs` permission needed. Tabs without a content script
+ * (chrome://, Web Store, tabs opened before install) are ignored quietly.
+ * @param {{id?: number}} [tab]  the tab Chrome passes to commands.onCommand (falls back to the active tab)
+ * @returns {Promise<object|null>} the new settings, or null when nothing was toggled
+ */
+export async function toggleCurrentSite(tab) {
+  let tabId = tab?.id;
+  if (!Number.isInteger(tabId) || tabId < 0) {
+    const [active] = (await chrome.tabs?.query?.({ active: true, lastFocusedWindow: true })) || [];
+    tabId = active?.id;
+  }
+  if (!Number.isInteger(tabId) || tabId < 0 || typeof chrome.tabs?.sendMessage !== 'function') return null;
+  let info = null;
+  try {
+    info = await sendToTab(tabId, MSG.GET_PAGE_INFO, {}, { frameId: 0 });
+  } catch {
+    info = null; // no / broken content script
+  }
+  const hostname = normalizeHostname(info?.hostname);
+  if (!hostname) return null;
+  const settings = await getSettings();
+  return setSiteActive(hostname, !isSiteRuleActive(settings, hostname), { resume: true });
 }
 
 /* ------------------------------------------------------------------ */
@@ -119,9 +178,9 @@ export const handlers = {
     return { settings: await updateSettings(msg.patch) };
   },
 
-  [MSG.SET_SITE_DISABLED]: async (msg, sender) => {
-    if (typeof msg.disabled !== 'boolean') throw makeError(ERROR_CODES.BAD_REQUEST, '`disabled` must be a boolean');
-    return { settings: await setSiteDisabled(requireHostname(msg, sender), msg.disabled) };
+  [MSG.SET_SITE_ACTIVE]: async (msg, sender) => {
+    if (typeof msg.active !== 'boolean') throw makeError(ERROR_CODES.BAD_REQUEST, '`active` must be a boolean');
+    return { settings: await setSiteActive(requireHostname(msg, sender), msg.active) };
   },
 
   [MSG.SET_SITE_CURRENCY]: async (msg, sender) => {
@@ -144,7 +203,8 @@ export const handlers = {
     if (!Number.isInteger(tabId) || tabId < 0 || (Number.isInteger(sender.frameId) && sender.frameId !== 0)) return {};
     const settings = await getSettings();
     const host = hostFromSender(sender);
-    const active = !host || !isSiteMatch(host, settings.disabledSites);
+    // Inactive site → empty badge (§3.5). The content script reports 0 there anyway; this guards against races.
+    const active = host ? isSiteActive(settings, host) : true;
     await setTabCount(tabId, msg.count, settings, { active });
     return {};
   },
@@ -222,8 +282,8 @@ chrome.alarms?.onAlarm?.addListener((alarm) => {
   if (alarm?.name === RATES_ALARM) rates.refresh().catch(logError('scheduled rates refresh'));
 });
 
-chrome.commands?.onCommand?.addListener((command) => {
-  if (command === 'toggle-enabled') toggleEnabled().catch(logError('toggle-enabled'));
+chrome.commands?.onCommand?.addListener((command, tab) => {
+  if (command === 'toggle-enabled') toggleCurrentSite(tab).catch(logError('toggle-enabled'));
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
