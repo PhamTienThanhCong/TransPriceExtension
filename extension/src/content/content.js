@@ -65,7 +65,7 @@
     dead = true;
     try {
       scanner.stop();
-      scanner.restoreAll();
+      if (started) scanner.restoreAll();
     } catch {
       /* ignore */
     }
@@ -182,6 +182,20 @@
   }
 
   let sample = null;
+  let siteOn = false; // the user's choice for this site (GET_PAGE_INFO.active); `active` = actually converting
+  let started = false; // the scanner ran since the last restore (an inactive page is never even read)
+
+  /** resolveContext() for this page (the text sample is taken once, lazily). */
+  function pageContext() {
+    if (sample === null) sample = sampleText();
+    let lang = '';
+    try {
+      lang = document.documentElement.lang || '';
+    } catch {
+      /* ignore */
+    }
+    return P.resolveContext({ hostname, lang, sampleText: sample, settings });
+  }
 
   /** Apply settings + rates: recompute context / env and restart or refresh the scan as needed. */
   function applyState(nextSettings, nextRates) {
@@ -190,18 +204,12 @@
     const ratesChanged = validRates(nextRates) && (!rates || nextRates.date !== rates.date || nextRates.fetchedAt !== rates.fetchedAt || nextRates.source !== rates.source);
     if (validRates(nextRates)) rates = nextRates;
     const home = homeOf(settings);
-    const nextActive = !!settings.enabled && !U.isSiteMatch(hostname, settings.disabledSites) && !!rates && !!document.body;
+    // §3.5: off by default — runs only where the user turned the site on (allowlist), or everywhere but
+    // disabledSites ('all' mode). Inactive = no scan, no observer, no DOM change.
+    siteOn = U.isSiteActive(settings, hostname);
+    const nextActive = siteOn && !!rates && !!document.body;
 
-    if (nextActive) {
-      if (sample === null) sample = sampleText();
-      let lang = '';
-      try {
-        lang = document.documentElement.lang || '';
-      } catch {
-        /* ignore */
-      }
-      ctx = P.resolveContext({ hostname, lang, sampleText: sample, settings });
-    }
+    if (nextActive) ctx = pageContext();
     const nextFingerprint = JSON.stringify(
       nextActive
         ? [true, home, settings.displayMode, !!settings.compact, !!settings.highlight, ctx && [ctx.dollar, ctx.yen, ctx.kr, ctx.decimal]]
@@ -233,9 +241,12 @@
   /** Restore the page, then (if active) scan it again from scratch. */
   function restart() {
     scanner.stop();
-    scanner.restoreAll();
-    if (active && document.body) scanner.start(document.body);
-    else report(0);
+    if (started) scanner.restoreAll(); // never touch (or even query) a page we did not convert
+    started = false;
+    if (active && document.body) {
+      started = true;
+      scanner.start(document.body);
+    } else report(0);
   }
 
   /** GET_STATE → applyState. `force` = restore + full rescan even if nothing relevant changed (RESCAN). */
@@ -288,9 +299,93 @@
   /* Messages from the popup                                             */
   /* ------------------------------------------------------------------ */
 
+  /**
+   * GET_PAGE_INFO (§5, §3.5). `active` = the user's choice for this site. While not converting, `detected` tells the
+   * popup what turning the site on would do ("45 CNY prices found") — computed lazily, read-only, cached per URL.
+   */
   function pageInfo() {
     const info = active ? scanner.pageInfo(ctx) : { count: 0, currencies: {}, ambiguous: [] };
-    return { hostname: U.normalizeHost(hostname), active, count: info.count, currencies: info.currencies, ambiguous: info.ambiguous };
+    const out = {
+      hostname: U.normalizeHost(hostname),
+      siteKey: U.siteKey(hostname),
+      active: siteOn,
+      count: info.count,
+      currencies: info.currencies,
+      ambiguous: info.ambiguous,
+    };
+    if (!active) out.detected = detectedPrices();
+    return out;
+  }
+
+  const DETECT_CHARS = 200000;
+  let detectedCache = null; // { key, value }
+
+  /**
+   * Prices findPrices() sees in the page text (≤ 200 000 chars), excluding the home currency (those would not be
+   * converted). Read-only: one TreeWalker pass that skips script/style/textarea/code… (unlike body.textContent, so
+   * inline JSON/JS never counts), text nodes concatenated like textContent, a line break at block boundaries.
+   * Cached until location.href (or the home currency) changes.
+   */
+  function detectedPrices() {
+    const home = homeOf(settings);
+    let href = '';
+    try {
+      href = location.href;
+    } catch {
+      /* ignore */
+    }
+    const key = `${href}|${home}`;
+    if (detectedCache && detectedCache.key === key) return detectedCache.value;
+    const value = { count: 0, currencies: {} };
+    try {
+      const text = pageText(DETECT_CHARS);
+      if (text && P.quickTest(text)) {
+        for (const m of P.findPrices(text, pageContext()) || []) {
+          if (!m.currency || m.currency === home) continue;
+          value.count++;
+          value.currencies[m.currency] = (value.currencies[m.currency] || 0) + 1;
+        }
+      }
+    } catch {
+      /* never fail GET_PAGE_INFO */
+    }
+    detectedCache = { key, value };
+    return value;
+  }
+
+  let stripTokens = null;
+
+  /**
+   * Visible-ish page text up to `max` chars (see detectedPrices). Adjacent text nodes are glued only when both are
+   * price fragments ('¥' '43' '.65' → '¥43.65'); otherwise a space separates them, so "Free shipping" + "¥39" never
+   * becomes a token stuck to a word (which findPrices rightly ignores). Block elements add a line break.
+   */
+  function pageText(max) {
+    const body = document.body;
+    if (!body) return '';
+    if (!stripTokens) stripTokens = U.makeTokenStripper(Array.isArray(CUR.TOKENS) ? CUR.TOKENS.map((t) => t && t.token) : []);
+    const parts = [];
+    let len = 0;
+    let prevFragment = false;
+    const w = document.createTreeWalker(body, 0x1 | 0x4, {
+      acceptNode: (n) => (n.nodeType === 3 ? 1 : U.isRejectedTag(n.localName) || n.hasAttribute('data-transprice-ignore') ? 2 : 1),
+    });
+    for (let n = w.nextNode(); n && len < max; n = w.nextNode()) {
+      let v;
+      if (n.nodeType === 3) {
+        v = n.nodeValue;
+        if (!v.trim()) continue;
+        const frag = U.isFragment(v, stripTokens);
+        if (!(frag && prevFragment)) v = ` ${v}`;
+        prevFragment = frag;
+      } else if (U.isBlockTag(n.localName)) {
+        v = '\n';
+        prevFragment = false;
+      } else continue;
+      parts.push(v);
+      len += v.length;
+    }
+    return parts.join('').slice(0, max);
   }
 
   async function rescan() {

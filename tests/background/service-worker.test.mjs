@@ -5,6 +5,7 @@
 import { test, before } from 'node:test';
 import assert from 'node:assert/strict';
 import { LIMITS, MSG, RATE_SOURCES, STORAGE_KEYS } from '../../extension/src/shared/constants.js';
+import { isSiteActive } from '../../extension/src/shared/storage.js';
 import { createChromeMock, currencyApiBody, flush, jsonResponse, mockFetch, ratesTable, tabSender, until } from './helpers.mjs';
 
 const mock = createChromeMock({ uiLanguage: 'vi' });
@@ -58,7 +59,8 @@ test('worker start: refresh alarm ensured, badge initialised, uiLanguage mirrore
 });
 
 test('handlers cover every background MSG (and nothing else)', () => {
-  const background = ['GET_STATE', 'REFRESH_RATES', 'UPDATE_SETTINGS', 'SET_SITE_DISABLED', 'SET_SITE_CURRENCY', 'REPORT_COUNT', 'OPEN_OPTIONS'];
+  const background = ['GET_STATE', 'REFRESH_RATES', 'UPDATE_SETTINGS', 'SET_SITE_ACTIVE', 'SET_SITE_CURRENCY', 'REPORT_COUNT', 'OPEN_OPTIONS'];
+  assert.equal(MSG.SET_SITE_DISABLED, undefined, 'replaced by SET_SITE_ACTIVE (§3.5)');
   assert.deepEqual(Object.keys(sw.handlers).sort(), background.map((k) => MSG[k]).sort());
   assert.ok(!(MSG.GET_PAGE_INFO in sw.handlers) && !(MSG.RESCAN in sw.handlers), 'content-script messages are left alone');
 });
@@ -102,30 +104,73 @@ test('UPDATE_SETTINGS: validated → { settings }; bad patch → BAD_REQUEST', a
   }
 });
 
-test('SET_SITE_DISABLED: normalised host, idempotent, enabling removes covering rules; sender fallback; errors', async () => {
-  let r = await send({ type: MSG.SET_SITE_DISABLED, hostname: 'https://WWW.Taobao.com/item', disabled: true });
-  assert.deepEqual(r.settings.disabledSites, ['taobao.com']);
-  r = await send({ type: MSG.SET_SITE_DISABLED, hostname: 'world.taobao.com', disabled: true });
-  assert.deepEqual(r.settings.disabledSites, ['taobao.com'], 'already covered by taobao.com');
-  r = await send({ type: MSG.SET_SITE_DISABLED, hostname: 'jd.com', disabled: true });
-  assert.deepEqual(r.settings.disabledSites, ['taobao.com', 'jd.com']);
-  r = await send({ type: MSG.SET_SITE_DISABLED, hostname: 'world.taobao.com', disabled: false });
-  assert.deepEqual(r.settings.disabledSites, ['jd.com'], 'the parent rule covering the site is removed');
-  r = await send({ type: MSG.SET_SITE_DISABLED, disabled: true }, tabSender(4, 'https://shop.example.com/p'));
-  assert.deepEqual(r.settings.disabledSites, ['jd.com', 'shop.example.com'], 'falls back to the sender page');
-  r = await send({ type: MSG.SET_SITE_DISABLED, hostname: 'shop.example.com', disabled: false });
-  r = await send({ type: MSG.SET_SITE_DISABLED, hostname: 'jd.com', disabled: false });
-  assert.deepEqual(r.settings.disabledSites, []);
+test('SET_SITE_ACTIVE (allowlist, the default): on adds siteKey(host), off removes every covering rule', async () => {
+  assert.equal(settings().siteMode, 'allowlist');
+  let r = await send({ type: MSG.SET_SITE_ACTIVE, hostname: 's.taobao.com', active: true });
+  assert.equal(r.ok, true);
+  assert.deepEqual(r.settings.enabledSites, ['taobao.com'], 'stored as the registrable domain');
+  assert.equal(isSiteActive(r.settings, 'item.taobao.com'), true, 'so every taobao.com page is on');
+  assert.equal(isSiteActive(r.settings, 'jd.com'), false);
+  r = await send({ type: MSG.SET_SITE_ACTIVE, hostname: 'item.taobao.com', active: true });
+  assert.deepEqual(r.settings.enabledSites, ['taobao.com'], 'already covered → unchanged');
+  r = await send({ type: MSG.SET_SITE_ACTIVE, hostname: 'https://www.Shopee.com.vn/x', active: true });
+  assert.deepEqual(r.settings.enabledSites, ['taobao.com', 'shopee.com.vn']);
+  r = await send({ type: MSG.SET_SITE_ACTIVE, hostname: 'item.taobao.com', active: false });
+  assert.deepEqual(r.settings.enabledSites, ['shopee.com.vn'], 'the taobao.com rule covering item.taobao.com is removed');
+  assert.equal(isSiteActive(r.settings, 's.taobao.com'), false);
+  r = await send({ type: MSG.SET_SITE_ACTIVE, hostname: 'jd.com', active: false });
+  assert.deepEqual(r.settings.enabledSites, ['shopee.com.vn'], 'turning off an inactive site is a no-op');
 
+  // a narrower rule (e.g. typed in Options) is folded into the new siteKey
+  await send({ type: MSG.UPDATE_SETTINGS, patch: { enabledSites: ['world.taobao.com', 'shopee.com.vn'] } });
+  r = await send({ type: MSG.SET_SITE_ACTIVE, hostname: 'world.taobao.com', active: true });
+  assert.deepEqual(r.settings.enabledSites, ['world.taobao.com', 'shopee.com.vn'], 'covered by its own rule');
+  r = await send({ type: MSG.SET_SITE_ACTIVE, hostname: 's.taobao.com', active: true });
+  assert.deepEqual(r.settings.enabledSites, ['shopee.com.vn', 'taobao.com']);
+
+  // hosts kept as-is, sender fallback
+  r = await send({ type: MSG.SET_SITE_ACTIVE, hostname: 'localhost', active: true });
+  r = await send({ type: MSG.SET_SITE_ACTIVE, hostname: '127.0.0.1', active: true });
+  assert.deepEqual(r.settings.enabledSites.slice(-2), ['localhost', '127.0.0.1']);
+  r = await send({ type: MSG.SET_SITE_ACTIVE, active: true }, tabSender(4, 'https://shop.example.co.uk/p'));
+  assert.equal(r.settings.enabledSites.at(-1), 'example.co.uk', 'falls back to the sender page');
+  assert.deepEqual(r.settings.disabledSites, [], 'disabledSites untouched in allowlist mode');
+
+  await send({ type: MSG.UPDATE_SETTINGS, patch: { enabledSites: ['taobao.com'] } });
   for (const msg of [
     { hostname: 'jd.com' },
-    { hostname: 'jd.com', disabled: 'yes' },
-    { hostname: 'not a host', disabled: true },
-    { disabled: true }, // no hostname, sender is an extension page
+    { hostname: 'jd.com', active: 'yes' },
+    { hostname: 'jd.com', disabled: true }, // the old SET_SITE_DISABLED payload
+    { hostname: 'not a host', active: true },
+    { active: true }, // no hostname, sender is an extension page
   ]) {
-    const bad = await send({ type: MSG.SET_SITE_DISABLED, ...msg });
+    const bad = await send({ type: MSG.SET_SITE_ACTIVE, ...msg });
     assert.deepEqual([bad.ok, bad.error.code], [false, 'BAD_REQUEST'], JSON.stringify(msg));
   }
+  assert.equal(await send({ type: 'set-site-disabled', hostname: 'jd.com', disabled: true }), undefined, 'old message is gone');
+});
+
+test("SET_SITE_ACTIVE ('all' mode): the mirror operation on disabledSites", async () => {
+  await send({ type: MSG.UPDATE_SETTINGS, patch: { siteMode: 'all' } });
+  let r = await send({ type: MSG.SET_SITE_ACTIVE, hostname: 'item.taobao.com', active: false });
+  assert.deepEqual(r.settings.disabledSites, ['taobao.com']);
+  assert.equal(isSiteActive(r.settings, 's.taobao.com'), false);
+  assert.equal(isSiteActive(r.settings, 'amazon.com'), true, 'everything else is on');
+  r = await send({ type: MSG.SET_SITE_ACTIVE, hostname: 's.taobao.com', active: false });
+  assert.deepEqual(r.settings.disabledSites, ['taobao.com'], 'already covered');
+  r = await send({ type: MSG.SET_SITE_ACTIVE, hostname: 's.taobao.com', active: true });
+  assert.deepEqual(r.settings.disabledSites, [], 'covering rule removed');
+  assert.deepEqual(r.settings.enabledSites, ['taobao.com'], 'enabledSites untouched in all mode');
+  await send({ type: MSG.UPDATE_SETTINGS, patch: { siteMode: 'allowlist' } });
+});
+
+test('siteActivePatch is pure and returns null when nothing changes', () => {
+  const s = { siteMode: 'allowlist', enabledSites: ['taobao.com'], disabledSites: [] };
+  assert.equal(sw.siteActivePatch(s, 'item.taobao.com', true), null);
+  assert.equal(sw.siteActivePatch(s, 'jd.com', false), null);
+  assert.deepEqual(sw.siteActivePatch(s, 'item.jd.com', true), { enabledSites: ['taobao.com', 'jd.com'] });
+  assert.deepEqual(s.enabledSites, ['taobao.com'], 'input not mutated');
+  assert.deepEqual(sw.siteActivePatch({ ...s, siteMode: 'all' }, 'm.jd.com', false), { disabledSites: ['jd.com'] });
 });
 
 test('SET_SITE_CURRENCY: pin, merge, un-pin (incl. parent pins); errors', async () => {
@@ -152,25 +197,33 @@ test('SET_SITE_CURRENCY: pin, merge, un-pin (incl. parent pins); errors', async 
   assert.equal(bad4.error.code, 'BAD_REQUEST');
 });
 
-test('REPORT_COUNT: badge for sender.tab.id; cap; ignored for sub-frames / no tab; inactive site cleared', async () => {
+test('REPORT_COUNT: count on active sites for sender.tab.id (cap), empty on inactive ones; sub-frames / no tab ignored', async () => {
+  // state: allowlist, enabledSites ['taobao.com']
   let r = await send({ type: MSG.REPORT_COUNT, count: 24 }, tabSender(11));
   assert.deepEqual(r, { ok: true });
   assert.equal(badge.shown(11), '24');
+  await send({ type: MSG.REPORT_COUNT, count: 7 }, tabSender(15, 'https://www.jd.com/'));
+  assert.equal(badge.shown(15), '', 'inactive site → empty (normal state, no noise)');
+  await send({ type: MSG.SET_SITE_ACTIVE, hostname: 'amazon.co.jp', active: true });
   await send({ type: MSG.REPORT_COUNT, count: 4321 }, tabSender(12, 'https://www.amazon.co.jp/'));
   assert.equal(badge.shown(12), '999+');
-  await send({ type: MSG.REPORT_COUNT, count: 7 }, tabSender(13, 'https://ads.example.com/', 3));
+  await send({ type: MSG.REPORT_COUNT, count: 7 }, tabSender(13, 'https://world.taobao.com/frame', 3));
   assert.equal(badge.shown(13), '', 'sub-frame report ignored');
   r = await send({ type: MSG.REPORT_COUNT, count: 7 }); // from an extension page: no tab
   assert.deepEqual(r, { ok: true });
   await send({ type: MSG.REPORT_COUNT, count: 0 }, tabSender(11));
-  assert.equal(badge.shown(11), '');
+  assert.equal(badge.shown(11), '', 'content reports 0 → empty');
 
-  await send({ type: MSG.SET_SITE_DISABLED, hostname: 'taobao.com', disabled: true });
+  await send({ type: MSG.SET_SITE_ACTIVE, hostname: 'world.taobao.com', active: false });
   await send({ type: MSG.REPORT_COUNT, count: 5 }, tabSender(14, 'https://world.taobao.com/x'));
-  assert.equal(badge.shown(14), '', 'disabled site → no count');
-  await send({ type: MSG.SET_SITE_DISABLED, hostname: 'taobao.com', disabled: false });
+  assert.equal(badge.shown(14), '', 'a late report from a just-deactivated site stays empty');
+  await send({ type: MSG.SET_SITE_ACTIVE, hostname: 'world.taobao.com', active: true });
   await send({ type: MSG.REPORT_COUNT, count: 'garbage' }, tabSender(14));
   assert.equal(badge.shown(14), '');
+  await send({ type: MSG.UPDATE_SETTINGS, patch: { siteMode: 'all' } });
+  await send({ type: MSG.REPORT_COUNT, count: 3 }, tabSender(15, 'https://www.jd.com/'));
+  assert.equal(badge.shown(15), '3', "'all' mode: every site not disabled is active");
+  await send({ type: MSG.UPDATE_SETTINGS, patch: { siteMode: 'allowlist', enabledSites: ['taobao.com'] } });
 });
 
 test('OPEN_OPTIONS: openOptionsPage, or a tab with a sanitised #section', async () => {
@@ -192,30 +245,93 @@ test('unknown, content-script-only and malformed messages get no answer from the
   assert.equal(await send({ type: 42 }), undefined);
 });
 
-test('command toggle-enabled: flips enabled, badge shows "off" everywhere, and back', async () => {
-  await send({ type: MSG.REPORT_COUNT, count: 9 }, tabSender(21));
-  assert.equal(badge.shown(21), '9');
-  chrome.commands.onCommand.dispatch('toggle-enabled');
-  await until(() => settings().enabled === false && badge.global.text === 'off');
-  assert.equal(badge.global.color, '#6B7280');
-  assert.equal(badge.shown(21), 'off', 'per-tab count cleared so the global "off" shows');
+test('command toggle-enabled: toggles the CURRENT site via GET_PAGE_INFO (top frame)', async () => {
+  const pageInfo = { hostname: 'detail.tmall.com', siteKey: 'tmall.com', active: false, count: 0, currencies: {}, ambiguous: [] };
+  mock.behaviour.tabSendMessage = async (tabId, msg) => (msg.type === MSG.GET_PAGE_INFO ? { ok: true, ...pageInfo } : { ok: true });
+  const sites = () => settings().enabledSites;
 
-  await send({ type: MSG.REPORT_COUNT, count: 9 }, tabSender(21));
-  assert.equal(badge.shown(21), 'off', 'no counts while off');
+  chrome.commands.onCommand.dispatch('toggle-enabled', { id: 2, index: 0, windowId: 1 });
+  await until(() => sites().includes('tmall.com'));
+  assert.deepEqual(log.tabMessages.at(-1), { tabId: 2, msg: { type: MSG.GET_PAGE_INFO }, opts: { frameId: 0 } });
 
-  chrome.commands.onCommand.dispatch('toggle-enabled');
-  await until(() => settings().enabled === true && badge.global.text === '');
-  assert.equal(badge.global.color, '#B45309');
+  chrome.commands.onCommand.dispatch('toggle-enabled'); // no tab given → the active tab (id 1)
+  await until(() => !sites().includes('tmall.com'));
+  assert.equal(log.tabMessages.at(-1).tabId, 1);
 
-  chrome.commands.onCommand.dispatch('_execute_action');
-  chrome.commands.onCommand.dispatch('something-else');
-  await flush(10);
+  // a page on a subdomain covered by a broader rule → off removes that rule
+  pageInfo.hostname = 'item.taobao.com';
+  chrome.commands.onCommand.dispatch('toggle-enabled', { id: 1 });
+  await until(() => !sites().includes('taobao.com'));
+  chrome.commands.onCommand.dispatch('toggle-enabled', { id: 1 });
+  await until(() => sites().includes('taobao.com'));
   assert.equal(settings().enabled, true);
 });
 
-test('settings written elsewhere (page / other device): badge and uiLanguage mirror follow', async () => {
+test('command toggle-enabled: while globally paused, turning the site on also resumes', async () => {
+  await send({ type: MSG.UPDATE_SETTINGS, patch: { enabled: false } });
+  mock.behaviour.tabSendMessage = async () => ({ ok: true, hostname: 'jd.com', active: false, count: 0 });
+  chrome.commands.onCommand.dispatch('toggle-enabled', { id: 1 });
+  await until(() => settings().enabled === true && settings().enabledSites.includes('jd.com'));
+  await until(() => badge.global.text === '');
+
+  await send({ type: MSG.UPDATE_SETTINGS, patch: { enabled: false } });
+  chrome.commands.onCommand.dispatch('toggle-enabled', { id: 1 }); // site rule is on → turn it off, stay paused
+  await until(() => !settings().enabledSites.includes('jd.com'));
+  assert.equal(settings().enabled, false);
+  await send({ type: MSG.UPDATE_SETTINGS, patch: { enabled: true } });
+});
+
+test("command toggle-enabled: 'all' mode toggles disabledSites", async () => {
+  await send({ type: MSG.UPDATE_SETTINGS, patch: { siteMode: 'all' } });
+  mock.behaviour.tabSendMessage = async () => ({ ok: true, hostname: 'm.jd.com', active: true, count: 3 });
+  chrome.commands.onCommand.dispatch('toggle-enabled', { id: 1 });
+  await until(() => settings().disabledSites.includes('jd.com'));
+  chrome.commands.onCommand.dispatch('toggle-enabled', { id: 1 });
+  await until(() => !settings().disabledSites.includes('jd.com'));
+  await send({ type: MSG.UPDATE_SETTINGS, patch: { siteMode: 'allowlist' } });
+});
+
+test('command toggle-enabled: no content script / bad answers / other commands → nothing happens, quietly', async () => {
+  const before = JSON.stringify(settings());
+  const warnings = [];
+  const origWarn = console.warn;
+  console.warn = (...a) => warnings.push(a);
+  try {
+    mock.behaviour.tabSendMessage = async () => {
+      throw new Error('Could not establish connection. Receiving end does not exist.');
+    };
+    chrome.commands.onCommand.dispatch('toggle-enabled', { id: 1 }); // chrome:// page
+    mock.behaviour.tabSendMessage = async () => undefined; // listener answered nothing
+    chrome.commands.onCommand.dispatch('toggle-enabled', { id: 1 });
+    mock.behaviour.tabSendMessage = async () => ({ ok: true, hostname: '' });
+    chrome.commands.onCommand.dispatch('toggle-enabled', { id: 1 });
+    mock.behaviour.tabSendMessage = async () => ({ ok: false, error: { code: 'UNKNOWN', message: 'boom' } });
+    chrome.commands.onCommand.dispatch('toggle-enabled', { id: 1 });
+    mock.behaviour.tabs = []; // no active tab at all
+    chrome.commands.onCommand.dispatch('toggle-enabled');
+    chrome.commands.onCommand.dispatch('_execute_action');
+    chrome.commands.onCommand.dispatch('something-else');
+    await flush(20);
+  } finally {
+    console.warn = origWarn;
+    mock.behaviour.tabs = [
+      { id: 1, active: true },
+      { id: 2, active: false },
+    ];
+  }
+  assert.equal(JSON.stringify(settings()), before);
+  assert.deepEqual(warnings, []);
+});
+
+test('settings written elsewhere (page / other device): badge ("off" in every tab) and uiLanguage mirror follow', async () => {
+  await send({ type: MSG.REPORT_COUNT, count: 9 }, tabSender(21));
+  assert.equal(badge.shown(21), '9');
   await chrome.storage.sync.set({ settings: { ...settings(), enabled: false, uiLanguage: 'vi' } });
   await until(() => badge.global.text === 'off' && areas.local[STORAGE_KEYS.UI_LANGUAGE] === 'vi');
+  assert.equal(badge.global.color, '#6B7280');
+  assert.equal(badge.shown(21), 'off', 'per-tab count cleared so the global "off" shows');
+  await send({ type: MSG.REPORT_COUNT, count: 9 }, tabSender(21));
+  assert.equal(badge.shown(21), 'off', 'no counts while paused');
   await chrome.storage.sync.set({ settings: { ...settings(), enabled: true, uiLanguage: 'auto' } });
   await until(() => badge.global.text === '' && areas.local[STORAGE_KEYS.UI_LANGUAGE] === 'auto');
 });

@@ -4,11 +4,11 @@
     "description": "Toolbar button tooltip"
   },
   "bg_action_title_off": {
-    "message": "TransPrice — automatic conversion is off",
-    "description": "Toolbar icon tooltip while settings.enabled is false (the badge shows 'off'). Uses the browser language."
+    "message": "TransPrice — paused on all sites",
+    "description": "Toolbar icon tooltip while the global master switch (settings.enabled) is off; the badge shows 'off'. Uses the browser language."
   },
   "cmdToggleEnabled": {
-    "message": "Turn automatic price conversion on/off",
+    "message": "Turn price conversion on/off for this site",
     "description": "Keyboard shortcut description (chrome://extensions/shortcuts)"
   },
   "common_add": {
@@ -239,8 +239,33 @@
     "description": "Default dollar select label. $$ = a literal dollar sign."
   },
   "options_enabled_desc": {
-    "message": "Find prices on web pages and show them in your currency. The toolbar icon toggles this too.",
+    "message": "The master switch: turn it off to pause TransPrice on every site, turn it back on to resume. Your list of sites is kept.",
     "description": "Master switch row description."
+  },
+  "options_enabled_empty_desc": {
+    "message": "Open a shopping site and switch on “This site” in the TransPrice popup, or add one above.",
+    "description": "Empty allowlist description."
+  },
+  "options_enabled_empty_title": {
+    "message": "No sites turned on yet",
+    "description": "Empty allowlist title."
+  },
+  "options_enabled_list_desc": {
+    "message": "Prices are converted only on these sites. Subdomains are included.",
+    "description": "Allowlist card description."
+  },
+  "options_enabled_list_title": {
+    "message": "Turned on for",
+    "description": "Allowlist card title."
+  },
+  "options_enabled_remove": {
+    "message": "Stop converting on $P1$",
+    "description": "Remove button of an allowlist entry. $1 = site.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
   },
   "options_enabled_title": {
     "message": "Auto-convert prices",
@@ -449,8 +474,8 @@
     "description": "Name of the open-popup command."
   },
   "options_shortcut_toggle": {
-    "message": "Turn auto-convert on/off",
-    "description": "Name of the toggle-enabled command."
+    "message": "Turn this site on/off",
+    "description": "Name of the toggle-enabled command (it toggles the current site)."
   },
   "options_shortcuts_customize": {
     "message": "Change shortcuts",
@@ -468,6 +493,30 @@
     "message": "Keyboard shortcuts",
     "description": "Shortcuts card title."
   },
+  "options_sitemode_all_desc": {
+    "message": "Prices are converted automatically on every website you visit.",
+    "description": "Site mode option description (all)."
+  },
+  "options_sitemode_all_title": {
+    "message": "Every site, except the ones I turn off",
+    "description": "Site mode option (all)."
+  },
+  "options_sitemode_allowlist_desc": {
+    "message": "Switch a site on from the toolbar popup and TransPrice remembers it. Every other page stays untouched.",
+    "description": "Site mode option description (allowlist)."
+  },
+  "options_sitemode_allowlist_title": {
+    "message": "Only sites I turn on",
+    "description": "Site mode option (allowlist)."
+  },
+  "options_sitemode_label": {
+    "message": "Where to convert",
+    "description": "Label of the site-mode choice."
+  },
+  "options_sitemode_recommended": {
+    "message": "Recommended",
+    "description": "Badge next to the recommended site mode."
+  },
   "options_sites_add": {
     "message": "Add",
     "description": "Add-site button."
@@ -477,7 +526,7 @@
     "description": "Accessible label of the add-site input."
   },
   "options_sites_desc": {
-    "message": "Turn TransPrice off on specific websites, and review the currencies you picked per site.",
+    "message": "Choose where TransPrice converts prices, and review the currencies you picked per site.",
     "description": "Websites section description."
   },
   "options_sites_empty_desc": {
@@ -487,6 +536,18 @@
   "options_sites_empty_title": {
     "message": "TransPrice works on every website",
     "description": "Empty disabled list title."
+  },
+  "options_sites_error_covered": {
+    "message": "$P1$ is already covered by $P2$",
+    "description": "Add-site error when a parent site is already listed. $1 = what the user typed (normalised), $2 = the listed site.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
   },
   "options_sites_error_duplicate": {
     "message": "$P1$ is already in the list",
@@ -604,8 +665,8 @@
     "description": "Popup document title."
   },
   "popup_power_off": {
-    "message": "Off · click to turn on",
-    "description": "State under the power toggle when OFF."
+    "message": "Paused everywhere · click to resume",
+    "description": "State under the power toggle when the master switch is OFF."
   },
   "popup_power_on": {
     "message": "On · prices are shown in $P1$",
@@ -689,6 +750,10 @@
     "message": "Settings",
     "description": "Header button that opens the options page."
   },
+  "popup_site_activating": {
+    "message": "Converting prices…",
+    "description": "Site status right after the user switched the site on, before the first count arrives."
+  },
   "popup_site_count_one": {
     "message": "Converted $P1$ price",
     "description": "Site status, singular. $1 = number of prices converted on the page.",
@@ -707,13 +772,29 @@
       }
     }
   },
-  "popup_site_disabled": {
-    "message": "Turned off on this site",
-    "description": "Site status when the site is in the disabled list."
+  "popup_site_detected_one": {
+    "message": "$P1$ $P2$ price on this page — turn on to convert",
+    "description": "Inactive site hint, singular. $1 = number of prices found, $2 = currency code(s), e.g. CNY or CNY/USD.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
   },
-  "popup_site_global_off": {
-    "message": "Auto-convert is off",
-    "description": "Site status when the master switch is off."
+  "popup_site_detected_other": {
+    "message": "$P1$ $P2$ prices on this page — turn on to convert",
+    "description": "Inactive site hint, plural. $1 = number of prices found, $2 = currency code(s), e.g. CNY or CNY/USD.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
   },
   "popup_site_label": {
     "message": "This site",
@@ -722,6 +803,23 @@
   "popup_site_none": {
     "message": "No prices found on this page yet",
     "description": "Site status when the content script found nothing to convert."
+  },
+  "popup_site_off_hint": {
+    "message": "Turn on to convert prices on this site",
+    "description": "Inactive site hint when no foreign prices were detected."
+  },
+  "popup_site_paused": {
+    "message": "Paused everywhere",
+    "description": "Site card status while the master switch is off (the site switch is disabled)."
+  },
+  "popup_site_remember": {
+    "message": "TransPrice will remember $P1$",
+    "description": "Shown under the site row after switching a site on. $1 = site, e.g. taobao.com.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
   },
   "popup_site_switch": {
     "message": "Convert on this site",
@@ -781,11 +879,11 @@
     "description": "Heading above the three steps."
   },
   "welcome_illus_on": {
-    "message": "On",
-    "description": "Tiny label in the step-3 illustration (power switch ON)."
+    "message": "This site",
+    "description": "Tiny label next to the switch in the step-3 illustration (the popup’s “This site” switch)."
   },
   "welcome_lead": {
-    "message": "See every price in your currency — TransPrice finds prices on any website and converts them for you.",
+    "message": "See every price in your currency — switch TransPrice on for the shops you use and it converts their prices for you.",
     "description": "Welcome page lead paragraph."
   },
   "welcome_open_settings": {
@@ -818,11 +916,11 @@
     "description": "Step 2 title."
   },
   "welcome_step3_desc": {
-    "message": "Click the TransPrice icon in the toolbar to turn conversion on or off — for everything or just one site.",
+    "message": "Open a shopping site, click the TransPrice icon and switch on “This site”. TransPrice remembers it.",
     "description": "Step 3 description."
   },
   "welcome_step3_title": {
-    "message": "One click to switch",
+    "message": "Switch on the sites you shop",
     "description": "Step 3 title."
   },
   "welcome_tip_pin_desc": {
@@ -834,8 +932,8 @@
     "description": "Tip title."
   },
   "welcome_tip_shortcut_desc": {
-    "message": "Turn auto-convert on or off from any page.",
-    "description": "Tip description."
+    "message": "Turn TransPrice on or off for the site you’re on.",
+    "description": "Keyboard shortcut tip (Alt+Shift+C toggles the current site)."
   },
   "welcome_tip_shortcut_set": {
     "message": "Set a shortcut",

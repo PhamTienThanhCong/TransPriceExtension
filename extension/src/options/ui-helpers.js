@@ -239,6 +239,47 @@ export function parseAmount(input) {
   return Number.isFinite(value) ? value : null;
 }
 
+/**
+ * What the popup can promise on an inactive site, from GET_PAGE_INFO's read-only `detected` ({ count, currencies }):
+ * prices in the home currency are left out (there is nothing to convert), so a Vietnamese shop seen by a VND user
+ * gives `{ count: 0 }` and the popup shows the generic "turn on" hint instead of "45 VND prices".
+ *
+ * @param {{count?: number, currencies?: Record<string, number>}|null|undefined} detected
+ * @param {string} home
+ * @returns {{count: number, codes: string[]}}  codes sorted by count (desc)
+ */
+export function detectedSummary(detected, home) {
+  const currencies = detected && typeof detected === 'object' ? detected.currencies : null;
+  const codes = topCurrencies(currencies).filter((c) => c !== home);
+  const count = codes.reduce((sum, c) => sum + Number(currencies[c]), 0);
+  return { count, codes };
+}
+
+/** True if `rule` (a stored hostname) covers `host`: the same host or one of its subdomains. */
+export function ruleCovers(rule, host) {
+  return typeof rule === 'string' && !!rule && (host === rule || host.endsWith(`.${rule}`));
+}
+
+/**
+ * The settings patch SET_SITE_ACTIVE will make (ARCHITECTURE §3.5), for an optimistic popup update before the
+ * background answers. allowlist: on → add `key` to enabledSites, off → drop every rule covering the host;
+ * 'all': off → add `key` to disabledSites, on → drop every rule covering the host.
+ *
+ * @param {{siteMode?: string, enabledSites?: string[], disabledSites?: string[]}} settings
+ * @param {string} host    normalised hostname of the page ("s.taobao.com")
+ * @param {string} key     its siteKey ("taobao.com")
+ * @param {boolean} active
+ * @returns {{enabledSites: string[]} | {disabledSites: string[]}}
+ */
+export function siteActivePatch(settings, host, key, active) {
+  const allowlist = settings?.siteMode !== 'all';
+  const listName = allowlist ? 'enabledSites' : 'disabledSites';
+  const list = Array.isArray(settings?.[listName]) ? settings[listName] : [];
+  const kept = list.filter((rule) => !ruleCovers(rule, host));
+  const add = allowlist ? active : !active;
+  return { [listName]: add ? [...kept, key] : kept };
+}
+
 /* ------------------------------------------------------------------ */
 /* Converter defaults                                                  */
 /* ------------------------------------------------------------------ */

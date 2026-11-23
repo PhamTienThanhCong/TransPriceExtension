@@ -10,8 +10,8 @@
     "description": "Welcome page heading."
   },
   "welcome_lead": {
-    "en": "See every price in your currency — TransPrice finds prices on any website and converts them for you.",
-    "vi": "Xem mọi mức giá bằng đồng tiền của bạn — TransPrice tự tìm giá trên mọi trang web và quy đổi giúp bạn.",
+    "en": "See every price in your currency — switch TransPrice on for the shops you use and it converts their prices for you.",
+    "vi": "Xem mọi mức giá bằng đồng tiền của bạn — bật TransPrice cho những trang bạn hay mua sắm, giá sẽ được quy đổi giúp bạn.",
     "description": "Welcome page lead paragraph."
   },
   "welcome_home_title": {
@@ -50,19 +50,19 @@
     "description": "Step 2 description."
   },
   "welcome_step3_title": {
-    "en": "One click to switch",
-    "vi": "Bật/tắt chỉ một cú bấm",
+    "en": "Switch on the sites you shop",
+    "vi": "Bật cho trang bạn hay mua",
     "description": "Step 3 title."
   },
   "welcome_step3_desc": {
-    "en": "Click the TransPrice icon in the toolbar to turn conversion on or off — for everything or just one site.",
-    "vi": "Bấm biểu tượng TransPrice trên thanh công cụ để bật hoặc tắt quy đổi — cho mọi trang hoặc chỉ riêng một trang.",
+    "en": "Open a shopping site, click the TransPrice icon and switch on “This site”. TransPrice remembers it.",
+    "vi": "Mở một trang mua sắm, bấm biểu tượng TransPrice rồi bật “Trang này”. TransPrice sẽ nhớ trang đó.",
     "description": "Step 3 description."
   },
   "welcome_illus_on": {
-    "en": "On",
-    "vi": "Bật",
-    "description": "Tiny label in the step-3 illustration (power switch ON)."
+    "en": "This site",
+    "vi": "Trang này",
+    "description": "Tiny label next to the switch in the step-3 illustration (the popup’s “This site” switch)."
   },
   "welcome_tips_title": {
     "en": "Tips",
@@ -75,9 +75,9 @@
     "description": "Tip title."
   },
   "welcome_tip_shortcut_desc": {
-    "en": "Turn auto-convert on or off from any page.",
-    "vi": "Bật/tắt tự động quy đổi ở bất kỳ trang nào.",
-    "description": "Tip description."
+    "en": "Turn TransPrice on or off for the site you’re on.",
+    "vi": "Bật/tắt TransPrice cho trang bạn đang xem.",
+    "description": "Keyboard shortcut tip (Alt+Shift+C toggles the current site)."
   },
   "welcome_tip_shortcut_set": {
     "en": "Set a shortcut",

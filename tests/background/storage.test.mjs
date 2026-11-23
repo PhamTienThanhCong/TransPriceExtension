@@ -3,10 +3,14 @@ import { test, describe, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { DEFAULT_SETTINGS, STORAGE_KEYS } from '../../extension/src/shared/constants.js';
 import {
+  MAX_SITE_CURRENCY,
+  MAX_SITE_LIST,
+  MULTI_PART_SUFFIXES,
   browserLocales,
   getSettings,
   getStoredRates,
   guessHomeCurrency,
+  isSiteActive,
   isSiteMatch,
   isValidRatesTable,
   mirrorUiLanguage,
@@ -14,6 +18,7 @@ import {
   normalizeSettings,
   onSettingsChanged,
   setStoredRates,
+  siteKey,
   updateSettings,
 } from '../../extension/src/shared/storage.js';
 import { createChromeMock, flush, ratesTable } from './helpers.mjs';
@@ -44,12 +49,14 @@ describe('normalizeHostname', () => {
       '192.168.1.10': '192.168.1.10',
       'bücher.de': 'xn--bcher-kva.de',
       wwwexample: 'wwwexample',
+      '[::1]': '[::1]',
+      'http://[2001:db8::1]:8080/x': '[2001:db8::1]',
     };
     for (const [input, expected] of Object.entries(cases)) assert.equal(normalizeHostname(input), expected, input);
   });
 
   test('rejects non-hostnames', () => {
-    for (const bad of ['', '   ', null, undefined, 42, {}, 'a b.com', 'file:///etc/hosts', '[::1]', 'exa$mple.com', 'http://']) {
+    for (const bad of ['', '   ', null, undefined, 42, {}, 'a b.com', 'file:///etc/hosts', '::1', '[zz::1]', 'exa$mple.com', 'http://']) {
       assert.equal(normalizeHostname(bad), '', String(bad));
     }
   });
@@ -74,6 +81,81 @@ describe('isSiteMatch', () => {
     assert.equal(isSiteMatch('taobao.com', null), false);
     assert.equal(isSiteMatch('taobao.com', 'taobao.com'), false);
     assert.equal(isSiteMatch('taobao.com', [null, 42, '', 'WWW.TAOBAO.COM']), true);
+  });
+});
+
+describe('siteKey (§3.5 registrable-domain heuristic)', () => {
+  test('table', () => {
+    const cases = {
+      's.taobao.com': 'taobao.com',
+      'item.taobao.com': 'taobao.com',
+      'world.taobao.com': 'taobao.com',
+      'taobao.com': 'taobao.com',
+      'www.taobao.com': 'taobao.com',
+      'shopee.com.vn': 'shopee.com.vn',
+      'www.shopee.com.vn': 'shopee.com.vn',
+      'm.shopee.com.vn': 'shopee.com.vn',
+      'www.amazon.co.uk': 'amazon.co.uk',
+      'bbc.co.uk': 'bbc.co.uk',
+      'news.bbc.co.uk': 'bbc.co.uk',
+      'www.amazon.co.jp': 'amazon.co.jp',
+      'item.rakuten.co.jp': 'rakuten.co.jp',
+      'detail.tmall.com': 'tmall.com',
+      'a.b.c.example.com': 'example.com',
+      'https://Item.Taobao.com/item.htm?id=1': 'taobao.com',
+      'co.uk': 'co.uk', // a bare suffix stays as it is
+      'example.vn': 'example.vn',
+      localhost: 'localhost',
+      '127.0.0.1': '127.0.0.1',
+      '192.168.1.20': '192.168.1.20',
+      '[::1]': '[::1]',
+      intranet: 'intranet', // single label
+    };
+    for (const [input, expected] of Object.entries(cases)) assert.equal(siteKey(input), expected, input);
+  });
+
+  test('invalid input → empty string', () => {
+    for (const bad of ['', null, undefined, 42, 'a b.com', 'file:///x']) assert.equal(siteKey(bad), '', String(bad));
+  });
+
+  test('MULTI_PART_SUFFIXES: the contract list, lowercase two-label entries, read-only', () => {
+    const contract = 'co.uk com.au com.vn co.jp com.cn com.hk com.tw com.sg co.kr co.nz com.br com.mx co.id co.th com.my com.ph co.in ac.uk gov.uk org.uk net.au edu.vn gov.vn net.vn org.vn';
+    for (const sfx of contract.split(' ')) assert.ok(MULTI_PART_SUFFIXES.has(sfx), sfx);
+    for (const sfx of MULTI_PART_SUFFIXES) assert.match(sfx, /^[a-z]+\.[a-z]+$/);
+    assert.ok(MULTI_PART_SUFFIXES instanceof Set);
+    assert.ok(Object.isFrozen(MULTI_PART_SUFFIXES));
+    assert.throws(() => MULTI_PART_SUFFIXES.add('evil.com'), TypeError);
+    assert.throws(() => MULTI_PART_SUFFIXES.delete('co.uk'), TypeError);
+    assert.throws(() => MULTI_PART_SUFFIXES.clear(), TypeError);
+    assert.ok(MULTI_PART_SUFFIXES.has('co.uk'));
+  });
+});
+
+describe('isSiteActive', () => {
+  const base = norm({});
+  test('allowlist (default): only hosts covered by enabledSites', () => {
+    const s = { ...base, enabledSites: ['taobao.com'] };
+    assert.equal(isSiteActive(s, 's.taobao.com'), true);
+    assert.equal(isSiteActive(s, 'item.taobao.com'), true);
+    assert.equal(isSiteActive(s, 'taobao.com'), true);
+    assert.equal(isSiteActive(s, 'jd.com'), false);
+    assert.equal(isSiteActive(s, ''), false);
+    assert.equal(isSiteActive(base, 'taobao.com'), false, 'nothing turned on → off everywhere');
+    assert.equal(isSiteActive({ ...s, disabledSites: ['jd.com'] }, 'jd.com'), false, 'disabledSites is ignored in allowlist mode');
+  });
+
+  test('all: every host except those covered by disabledSites', () => {
+    const s = { ...base, siteMode: 'all', disabledSites: ['taobao.com'], enabledSites: ['jd.com'] };
+    assert.equal(isSiteActive(s, 'item.taobao.com'), false);
+    assert.equal(isSiteActive(s, 'amazon.com'), true);
+    assert.equal(isSiteActive(s, 'jd.com'), true);
+  });
+
+  test('global switch off → inactive everywhere, in both modes', () => {
+    assert.equal(isSiteActive({ ...base, enabled: false, enabledSites: ['taobao.com'] }, 'taobao.com'), false);
+    assert.equal(isSiteActive({ ...base, enabled: false, siteMode: 'all' }, 'amazon.com'), false);
+    assert.equal(isSiteActive(null, 'taobao.com'), false);
+    assert.equal(isSiteActive(undefined, 'taobao.com'), false);
   });
 });
 
@@ -116,7 +198,8 @@ describe('home currency guess', () => {
 describe('normalizeSettings — every field', () => {
   test('empty / garbage input → defaults (home currency guessed)', () => {
     for (const raw of [undefined, null, 'x', 42, [], {}]) {
-      assert.deepEqual(norm(raw), { ...DEFAULT_SETTINGS, homeCurrency: 'VND', disabledSites: [], siteCurrency: {} });
+      assert.deepEqual(norm(raw), { ...DEFAULT_SETTINGS, homeCurrency: 'VND', enabledSites: [], disabledSites: [], siteCurrency: {} });
+      assert.equal(norm(raw).siteMode, 'allowlist', 'off everywhere by default');
     }
   });
 
@@ -157,17 +240,38 @@ describe('normalizeSettings — every field', () => {
     assert.equal(norm({ defaultYen: null }).defaultYen, 'CNY');
   });
 
-  test('disabledSites: normalised, deduped, junk dropped, newest kept under the cap', () => {
-    assert.deepEqual(norm({ disabledSites: ['WWW.Taobao.com', 'taobao.com', 'https://jd.com/x', '', 42, null, 'bad host'] }).disabledSites, [
-      'taobao.com',
-      'jd.com',
-    ]);
-    for (const bad of ['taobao.com', {}, null, 1]) assert.deepEqual(norm({ disabledSites: bad }).disabledSites, []);
-    const many = Array.from({ length: 250 }, (_, i) => `site${i}.com`);
-    const capped = norm({ disabledSites: many }).disabledSites;
-    assert.equal(capped.length, 200);
-    assert.equal(capped.at(-1), 'site249.com');
-    assert.equal(capped[0], 'site50.com');
+  test('siteMode: allowlist | all, anything else → allowlist', () => {
+    assert.equal(norm({ siteMode: 'all' }).siteMode, 'all');
+    assert.equal(norm({ siteMode: 'allowlist' }).siteMode, 'allowlist');
+    for (const bad of ['ALL', 'blocklist', '', null, true]) assert.equal(norm({ siteMode: bad }).siteMode, 'allowlist', String(bad));
+  });
+
+  for (const key of ['enabledSites', 'disabledSites']) {
+    test(`${key}: normalised, deduped, junk dropped, newest kept under the cap`, () => {
+      assert.deepEqual(norm({ [key]: ['WWW.Taobao.com', 'taobao.com', 'https://jd.com/x', '', 42, null, 'bad host'] })[key], [
+        'taobao.com',
+        'jd.com',
+      ]);
+      for (const bad of ['taobao.com', {}, null, 1]) assert.deepEqual(norm({ [key]: bad })[key], []);
+      const many = Array.from({ length: MAX_SITE_LIST + 50 }, (_, i) => `site${i}.com`);
+      const capped = norm({ [key]: many })[key];
+      assert.equal(capped.length, MAX_SITE_LIST);
+      assert.equal(capped.at(-1), `site${MAX_SITE_LIST + 49}.com`);
+      assert.equal(capped[0], 'site50.com');
+    });
+  }
+
+  test('both lists and the pins at their caps still fit chrome.storage.sync QUOTA_BYTES_PER_ITEM (8192)', () => {
+    const host = (i) => `s${String(i).padStart(4, '0')}.example.co`; // 16 chars, like "world.taobao.com"
+    assert.equal(host(1).length, 16);
+    const s = norm({
+      enabledSites: Array.from({ length: MAX_SITE_LIST }, (_, i) => host(i)),
+      disabledSites: Array.from({ length: MAX_SITE_LIST }, (_, i) => host(i + 5000)),
+      siteCurrency: Object.fromEntries(Array.from({ length: MAX_SITE_CURRENCY }, (_, i) => [host(i), { dollar: 'USD', yen: 'CNY' }])),
+    });
+    assert.equal(s.enabledSites.length + s.disabledSites.length + Object.keys(s.siteCurrency).length, 2 * MAX_SITE_LIST + MAX_SITE_CURRENCY);
+    const bytes = 'settings'.length + new TextEncoder().encode(JSON.stringify(s)).length;
+    assert.ok(bytes < 8192, `${bytes} bytes with 16-char hostnames`);
   });
 
   test('siteCurrency: hostnames normalised, bad symbols/codes/entries dropped, duplicates merged', () => {
@@ -190,8 +294,8 @@ describe('normalizeSettings — every field', () => {
       'shop.ca': { dollar: 'CAD' },
     });
     for (const bad of [[], 'x', null, 3]) assert.deepEqual(norm({ siteCurrency: bad }).siteCurrency, {});
-    const many = Object.fromEntries(Array.from({ length: 120 }, (_, i) => [`s${i}.com`, { yen: 'JPY' }]));
-    assert.equal(Object.keys(norm({ siteCurrency: many }).siteCurrency).length, 100);
+    const many = Object.fromEntries(Array.from({ length: MAX_SITE_CURRENCY + 20 }, (_, i) => [`s${i}.com`, { yen: 'JPY' }]));
+    assert.equal(Object.keys(norm({ siteCurrency: many }).siteCurrency).length, MAX_SITE_CURRENCY);
   });
 
   test('theme / uiLanguage', () => {
@@ -213,6 +317,19 @@ describe('getSettings / updateSettings / onSettingsChanged', () => {
     assert.equal(s.displayMode, 'append');
     assert.deepEqual(s.disabledSites, ['a.com']);
     assert.equal('junk' in s, false);
+  });
+
+  test('migration: settings stored before siteMode existed → allowlist, nothing on, old disabledSites kept', async () => {
+    mock.areas.sync.settings = { enabled: true, homeCurrency: 'VND', displayMode: 'append', disabledSites: ['jd.com'], siteCurrency: {} };
+    const s = await getSettings();
+    assert.equal(s.siteMode, 'allowlist');
+    assert.deepEqual(s.enabledSites, []);
+    assert.deepEqual(s.disabledSites, ['jd.com'], 'kept for whoever switches back to "all"');
+    assert.equal(s.displayMode, 'append');
+    assert.equal(isSiteActive(s, 'world.taobao.com'), false, 'off by default now');
+    const saved = await updateSettings({ compact: true });
+    assert.equal(mock.areas.sync.settings.siteMode, 'allowlist', 'persisted on the next write');
+    assert.deepEqual(saved.enabledSites, []);
   });
 
   test('updateSettings merges, validates, persists the complete object and returns it', async () => {

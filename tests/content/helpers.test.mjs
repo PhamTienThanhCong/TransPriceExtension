@@ -19,7 +19,7 @@ const SRC = path.join(ROOT, 'extension/src');
 const FILES = ['shared/currency-data.js', 'content/parser.js', 'content/scanner.js', 'content/render.js'];
 
 function load(files = FILES) {
-  const ctx = vm.createContext({ console, Intl, setTimeout, clearTimeout });
+  const ctx = vm.createContext({ console, URL, Intl, setTimeout, clearTimeout });
   for (const f of files) vm.runInContext(readFileSync(path.join(SRC, f), 'utf8'), ctx, { filename: f });
   return ctx;
 }

@@ -7,7 +7,7 @@
  *   import '../content/parser.js';         // globalThis.TransPriceParser
  */
 import { getCurrentUiLocale, t } from '../shared/i18n.js';
-import { ICON_NAMES, icon } from '../ui/icons.js';
+import { icon } from '../ui/icons.js';
 import { buildCurrencyList, filterCurrencies } from './ui-helpers.js';
 
 export const LOGO_SRC = '../../icons/logo.svg';
@@ -44,59 +44,17 @@ export const prefersReducedMotion = () =>
   typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ------------------------------------------------------------------ */
-/* Icons: shared set first, a few local extras (Lucide, ISC)           */
+/* Icons                                                               */
 /* ------------------------------------------------------------------ */
 
-const SVG_NS = 'http://www.w3.org/2000/svg';
-/** Icons not (yet) in src/ui/icons.js — path data only, built with DOM APIs. */
-const EXTRA_ICONS = {
-  puzzle: [
-    'M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z',
-  ],
-  pointer: [
-    'M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z',
-  ],
-  'message-square': ['M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z'],
-  'scan-search': [
-    'M3 7V5a2 2 0 0 1 2-2h2',
-    'M17 3h2a2 2 0 0 1 2 2v2',
-    'M21 17v2a2 2 0 0 1-2 2h-2',
-    'M7 21H5a2 2 0 0 1-2-2v-2',
-    'M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z',
-    'm16 16-1.9-1.9',
-  ],
-};
-
 /**
- * SVGElement for `name`: the shared icon set (src/ui/icons.js) when it has it, else a local extra.
+ * SVGElement for `name` from the shared icon set (src/ui/icons.js). Kept as a wrapper so callers have one entry point.
  * @param {string} name
  * @param {{size?: number, className?: string, strokeWidth?: number}} [opts]
  * @returns {SVGElement}
  */
 export function anyIcon(name, opts = {}) {
-  if (ICON_NAMES.includes(name)) return icon(name, opts);
-  const { size = 18, className = '', strokeWidth = 2 } = opts;
-  const svg = document.createElementNS(SVG_NS, 'svg');
-  const attrs = {
-    width: size,
-    height: size,
-    viewBox: '0 0 24 24',
-    fill: 'none',
-    stroke: 'currentColor',
-    'stroke-width': strokeWidth,
-    'stroke-linecap': 'round',
-    'stroke-linejoin': 'round',
-    class: `icon icon-${name}${className ? ` ${className}` : ''}`,
-    'aria-hidden': 'true',
-    focusable: 'false',
-  };
-  for (const [key, value] of Object.entries(attrs)) svg.setAttribute(key, String(value));
-  for (const d of EXTRA_ICONS[name] || []) {
-    const path = document.createElementNS(SVG_NS, 'path');
-    path.setAttribute('d', d);
-    svg.append(path);
-  }
-  return svg;
+  return icon(name, opts);
 }
 
 /** Replace every `<i data-icon="name" [data-icon-size]>` placeholder (shared or extra icons). */

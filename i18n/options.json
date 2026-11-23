@@ -9,14 +9,41 @@
     "vi": "Các mục cài đặt",
     "description": "Accessible label of the sidebar navigation."
   },
-  "options_nav_general": { "en": "General", "vi": "Chung", "description": "Sidebar / section title." },
-  "options_nav_display": { "en": "Price display", "vi": "Cách hiển thị giá", "description": "Sidebar / section title." },
-  "options_nav_symbols": { "en": "$$ and ¥", "vi": "Ký hiệu $$ và ¥", "description": "Sidebar / section title about ambiguous currency symbols. $$ = a literal dollar sign (Chrome message syntax)." },
-  "options_nav_sites": { "en": "Websites", "vi": "Trang web", "description": "Sidebar / section title." },
-  "options_nav_appearance": { "en": "Appearance", "vi": "Giao diện", "description": "Sidebar / section title." },
-  "options_nav_rates": { "en": "Exchange rates", "vi": "Tỷ giá", "description": "Sidebar / section title." },
-  "options_nav_about": { "en": "About", "vi": "Giới thiệu", "description": "Sidebar / section title." },
-
+  "options_nav_general": {
+    "en": "General",
+    "vi": "Chung",
+    "description": "Sidebar / section title."
+  },
+  "options_nav_display": {
+    "en": "Price display",
+    "vi": "Cách hiển thị giá",
+    "description": "Sidebar / section title."
+  },
+  "options_nav_symbols": {
+    "en": "$$ and ¥",
+    "vi": "Ký hiệu $$ và ¥",
+    "description": "Sidebar / section title about ambiguous currency symbols. $$ = a literal dollar sign (Chrome message syntax)."
+  },
+  "options_nav_sites": {
+    "en": "Websites",
+    "vi": "Trang web",
+    "description": "Sidebar / section title."
+  },
+  "options_nav_appearance": {
+    "en": "Appearance",
+    "vi": "Giao diện",
+    "description": "Sidebar / section title."
+  },
+  "options_nav_rates": {
+    "en": "Exchange rates",
+    "vi": "Tỷ giá",
+    "description": "Sidebar / section title."
+  },
+  "options_nav_about": {
+    "en": "About",
+    "vi": "Giới thiệu",
+    "description": "Sidebar / section title."
+  },
   "options_general_desc": {
     "en": "Which currency you think in, and whether TransPrice converts prices for you.",
     "vi": "Chọn đồng tiền bạn quen dùng và bật/tắt việc tự động quy đổi giá.",
@@ -28,8 +55,8 @@
     "description": "Master switch row title."
   },
   "options_enabled_desc": {
-    "en": "Find prices on web pages and show them in your currency. The toolbar icon toggles this too.",
-    "vi": "Tìm giá trên các trang web và hiển thị bằng đồng tiền của bạn. Bấm biểu tượng trên thanh công cụ cũng bật/tắt được.",
+    "en": "The master switch: turn it off to pause TransPrice on every site, turn it back on to resume. Your list of sites is kept.",
+    "vi": "Công tắc tổng: tắt để tạm dừng TransPrice trên mọi trang, bật lại để tiếp tục. Danh sách trang của bạn vẫn được giữ nguyên.",
     "description": "Master switch row description."
   },
   "options_home_title": {
@@ -42,7 +69,11 @@
     "vi": "Mọi mức giá TransPrice tìm thấy sẽ được quy đổi sang đồng tiền này.",
     "description": "Home-currency row description."
   },
-  "options_shortcuts_title": { "en": "Keyboard shortcuts", "vi": "Phím tắt", "description": "Shortcuts card title." },
+  "options_shortcuts_title": {
+    "en": "Keyboard shortcuts",
+    "vi": "Phím tắt",
+    "description": "Shortcuts card title."
+  },
   "options_shortcuts_desc": {
     "en": "Turn conversion on or off without leaving the page.",
     "vi": "Bật/tắt quy đổi mà không cần rời trang đang xem.",
@@ -59,17 +90,20 @@
     "description": "Button opening chrome://extensions/shortcuts."
   },
   "options_shortcut_toggle": {
-    "en": "Turn auto-convert on/off",
-    "vi": "Bật/tắt tự động quy đổi",
-    "description": "Name of the toggle-enabled command."
+    "en": "Turn this site on/off",
+    "vi": "Bật/tắt trang đang xem",
+    "description": "Name of the toggle-enabled command (it toggles the current site)."
   },
   "options_shortcut_popup": {
     "en": "Open the TransPrice popup",
     "vi": "Mở cửa sổ TransPrice",
     "description": "Name of the open-popup command."
   },
-  "options_shortcut_not_set": { "en": "Not set", "vi": "Chưa đặt", "description": "Shown when a command has no shortcut." },
-
+  "options_shortcut_not_set": {
+    "en": "Not set",
+    "vi": "Chưa đặt",
+    "description": "Shown when a command has no shortcut."
+  },
   "options_display_desc": {
     "en": "How converted prices look on the page.",
     "vi": "Giá sau khi quy đổi sẽ trông như thế nào trên trang.",
@@ -80,19 +114,31 @@
     "vi": "Cách hiện giá đã quy đổi",
     "description": "Label above the two display-mode cards."
   },
-  "options_mode_replace_title": { "en": "Replace the price", "vi": "Thay giá gốc", "description": "Display mode card title." },
+  "options_mode_replace_title": {
+    "en": "Replace the price",
+    "vi": "Thay giá gốc",
+    "description": "Display mode card title."
+  },
   "options_mode_replace_desc": {
     "en": "Only your currency is shown. Hover a price to see the original.",
     "vi": "Chỉ hiện giá bằng đồng tiền của bạn. Rê chuột vào giá để xem giá gốc.",
     "description": "Display mode card description."
   },
-  "options_mode_append_title": { "en": "Show both", "vi": "Hiện cả hai", "description": "Display mode card title." },
+  "options_mode_append_title": {
+    "en": "Show both",
+    "vi": "Hiện cả hai",
+    "description": "Display mode card title."
+  },
   "options_mode_append_desc": {
     "en": "Keep the original price and add the converted one next to it.",
     "vi": "Giữ nguyên giá gốc và thêm giá đã quy đổi ngay bên cạnh.",
     "description": "Display mode card description."
   },
-  "options_compact_title": { "en": "Compact numbers", "vi": "Rút gọn số", "description": "Compact switch title." },
+  "options_compact_title": {
+    "en": "Compact numbers",
+    "vi": "Rút gọn số",
+    "description": "Compact switch title."
+  },
   "options_compact_desc": {
     "en": "Shorten big amounts: $1 becomes $2.",
     "vi": "Viết gọn số lớn: $1 thành $2.",
@@ -108,43 +154,61 @@
     "vi": "Gạch chân chấm nhẹ để bạn biết giá nào đã được quy đổi.",
     "description": "Highlight switch description."
   },
-
   "options_symbols_desc": {
     "en": "Several currencies share these symbols. TransPrice guesses from the website first and uses your choice below only when the page gives no hint.",
     "vi": "Nhiều loại tiền dùng chung các ký hiệu này. TransPrice sẽ tự đoán theo trang web trước, chỉ dùng lựa chọn bên dưới khi trang không có gợi ý nào.",
     "description": "Symbols section description."
   },
-  "options_dollar_title": { "en": "A plain “$$” means", "vi": "Ký hiệu “$$” đứng riêng là", "description": "Default dollar select label. $$ = a literal dollar sign." },
+  "options_dollar_title": {
+    "en": "A plain “$$” means",
+    "vi": "Ký hiệu “$$” đứng riêng là",
+    "description": "Default dollar select label. $$ = a literal dollar sign."
+  },
   "options_dollar_desc": {
     "en": "Canadian, Australian, Singaporean… shops are recognised by their web address.",
     "vi": "Các trang của Canada, Úc, Singapore… được nhận diện tự động qua tên miền.",
     "description": "Default dollar description."
   },
-  "options_yen_title": { "en": "A plain “¥” means", "vi": "Ký hiệu “¥” đứng riêng là", "description": "Default yen select label." },
+  "options_yen_title": {
+    "en": "A plain “¥” means",
+    "vi": "Ký hiệu “¥” đứng riêng là",
+    "description": "Default yen select label."
+  },
   "options_yen_desc": {
     "en": "Taobao, Tmall, 1688 and JD always count as yuan; Japanese sites as yen.",
     "vi": "Taobao, Tmall, 1688, JD luôn được tính là nhân dân tệ; các trang Nhật là yên.",
     "description": "Default yen description."
   },
-
   "options_sites_desc": {
-    "en": "Turn TransPrice off on specific websites, and review the currencies you picked per site.",
-    "vi": "Tắt TransPrice trên từng trang web cụ thể và xem lại loại tiền bạn đã chọn cho từng trang.",
+    "en": "Choose where TransPrice converts prices, and review the currencies you picked per site.",
+    "vi": "Chọn nơi TransPrice quy đổi giá và xem lại loại tiền bạn đã chọn cho từng trang.",
     "description": "Websites section description."
   },
-  "options_disabled_title": { "en": "Turned off on", "vi": "Đã tắt trên", "description": "Disabled-sites card title." },
+  "options_disabled_title": {
+    "en": "Turned off on",
+    "vi": "Đã tắt trên",
+    "description": "Disabled-sites card title."
+  },
   "options_disabled_desc": {
     "en": "Prices on these sites are left untouched. Subdomains are included.",
     "vi": "Giá trên các trang này được giữ nguyên. Áp dụng cho cả tên miền con.",
     "description": "Disabled-sites card description."
   },
-  "options_sites_add_label": { "en": "Website", "vi": "Trang web", "description": "Accessible label of the add-site input." },
+  "options_sites_add_label": {
+    "en": "Website",
+    "vi": "Trang web",
+    "description": "Accessible label of the add-site input."
+  },
   "options_sites_placeholder": {
     "en": "e.g. example.com",
     "vi": "ví dụ: example.com",
     "description": "Placeholder of the add-site input."
   },
-  "options_sites_add": { "en": "Add", "vi": "Thêm", "description": "Add-site button." },
+  "options_sites_add": {
+    "en": "Add",
+    "vi": "Thêm",
+    "description": "Add-site button."
+  },
   "options_sites_error_invalid": {
     "en": "Enter a website address, e.g. example.com",
     "vi": "Hãy nhập địa chỉ trang web, ví dụ example.com",
@@ -195,22 +259,41 @@
     "vi": "TransPrice đang tự nhận diện giúp bạn.",
     "description": "Empty pins list description."
   },
-
   "options_appearance_desc": {
     "en": "Theme and language of the popup and these pages.",
     "vi": "Chủ đề và ngôn ngữ của cửa sổ TransPrice và các trang cài đặt.",
     "description": "Appearance section description."
   },
-  "options_theme_title": { "en": "Theme", "vi": "Chủ đề", "description": "Theme row title." },
+  "options_theme_title": {
+    "en": "Theme",
+    "vi": "Chủ đề",
+    "description": "Theme row title."
+  },
   "options_theme_desc": {
     "en": "Auto follows your system setting.",
     "vi": "Tự động sẽ theo cài đặt của hệ thống.",
     "description": "Theme row description."
   },
-  "options_theme_auto": { "en": "Auto", "vi": "Tự động", "description": "Theme option." },
-  "options_theme_light": { "en": "Light", "vi": "Sáng", "description": "Theme option." },
-  "options_theme_dark": { "en": "Dark", "vi": "Tối", "description": "Theme option." },
-  "options_ui_language_title": { "en": "Display language", "vi": "Ngôn ngữ hiển thị", "description": "Display-language row title." },
+  "options_theme_auto": {
+    "en": "Auto",
+    "vi": "Tự động",
+    "description": "Theme option."
+  },
+  "options_theme_light": {
+    "en": "Light",
+    "vi": "Sáng",
+    "description": "Theme option."
+  },
+  "options_theme_dark": {
+    "en": "Dark",
+    "vi": "Tối",
+    "description": "Theme option."
+  },
+  "options_ui_language_title": {
+    "en": "Display language",
+    "vi": "Ngôn ngữ hiển thị",
+    "description": "Display-language row title."
+  },
   "options_ui_language_desc": {
     "en": "Menus and buttons of TransPrice. Open pages reload to apply it.",
     "vi": "Ngôn ngữ của menu và nút bấm trong TransPrice. Các trang đang mở sẽ tải lại để áp dụng.",
@@ -221,7 +304,6 @@
     "vi": "Tự động (theo trình duyệt)",
     "description": "First option of the display-language select."
   },
-
   "options_rates_desc": {
     "en": "Daily reference rates from free public sources, refreshed automatically every few hours.",
     "vi": "Tỷ giá tham khảo hằng ngày từ các nguồn công khai miễn phí, tự cập nhật vài giờ một lần.",
@@ -232,9 +314,21 @@
     "vi": "Chưa tải được tỷ giá mới, TransPrice đang dùng bảng tỷ giá dự phòng có sẵn.",
     "description": "Warning when the bundled snapshot is in use."
   },
-  "options_rates_date": { "en": "Rates from", "vi": "Tỷ giá ngày", "description": "Label: date of the rate table." },
-  "options_rates_updated": { "en": "Downloaded", "vi": "Lần tải gần nhất", "description": "Label: when the table was downloaded." },
-  "options_rates_source": { "en": "Source", "vi": "Nguồn", "description": "Label: rate provider." },
+  "options_rates_date": {
+    "en": "Rates from",
+    "vi": "Tỷ giá ngày",
+    "description": "Label: date of the rate table."
+  },
+  "options_rates_updated": {
+    "en": "Downloaded",
+    "vi": "Lần tải gần nhất",
+    "description": "Label: when the table was downloaded."
+  },
+  "options_rates_source": {
+    "en": "Source",
+    "vi": "Nguồn",
+    "description": "Label: rate provider."
+  },
   "options_rates_never": {
     "en": "Not yet",
     "vi": "Chưa tải",
@@ -255,42 +349,71 @@
     "vi": "TransPrice chỉ tải bảng tỷ giá công khai — không gửi đi bất cứ thông tin nào về trang bạn xem.",
     "description": "Rates card footer."
   },
-  "options_rates_refresh": { "en": "Refresh now", "vi": "Cập nhật ngay", "description": "Rates refresh button." },
-  "options_rates_refreshed": { "en": "Rates updated", "vi": "Đã cập nhật tỷ giá", "description": "Toast." },
+  "options_rates_refresh": {
+    "en": "Refresh now",
+    "vi": "Cập nhật ngay",
+    "description": "Rates refresh button."
+  },
+  "options_rates_refreshed": {
+    "en": "Rates updated",
+    "vi": "Đã cập nhật tỷ giá",
+    "description": "Toast."
+  },
   "options_rates_refresh_failed": {
     "en": "Couldn't update rates — check your connection",
     "vi": "Không cập nhật được tỷ giá — hãy kiểm tra kết nối mạng",
     "description": "Toast."
   },
-
-  "options_version": { "en": "Version $1", "vi": "Phiên bản $1", "description": "About card. $1 = version number." },
+  "options_version": {
+    "en": "Version $1",
+    "vi": "Phiên bản $1",
+    "description": "About card. $1 = version number."
+  },
   "options_about_tagline": {
     "en": "See every price in your currency. Free and open source.",
     "vi": "Xem mọi mức giá bằng đồng tiền của bạn. Miễn phí và mã nguồn mở.",
     "description": "About card tagline."
   },
-  "options_about_github": { "en": "GitHub", "vi": "GitHub", "description": "About link." },
-  "options_about_report": { "en": "Report a problem", "vi": "Báo lỗi", "description": "About link to GitHub issues." },
+  "options_about_github": {
+    "en": "GitHub",
+    "vi": "GitHub",
+    "description": "About link."
+  },
+  "options_about_report": {
+    "en": "Report a problem",
+    "vi": "Báo lỗi",
+    "description": "About link to GitHub issues."
+  },
   "options_about_license": {
     "en": "MIT License · Icons: Lucide (ISC)",
     "vi": "Giấy phép MIT · Biểu tượng: Lucide (ISC)",
     "description": "About card footer."
   },
-  "options_privacy_title": { "en": "Your privacy", "vi": "Quyền riêng tư", "description": "Privacy note title." },
+  "options_privacy_title": {
+    "en": "Your privacy",
+    "vi": "Quyền riêng tư",
+    "description": "Privacy note title."
+  },
   "options_privacy_text": {
     "en": "TransPrice works entirely in your browser. The only thing it downloads is the public exchange-rate table — no page content, no browsing history, no tracking.",
     "vi": "TransPrice chạy hoàn toàn trong trình duyệt của bạn. Thứ duy nhất được tải về là bảng tỷ giá công khai — không gửi nội dung trang, không lưu lịch sử duyệt web, không theo dõi.",
     "description": "Privacy note body."
   },
-  "options_privacy_link": { "en": "Read the privacy policy", "vi": "Đọc chính sách quyền riêng tư", "description": "Privacy policy link." },
-
-  "options_saved": { "en": "Saved", "vi": "Đã lưu", "description": "Toast after a setting is saved." },
+  "options_privacy_link": {
+    "en": "Read the privacy policy",
+    "vi": "Đọc chính sách quyền riêng tư",
+    "description": "Privacy policy link."
+  },
+  "options_saved": {
+    "en": "Saved",
+    "vi": "Đã lưu",
+    "description": "Toast after a setting is saved."
+  },
   "options_save_failed": {
     "en": "Couldn't save. Please try again.",
     "vi": "Chưa lưu được, bạn thử lại nhé.",
     "description": "Toast when saving fails."
   },
-
   "options_picker_search": {
     "en": "Search by code, name or symbol",
     "vi": "Tìm theo mã, tên hoặc ký hiệu",
@@ -301,12 +424,84 @@
     "vi": "Tìm loại tiền",
     "description": "Accessible label of the currency picker search box."
   },
-  "options_picker_suggested": { "en": "Suggested", "vi": "Gợi ý", "description": "Currency picker group label." },
-  "options_picker_all": { "en": "All currencies", "vi": "Tất cả loại tiền", "description": "Currency picker group label." },
-  "options_picker_results": { "en": "Results", "vi": "Kết quả", "description": "Currency picker group label while searching." },
+  "options_picker_suggested": {
+    "en": "Suggested",
+    "vi": "Gợi ý",
+    "description": "Currency picker group label."
+  },
+  "options_picker_all": {
+    "en": "All currencies",
+    "vi": "Tất cả loại tiền",
+    "description": "Currency picker group label."
+  },
+  "options_picker_results": {
+    "en": "Results",
+    "vi": "Kết quả",
+    "description": "Currency picker group label while searching."
+  },
   "options_picker_empty": {
     "en": "No currency found",
     "vi": "Không tìm thấy loại tiền nào",
     "description": "Currency picker: no search results."
+  },
+  "options_sitemode_label": {
+    "en": "Where to convert",
+    "vi": "Quy đổi ở đâu",
+    "description": "Label of the site-mode choice."
+  },
+  "options_sitemode_allowlist_title": {
+    "en": "Only sites I turn on",
+    "vi": "Chỉ những trang tôi bật",
+    "description": "Site mode option (allowlist)."
+  },
+  "options_sitemode_recommended": {
+    "en": "Recommended",
+    "vi": "Khuyên dùng",
+    "description": "Badge next to the recommended site mode."
+  },
+  "options_sitemode_allowlist_desc": {
+    "en": "Switch a site on from the toolbar popup and TransPrice remembers it. Every other page stays untouched.",
+    "vi": "Bật từng trang trong cửa sổ TransPrice trên thanh công cụ, TransPrice sẽ nhớ trang đó. Các trang khác được giữ nguyên.",
+    "description": "Site mode option description (allowlist)."
+  },
+  "options_sitemode_all_title": {
+    "en": "Every site, except the ones I turn off",
+    "vi": "Mọi trang, trừ những trang tôi tắt",
+    "description": "Site mode option (all)."
+  },
+  "options_sitemode_all_desc": {
+    "en": "Prices are converted automatically on every website you visit.",
+    "vi": "Giá được quy đổi tự động trên mọi trang web bạn truy cập.",
+    "description": "Site mode option description (all)."
+  },
+  "options_enabled_list_title": {
+    "en": "Turned on for",
+    "vi": "Đã bật cho",
+    "description": "Allowlist card title."
+  },
+  "options_enabled_list_desc": {
+    "en": "Prices are converted only on these sites. Subdomains are included.",
+    "vi": "Chỉ quy đổi giá trên các trang này, áp dụng cho cả tên miền con.",
+    "description": "Allowlist card description."
+  },
+  "options_enabled_empty_title": {
+    "en": "No sites turned on yet",
+    "vi": "Chưa bật cho trang nào",
+    "description": "Empty allowlist title."
+  },
+  "options_enabled_empty_desc": {
+    "en": "Open a shopping site and switch on “This site” in the TransPrice popup, or add one above.",
+    "vi": "Mở một trang mua sắm rồi bật “Trang này” trong cửa sổ TransPrice, hoặc thêm trang ở ô phía trên.",
+    "description": "Empty allowlist description."
+  },
+  "options_enabled_remove": {
+    "en": "Stop converting on $1",
+    "vi": "Ngừng quy đổi trên $1",
+    "description": "Remove button of an allowlist entry. $1 = site."
+  },
+  "options_sites_error_covered": {
+    "en": "$1 is already covered by $2",
+    "vi": "$1 đã nằm trong $2",
+    "description": "Add-site error when a parent site is already listed. $1 = what the user typed (normalised), $2 = the listed site."
   }
 }

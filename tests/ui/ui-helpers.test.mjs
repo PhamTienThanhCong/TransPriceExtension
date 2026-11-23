@@ -9,6 +9,7 @@ import {
   buildCurrencyList,
   converterDefaults,
   daysSince,
+  detectedSummary,
   filterCurrencies,
   fold,
   mainCurrency,
@@ -18,6 +19,8 @@ import {
   relativeDayText,
   relativeTimeText,
   shortcutKeys,
+  ruleCovers,
+  siteActivePatch,
   siteFromInput,
   siteLabel,
   sitePinList,
@@ -238,6 +241,45 @@ describe('page currencies', () => {
     assert.equal(mainCurrency(null), '');
     assert.deepEqual(topCurrencies({ USD: 3, CNY: 24, EUR: 3, JPY: 0 }), ['CNY', 'EUR', 'USD']);
     assert.deepEqual(topCurrencies({ USD: 3, CNY: 24, EUR: 3 }, 2), ['CNY', 'EUR']);
+  });
+});
+
+describe('detectedSummary (inactive site hint)', () => {
+  test('counts foreign prices only, main currency first', () => {
+    assert.deepEqual(detectedSummary({ count: 47, currencies: { CNY: 45, USD: 2 } }, 'VND'), { count: 47, codes: ['CNY', 'USD'] });
+    assert.deepEqual(detectedSummary({ count: 50, currencies: { VND: 40, USD: 10 } }, 'VND'), { count: 10, codes: ['USD'] });
+  });
+  test('home-currency-only pages and missing data → nothing to promise', () => {
+    assert.deepEqual(detectedSummary({ count: 40, currencies: { VND: 40 } }, 'VND'), { count: 0, codes: [] });
+    assert.deepEqual(detectedSummary(undefined, 'VND'), { count: 0, codes: [] });
+    assert.deepEqual(detectedSummary({ count: 3 }, 'VND'), { count: 0, codes: [] });
+  });
+});
+
+describe('siteActivePatch (optimistic SET_SITE_ACTIVE)', () => {
+  const allow = { siteMode: 'allowlist', enabledSites: ['amazon.co.jp', 'taobao.com'], disabledSites: ['x.com'] };
+  const all = { siteMode: 'all', enabledSites: [], disabledSites: ['taobao.com', 'github.com'] };
+
+  test('ruleCovers: host or subdomain, never a lookalike', () => {
+    assert.equal(ruleCovers('taobao.com', 'taobao.com'), true);
+    assert.equal(ruleCovers('taobao.com', 's.taobao.com'), true);
+    assert.equal(ruleCovers('taobao.com', 'nottaobao.com'), false);
+    assert.equal(ruleCovers('', 'taobao.com'), false);
+  });
+  test('allowlist: turning on adds the siteKey once', () => {
+    assert.deepEqual(siteActivePatch(allow, 'item.jd.com', 'jd.com', true), { enabledSites: ['amazon.co.jp', 'taobao.com', 'jd.com'] });
+    assert.deepEqual(siteActivePatch(allow, 's.taobao.com', 'taobao.com', true), { enabledSites: ['amazon.co.jp', 'taobao.com'] });
+  });
+  test('allowlist: turning off drops every rule covering the host', () => {
+    const s = { siteMode: 'allowlist', enabledSites: ['taobao.com', 's.taobao.com', 'jd.com'] };
+    assert.deepEqual(siteActivePatch(s, 's.taobao.com', 'taobao.com', false), { enabledSites: ['jd.com'] });
+  });
+  test("'all' mode is the mirror on disabledSites", () => {
+    assert.deepEqual(siteActivePatch(all, 'world.taobao.com', 'taobao.com', true), { disabledSites: ['github.com'] });
+    assert.deepEqual(siteActivePatch(all, 'shopee.vn', 'shopee.vn', false), { disabledSites: ['taobao.com', 'github.com', 'shopee.vn'] });
+  });
+  test('missing lists / mode default to allowlist with an empty list', () => {
+    assert.deepEqual(siteActivePatch({}, 'a.com', 'a.com', true), { enabledSites: ['a.com'] });
   });
 });
 

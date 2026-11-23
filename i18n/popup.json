@@ -20,9 +20,9 @@
     "description": "State under the power toggle when ON. $1 = home currency code (shown bold), e.g. VND."
   },
   "popup_power_off": {
-    "en": "Off · click to turn on",
-    "vi": "Đang tắt · bấm để bật lại",
-    "description": "State under the power toggle when OFF."
+    "en": "Paused everywhere · click to resume",
+    "vi": "Đang tạm dừng ở mọi trang · bấm để tiếp tục",
+    "description": "State under the power toggle when the master switch is OFF."
   },
   "popup_site_label": {
     "en": "This site",
@@ -48,16 +48,6 @@
     "en": "No prices found on this page yet",
     "vi": "Chưa thấy giá nào trên trang này",
     "description": "Site status when the content script found nothing to convert."
-  },
-  "popup_site_disabled": {
-    "en": "Turned off on this site",
-    "vi": "Đã tắt trên trang này",
-    "description": "Site status when the site is in the disabled list."
-  },
-  "popup_site_global_off": {
-    "en": "Auto-convert is off",
-    "vi": "Tự động quy đổi đang tắt",
-    "description": "Site status when the master switch is off."
   },
   "popup_site_symbol": {
     "en": "$1 on this site means",
@@ -198,5 +188,35 @@
     "en": "Something went wrong. Please try again.",
     "vi": "Có lỗi xảy ra, bạn thử lại nhé.",
     "description": "Generic error toast."
+  },
+  "popup_site_paused": {
+    "en": "Paused everywhere",
+    "vi": "Đang tạm dừng ở mọi trang",
+    "description": "Site card status while the master switch is off (the site switch is disabled)."
+  },
+  "popup_site_detected_one": {
+    "en": "$1 $2 price on this page — turn on to convert",
+    "vi": "Trang này có $1 giá $2 — bật để quy đổi",
+    "description": "Inactive site hint, singular. $1 = number of prices found, $2 = currency code(s), e.g. CNY or CNY/USD."
+  },
+  "popup_site_detected_other": {
+    "en": "$1 $2 prices on this page — turn on to convert",
+    "vi": "Trang này có $1 giá $2 — bật để quy đổi",
+    "description": "Inactive site hint, plural. $1 = number of prices found, $2 = currency code(s), e.g. CNY or CNY/USD."
+  },
+  "popup_site_off_hint": {
+    "en": "Turn on to convert prices on this site",
+    "vi": "Bật để quy đổi giá trên trang này",
+    "description": "Inactive site hint when no foreign prices were detected."
+  },
+  "popup_site_activating": {
+    "en": "Converting prices…",
+    "vi": "Đang quy đổi giá…",
+    "description": "Site status right after the user switched the site on, before the first count arrives."
+  },
+  "popup_site_remember": {
+    "en": "TransPrice will remember $1",
+    "vi": "Sẽ nhớ cho $1",
+    "description": "Shown under the site row after switching a site on. $1 = site, e.g. taobao.com."
   }
 }

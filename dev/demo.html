@@ -24,7 +24,8 @@
     <aside class="dev-panel" data-transprice-ignore aria-label="TransPrice dev controls">
       <div class="dev-panel__row">
         <strong>TransPrice demo</strong>
-        <label><input type="checkbox" id="dev-enabled" checked /> enabled</label>
+        <label title="global master switch (settings.enabled)"><input type="checkbox" id="dev-enabled" checked /> enabled</label>
+        <label title="per-site switch (SET_SITE_ACTIVE → enabledSites)"><input type="checkbox" id="dev-site" checked /> this site</label>
         <label>mode
           <select id="dev-mode">
             <option value="replace">replace</option>
@@ -48,6 +49,13 @@
         Expected context: <b>¥ → CNY</b> (no domain rule on localhost — the Han text on this page and
         <code>defaultYen = CNY</code> both say so), <b>$ → USD</b>. Home currency defaults to <b>VND</b> on this page
         (URL params: <code>?home=USD&amp;mode=append&amp;highlight=0&amp;compact=1&amp;enabled=0</code>).
+      </p>
+      <p class="dev-panel__note">
+        <b>Site activation</b> (ARCHITECTURE §3.5): TransPrice is <b>off on every site by default</b> and runs only on
+        sites the user turned on. This demo turns its own site (<code>localhost</code>) <b>on</b> at load so existing
+        links keep showing conversions — add <code>?site=off</code> to load it in the default OFF state (nothing is
+        scanned or changed; the popup's GET_PAGE_INFO still reports <code>detected</code> prices). The “this site”
+        checkbox flips it like the popup's switch.
       </p>
     </aside>
 

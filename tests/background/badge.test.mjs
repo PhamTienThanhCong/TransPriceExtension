@@ -53,7 +53,7 @@ describe('global state', () => {
     await refreshBadge(OFF);
     assert.equal(mock.badge.global.text, 'off');
     assert.equal(mock.badge.global.color, BADGE_COLORS.off);
-    assert.equal(mock.badge.global.title, 'TransPrice — automatic conversion is off');
+    assert.equal(mock.badge.global.title, 'TransPrice — paused on all sites');
   });
 
   test('colours are only ever set globally (per-tab colours cannot be reset)', async () => {

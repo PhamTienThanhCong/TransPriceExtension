@@ -1,8 +1,9 @@
 /*
  * TransPrice demo page controller (dev only). Runs BEFORE the content scripts (see dev/demo.html):
  *  - applies URL params to the settings (?home=VND&mode=append&highlight=0&compact=1&enabled=0&ticker=0),
+ *  - turns its own site ON (TransPrice is off on every site by default, ARCHITECTURE §3.5) unless ?site=off,
  *  - snapshots #static before any conversion → "Check restore" compares it byte-for-byte after turning TransPrice off,
- *  - dev panel (enabled / mode / highlight / compact / home), live status,
+ *  - dev panel (enabled / this site / mode / highlight / compact / home), live status,
  *  - dynamic content: "Load more" cards and three React-style tickers.
  * In the dev harness the content scripts run in the page world, so window.__transprice.debug is reachable here.
  */
@@ -35,6 +36,27 @@
     return { ...settings, ...patch };
   }
 
+  /**
+   * Turn this site on/off like the popup's switch (SET_SITE_ACTIVE, ARCHITECTURE §3.5). Fallback for a background
+   * that does not know the message yet: edit enabledSites directly.
+   */
+  async function setSiteActive(active) {
+    const res = await sendBg('set-site-active', { hostname: location.hostname, active });
+    if (res && res.ok) return res.settings;
+    const state = await sendBg('get-state');
+    const st = (state && state.settings) || {};
+    const list = (st.enabledSites || []).filter((h) => h !== location.hostname);
+    if (active) list.push(location.hostname);
+    return patchSettings({ siteMode: st.siteMode || 'allowlist', enabledSites: list });
+  }
+
+  /** Same rule as the content script (window.__transprice.util mirrors storage.js isSiteActive). */
+  function siteIsOn(st) {
+    const U = window.__transprice && window.__transprice.util;
+    if (U && U.isSiteActive) return U.isSiteActive({ ...st, enabled: true }, location.hostname);
+    return (st.siteMode === 'all' ? !(st.disabledSites || []).includes(location.hostname) : (st.enabledSites || []).includes(location.hostname));
+  }
+
   /* ---------------- initial settings from the URL ---------------- */
 
   const bool = (v) => !(v === '0' || v === 'false' || v === 'off');
@@ -52,6 +74,7 @@
   function syncPanel(st) {
     if (!st) return;
     $('dev-enabled').checked = !!st.enabled;
+    $('dev-site').checked = siteIsOn(st);
     $('dev-mode').value = st.displayMode === 'append' ? 'append' : 'replace';
     $('dev-highlight').checked = !!st.highlight;
     $('dev-compact').checked = !!st.compact;
@@ -60,6 +83,7 @@
 
   function wirePanel() {
     $('dev-enabled').addEventListener('change', (e) => patchSettings({ enabled: e.target.checked }).then(syncPanel));
+    $('dev-site').addEventListener('change', (e) => setSiteActive(e.target.checked).then(syncPanel));
     $('dev-mode').addEventListener('change', (e) => patchSettings({ displayMode: e.target.value }).then(syncPanel));
     $('dev-highlight').addEventListener('change', (e) => patchSettings({ highlight: e.target.checked }).then(syncPanel));
     $('dev-compact').addEventListener('change', (e) => patchSettings({ compact: e.target.checked }).then(syncPanel));
@@ -80,7 +104,8 @@
       const p = dbg.pageInfo();
       const cur = Object.entries(p.currencies).map(([c, n]) => `${c}×${n}`).join(' ');
       const amb = p.ambiguous.map((a) => `${a.token}→${a.currency} (${a.reason}, ${a.count})`).join(', ');
-      info = `active: ${p.active} · converted: ${p.count} [${cur}] · ambiguous: ${amb || '–'} · `;
+      const det = p.detected ? ` · detected (not converted): ${p.detected.count} [${Object.entries(p.detected.currencies).map(([c, n]) => `${c}×${n}`).join(' ')}]` : '';
+      info = `site ${p.siteKey}: ${p.active ? 'ON' : 'OFF'}${det} · converted: ${p.count} [${cur}] · ambiguous: ${amb || '–'} · `;
     }
     setText($('dev-status'), `${info}badges: ${badges} · hidden pieces: ${hidden}`);
   }
@@ -215,7 +240,10 @@
   setInterval(updateStatus, 700);
 
   if (hasChrome) {
-    patchSettings(initialPatch).then(syncPanel, () => {});
+    // The demo turns its own site ON (off by default everywhere, §3.5) unless ?site=off.
+    patchSettings(initialPatch)
+      .then(() => setSiteActive(params.get('site') !== 'off'))
+      .then(syncPanel, () => {});
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area === 'sync' && changes.settings && changes.settings.newValue) syncPanel(changes.settings.newValue);
     });

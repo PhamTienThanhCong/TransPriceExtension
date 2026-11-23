@@ -133,6 +133,30 @@ It imports `../shared/currency-data.js` for its side effect (sets `globalThis.Tr
 - `chrome.alarms` refresh every `LIMITS.RATES_ALARM_MINUTES`; also refresh on install/startup.
 - Writing a new table to `storage.local` is how content scripts and pages learn about it (`storage.onChanged`).
 
+### 3.5 Site activation (owner decision 2026-11-23: off by default, remembered per site)
+
+- `siteMode: 'allowlist'` (default): conversion runs **only** on sites the user turned on. `'all'`: everywhere except
+  `disabledSites` (kept as an option in Options for people who prefer the old behaviour).
+- **One source of truth** — `isSiteActive(settings, hostname)` in `storage.js`:
+  `settings.enabled && (siteMode === 'allowlist' ? isSiteMatch(host, enabledSites) : !isSiteMatch(host, disabledSites))`.
+  The content script can't import modules: it mirrors this exact function (comment pointing here; a test keeps them equal).
+- **siteKey(hostname)** (`storage.js`, mirrored in content): the registrable domain, approximated without a public-suffix
+  list: lowercase, strip `www.`; IPs / `localhost` / single-label hosts as-is; otherwise the last 2 labels, or the last 3
+  when the last two form a known multi-part suffix (`co.uk com.au com.vn co.jp com.cn com.hk com.tw com.sg co.kr co.nz
+  com.br com.mx co.id co.th com.my com.ph co.in ac.uk gov.uk org.uk net.au edu.vn gov.vn net.vn org.vn` …).
+  `s.taobao.com` → `taobao.com`; `shopee.com.vn` → `shopee.com.vn`; `item.taobao.com` is then covered too.
+- `SET_SITE_ACTIVE { hostname, active }`: allowlist → `active` adds `siteKey(host)` to `enabledSites`, `!active` removes every
+  rule covering the host; all → the mirror operation on `disabledSites`. Returns `{ settings }`. (Replaces `SET_SITE_DISABLED`.)
+- Content script when inactive: no scanning, no observer, no DOM changes. On `GET_PAGE_INFO` it still answers
+  `{ hostname, siteKey, active: false, count: 0, … }` plus a lazy, read-only `detected: { count, currencies }` computed once
+  with `findPrices` over `document.body.textContent` (capped at 200 000 chars, cached until the URL changes) so the popup
+  can say "45 CNY prices found — turn on to convert".
+- Toolbar badge: active site → count; inactive site → empty (it's the normal state, no noise); global `enabled === false` → `off`.
+- Command `toggle-enabled` (Alt+Shift+C) now toggles **the current site** (asks the active tab's content script for its
+  hostname via `GET_PAGE_INFO`, then `SET_SITE_ACTIVE`). Description: "Turn conversion on/off for this site".
+- Popup "This site" card: inactive → compact (hostname, switch off, one-line hint using `detected`); active → full card
+  (count, currencies, ¥/$ selects). The global power toggle stays at the top as the master pause.
+
 ---
 
 ## 4. Engine (pure, Node-testable, no DOM, no `chrome.*`)

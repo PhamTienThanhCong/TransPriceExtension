@@ -9,7 +9,7 @@ import '../content/parser.js'; // side effect: globalThis.TransPriceParser
 import { AMBIGUOUS_SYMBOLS, MSG, STORAGE_KEYS } from '../shared/constants.js';
 import { formatDate, formatRelativeTime, getCurrentUiLocale, initI18n, localizeDocument, reloadOnUiLanguageChange, t } from '../shared/i18n.js';
 import { send, sendToTab } from '../shared/messaging.js';
-import { getSettings, getStoredRates, isSiteMatch, normalizeHostname, onSettingsChanged } from '../shared/storage.js';
+import { getSettings, getStoredRates, isSiteActive, normalizeHostname, onSettingsChanged, siteKey } from '../shared/storage.js';
 import { applyTheme } from '../ui/theme.js';
 import {
   convertMoney,
@@ -24,7 +24,16 @@ import {
   rateText,
   setupLogos,
 } from '../options/ui-kit.js';
-import { RATE_SOURCE_LABELS, converterDefaults, hueFor, mainCurrency, parseAmount, siteLabel } from '../options/ui-helpers.js';
+import {
+  RATE_SOURCE_LABELS,
+  converterDefaults,
+  detectedSummary,
+  hueFor,
+  mainCurrency,
+  parseAmount,
+  siteActivePatch,
+  siteLabel,
+} from '../options/ui-helpers.js';
 
 applyTheme('auto'); // follow the OS until settings arrive (no light flash in dark mode)
 
@@ -32,6 +41,7 @@ const PAGE_INFO_TIMEOUT_MS = 1200;
 const SAVE_CONVERTER_MS = 300;
 const LIVE_REFRESH_MS = 300; // debounce for REPORT_COUNT bursts while the page is still scanning
 const ZERO_COUNT_RETRY_MS = 1500; // no report arrived and nothing found yet → ask once more
+const ACTIVATING_MS = 2500; // right after switching a site on, "Converting prices…" instead of "No prices found"
 const REASON_KEYS = {
   'site-pin': 'popup_reason_site_pin',
   domain: 'popup_reason_domain',
@@ -54,6 +64,8 @@ const state = {
   convTouched: false, // the user changed the converter in this session → don't override `from` with the page currency
   pageCurrencyAdopted: false, // `from` already follows the page's main currency
   reportSeen: false, // a REPORT_COUNT from the active tab arrived while the popup is open
+  justActivated: '', // siteKey the user switched on in this popup session → "TransPrice will remember …"
+  activatingUntil: 0,
   list: null,
   listKey: '',
 };
@@ -159,9 +171,12 @@ function applyPageInfo(info) {
   adoptPageCurrency(info);
 }
 
-/** First time the page shows a main currency: convert from it (unless the user already touched the converter). */
+/**
+ * First time the page shows a main currency: convert from it (unless the user already touched the converter).
+ * On an inactive site the content script only reports what it *detected* (read-only), which is just as good a hint.
+ */
 function adoptPageCurrency(info) {
-  const pageCurrency = mainCurrency(info?.currencies);
+  const pageCurrency = mainCurrency(info?.currencies) || detectedSummary(info?.detected, state.settings.homeCurrency).codes[0];
   if (state.pageCurrencyAdopted || state.convTouched || !pageCurrency || !isConvertible(pageCurrency)) return;
   state.pageCurrencyAdopted = true;
   const next = converterDefaults({
@@ -274,6 +289,16 @@ function splitAround(text, marker = '\u0000') {
 
 /* ---------- This site ---------- */
 
+/** The page's siteKey (what rules are stored as and what the card shows): "s.taobao.com" → "taobao.com". */
+function pageSiteKey() {
+  const host = normalizeHostname(state.page?.hostname || '');
+  return state.page?.siteKey || siteKey(host) || host;
+}
+
+/**
+ * This-site card (ARCHITECTURE §3.5): 'paused' (global power off: muted, switch disabled), 'inactive' (the default:
+ * compact, one-line hint using what the page `detected`), 'active' (count, currencies, ¥/$ selects).
+ */
 function renderSite() {
   const card = $('site');
   const loading = state.pageStatus === 'loading';
@@ -281,51 +306,71 @@ function renderSite() {
   $('site-loading').hidden = !loading;
   $('site-notice').hidden = !unavailable;
   $('site-main').hidden = loading || unavailable;
-  card.classList.remove('is-dimmed');
-  if (loading || unavailable || !state.page) return;
+  if (loading || unavailable || !state.page) {
+    delete card.dataset.state;
+    return;
+  }
 
   const host = normalizeHostname(state.page.hostname);
-  const siteOff = isSiteMatch(host, state.settings.disabledSites);
-  const globalOff = !state.settings.enabled;
+  const key = pageSiteKey();
+  const home = state.settings.homeCurrency;
+  const siteOn = isSiteActive({ ...state.settings, enabled: true }, host);
+  const mode = !state.settings.enabled ? 'paused' : siteOn ? 'active' : 'inactive';
+  card.dataset.state = mode;
 
+  const label = siteLabel(key);
   const avatar = $('site-avatar');
-  avatar.textContent = siteLabel(host).charAt(0);
-  avatar.style.setProperty('--hue', String(hueFor(siteLabel(host))));
-  $('site-host').textContent = host;
+  avatar.textContent = label.charAt(0);
+  avatar.style.setProperty('--hue', String(hueFor(label)));
+  $('site-host').textContent = key;
   $('site-host').title = host;
-  $('sw-site').checked = !siteOff;
-  card.classList.toggle('is-dimmed', globalOff || siteOff);
+  const sw = $('sw-site');
+  sw.checked = siteOn;
+  sw.disabled = mode === 'paused';
 
   // Status line
-  const status = $('site-status');
   let text;
   let tone = '';
-  if (globalOff) {
-    text = t('popup_site_global_off');
-  } else if (siteOff) {
-    text = t('popup_site_disabled');
+  if (mode === 'paused') {
+    text = t('popup_site_paused');
+  } else if (mode === 'inactive') {
+    const found = detectedSummary(state.page.detected, home);
+    if (found.count > 0) {
+      const msg = pluralRules.select(found.count) === 'one' ? 'popup_site_detected_one' : 'popup_site_detected_other';
+      text = t(msg, [numberFormat.format(found.count), found.codes.slice(0, 2).join('/')]);
+    } else {
+      text = t('popup_site_off_hint');
+    }
   } else {
     const count = Number(state.page.count) || 0;
     if (count > 0) {
       tone = 'is-on';
-      const key = pluralRules.select(count) === 'one' ? 'popup_site_count_one' : 'popup_site_count_other';
+      const msg = pluralRules.select(count) === 'one' ? 'popup_site_count_one' : 'popup_site_count_other';
       const main = mainCurrency(state.page.currencies);
-      const pair = main ? ` · ${main} → ${state.settings.homeCurrency}` : '';
-      text = `${t(key, [numberFormat.format(count)])}${pair}`;
+      text = `${t(msg, [numberFormat.format(count)])}${main ? ` · ${main} → ${home}` : ''}`;
+    } else if (Date.now() < state.activatingUntil) {
+      tone = 'is-busy'; // just switched on: the content script is scanning, REPORT_COUNT will fill the count in
+      text = t('popup_site_activating');
     } else {
       text = t('popup_site_none');
     }
   }
+  const status = $('site-status');
   status.className = `site-status ${tone}`.trim();
   status.replaceChildren(el('span', { class: 'status-dot', 'aria-hidden': 'true' }), text);
   status.title = text;
 
-  renderSymbols(host);
+  // "TransPrice will remember taobao.com" — only right after the user switched it on here.
+  const remember = mode === 'active' && state.justActivated === key;
+  $('site-remember').hidden = !remember;
+  if (remember) $('site-remember-text').textContent = t('popup_site_remember', [key]);
+
+  renderSymbols(host, mode === 'active');
 }
 
-function renderSymbols(host) {
+function renderSymbols(host, show) {
   const wrap = $('site-symbols');
-  const list = (Array.isArray(state.page?.ambiguous) ? state.page.ambiguous : []).filter(
+  const list = (show && Array.isArray(state.page?.ambiguous) ? state.page.ambiguous : []).filter(
     (a) => a && AMBIGUOUS_SYMBOLS[a.symbol] && typeof a.currency === 'string',
   );
   wrap.hidden = list.length === 0;
@@ -489,7 +534,7 @@ function setupPickers() {
 
 function setupEvents() {
   $('power').addEventListener('click', toggleEnabled);
-  $('sw-site').addEventListener('change', (e) => setSiteDisabled(!e.target.checked));
+  $('sw-site').addEventListener('change', (e) => setSiteActive(e.target.checked));
   $('btn-settings').addEventListener('click', () => openOptions());
   $('btn-refresh').addEventListener('click', refreshRates);
   $('btn-reload').addEventListener('click', reloadTab);
@@ -555,13 +600,18 @@ function setHomeCurrency(code) {
   applySettingsChange(() => send(MSG.UPDATE_SETTINGS, { patch: { homeCurrency: code } }), { homeCurrency: code });
 }
 
-function setSiteDisabled(disabled) {
+/** Switch the current site on/off (remembered per siteKey by the background, ARCHITECTURE §3.5). */
+function setSiteActive(active) {
   const hostname = normalizeHostname(state.page?.hostname || '');
-  if (!hostname) return;
-  const list = state.settings.disabledSites.filter((h) => !(hostname === h || hostname.endsWith(`.${h}`)));
-  applySettingsChange(() => send(MSG.SET_SITE_DISABLED, { hostname, disabled }), {
-    disabledSites: disabled ? [...list, hostname] : list,
-  });
+  if (!hostname || !state.settings.enabled) return;
+  const key = pageSiteKey();
+  state.justActivated = active ? key : '';
+  state.activatingUntil = active ? Date.now() + ACTIVATING_MS : 0;
+  if (active) setTimeout(renderSite, ACTIVATING_MS + 50); // drop "Converting prices…" if no count arrived
+  applySettingsChange(
+    () => send(MSG.SET_SITE_ACTIVE, { hostname, active }),
+    siteActivePatch(state.settings, hostname, key, active),
+  );
 }
 
 function setSiteCurrency(hostname, symbol, currency) {

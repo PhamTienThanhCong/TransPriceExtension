@@ -1,7 +1,7 @@
 {
   "bg_action_title_off": {
-    "en": "TransPrice — automatic conversion is off",
-    "vi": "TransPrice — đang tắt tự động quy đổi giá",
-    "description": "Toolbar icon tooltip while settings.enabled is false (the badge shows 'off'). Uses the browser language."
+    "en": "TransPrice — paused on all sites",
+    "vi": "TransPrice — đang tạm dừng trên mọi trang web",
+    "description": "Toolbar icon tooltip while the global master switch (settings.enabled) is off; the badge shows 'off'. Uses the browser language."
   }
 }

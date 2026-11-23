@@ -21,7 +21,7 @@ export function event() {
 
 const MESSAGES = {
   actionTitle: 'TransPrice',
-  bg_action_title_off: 'TransPrice — automatic conversion is off',
+  bg_action_title_off: 'TransPrice — paused on all sites',
 };
 
 /**
@@ -30,7 +30,7 @@ const MESSAGES = {
  * @param {{uiLanguage?: string}} [options]
  */
 export function createChromeMock({ uiLanguage = 'en-US' } = {}) {
-  const log = { tabsCreated: [], optionsOpened: 0, writes: { sync: 0, local: 0, session: 0 }, badgeCalls: [] };
+  const log = { tabsCreated: [], optionsOpened: 0, writes: { sync: 0, local: 0, session: 0 }, badgeCalls: [], tabMessages: [] };
   const areas = { sync: {}, local: {}, session: {} };
   const onChanged = event();
 
@@ -73,7 +73,17 @@ export function createChromeMock({ uiLanguage = 'en-US' } = {}) {
   };
 
   const alarms = new Map();
-  const behaviour = { tabs: [{ id: 1 }, { id: 2 }], badgeError: null };
+  const behaviour = {
+    tabs: [
+      { id: 1, active: true },
+      { id: 2, active: false },
+    ],
+    badgeError: null,
+    /** Content-script answer to chrome.tabs.sendMessage (default: no content script in the tab). */
+    tabSendMessage: async () => {
+      throw new Error('Could not establish connection. Receiving end does not exist.');
+    },
+  };
 
   const chrome = {
     runtime: {
@@ -108,7 +118,11 @@ export function createChromeMock({ uiLanguage = 'en-US' } = {}) {
         log.tabsCreated.push(props.url);
         return { id: 99, ...props };
       },
-      query: async () => behaviour.tabs.map((t) => ({ ...t })),
+      query: async (q = {}) => behaviour.tabs.filter((t) => q.active === undefined || t.active === q.active).map((t) => ({ ...t })),
+      sendMessage: async (tabId, msg, opts) => {
+        log.tabMessages.push({ tabId, msg, opts });
+        return behaviour.tabSendMessage(tabId, msg, opts);
+      },
     },
     action: {
       setBadgeText: async ({ tabId, text }) => {

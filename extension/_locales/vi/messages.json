@@ -3,10 +3,10 @@
     "message": "TransPrice — Quy đổi giá"
   },
   "bg_action_title_off": {
-    "message": "TransPrice — đang tắt tự động quy đổi giá"
+    "message": "TransPrice — đang tạm dừng trên mọi trang web"
   },
   "cmdToggleEnabled": {
-    "message": "Bật/tắt tự động quy đổi giá"
+    "message": "Bật/tắt quy đổi giá cho trang này"
   },
   "common_add": {
     "message": "Thêm"
@@ -212,7 +212,27 @@
     "message": "Ký hiệu “$$” đứng riêng là"
   },
   "options_enabled_desc": {
-    "message": "Tìm giá trên các trang web và hiển thị bằng đồng tiền của bạn. Bấm biểu tượng trên thanh công cụ cũng bật/tắt được."
+    "message": "Công tắc tổng: tắt để tạm dừng TransPrice trên mọi trang, bật lại để tiếp tục. Danh sách trang của bạn vẫn được giữ nguyên."
+  },
+  "options_enabled_empty_desc": {
+    "message": "Mở một trang mua sắm rồi bật “Trang này” trong cửa sổ TransPrice, hoặc thêm trang ở ô phía trên."
+  },
+  "options_enabled_empty_title": {
+    "message": "Chưa bật cho trang nào"
+  },
+  "options_enabled_list_desc": {
+    "message": "Chỉ quy đổi giá trên các trang này, áp dụng cho cả tên miền con."
+  },
+  "options_enabled_list_title": {
+    "message": "Đã bật cho"
+  },
+  "options_enabled_remove": {
+    "message": "Ngừng quy đổi trên $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
   },
   "options_enabled_title": {
     "message": "Tự động quy đổi giá"
@@ -372,7 +392,7 @@
     "message": "Mở cửa sổ TransPrice"
   },
   "options_shortcut_toggle": {
-    "message": "Bật/tắt tự động quy đổi"
+    "message": "Bật/tắt trang đang xem"
   },
   "options_shortcuts_customize": {
     "message": "Đổi phím tắt"
@@ -386,6 +406,24 @@
   "options_shortcuts_title": {
     "message": "Phím tắt"
   },
+  "options_sitemode_all_desc": {
+    "message": "Giá được quy đổi tự động trên mọi trang web bạn truy cập."
+  },
+  "options_sitemode_all_title": {
+    "message": "Mọi trang, trừ những trang tôi tắt"
+  },
+  "options_sitemode_allowlist_desc": {
+    "message": "Bật từng trang trong cửa sổ TransPrice trên thanh công cụ, TransPrice sẽ nhớ trang đó. Các trang khác được giữ nguyên."
+  },
+  "options_sitemode_allowlist_title": {
+    "message": "Chỉ những trang tôi bật"
+  },
+  "options_sitemode_label": {
+    "message": "Quy đổi ở đâu"
+  },
+  "options_sitemode_recommended": {
+    "message": "Khuyên dùng"
+  },
   "options_sites_add": {
     "message": "Thêm"
   },
@@ -393,13 +431,24 @@
     "message": "Trang web"
   },
   "options_sites_desc": {
-    "message": "Tắt TransPrice trên từng trang web cụ thể và xem lại loại tiền bạn đã chọn cho từng trang."
+    "message": "Chọn nơi TransPrice quy đổi giá và xem lại loại tiền bạn đã chọn cho từng trang."
   },
   "options_sites_empty_desc": {
     "message": "Thêm trang ở ô phía trên, hoặc dùng công tắc trong cửa sổ TransPrice khi đang ở trang đó."
   },
   "options_sites_empty_title": {
     "message": "TransPrice đang hoạt động trên mọi trang web"
+  },
+  "options_sites_error_covered": {
+    "message": "$P1$ đã nằm trong $P2$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
   },
   "options_sites_error_duplicate": {
     "message": "$P1$ đã có trong danh sách",
@@ -492,7 +541,7 @@
     "message": "TransPrice"
   },
   "popup_power_off": {
-    "message": "Đang tắt · bấm để bật lại"
+    "message": "Đang tạm dừng ở mọi trang · bấm để tiếp tục"
   },
   "popup_power_on": {
     "message": "Đang bật · giá hiển thị bằng $P1$",
@@ -560,6 +609,9 @@
   "popup_settings": {
     "message": "Cài đặt"
   },
+  "popup_site_activating": {
+    "message": "Đang quy đổi giá…"
+  },
   "popup_site_count_one": {
     "message": "Đã quy đổi $P1$ giá",
     "placeholders": {
@@ -576,17 +628,47 @@
       }
     }
   },
-  "popup_site_disabled": {
-    "message": "Đã tắt trên trang này"
+  "popup_site_detected_one": {
+    "message": "Trang này có $P1$ giá $P2$ — bật để quy đổi",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
   },
-  "popup_site_global_off": {
-    "message": "Tự động quy đổi đang tắt"
+  "popup_site_detected_other": {
+    "message": "Trang này có $P1$ giá $P2$ — bật để quy đổi",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
   },
   "popup_site_label": {
     "message": "Trang này"
   },
   "popup_site_none": {
     "message": "Chưa thấy giá nào trên trang này"
+  },
+  "popup_site_off_hint": {
+    "message": "Bật để quy đổi giá trên trang này"
+  },
+  "popup_site_paused": {
+    "message": "Đang tạm dừng ở mọi trang"
+  },
+  "popup_site_remember": {
+    "message": "Sẽ nhớ cho $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
   },
   "popup_site_switch": {
     "message": "Quy đổi trên trang này"
@@ -633,10 +715,10 @@
     "message": "Cách hoạt động"
   },
   "welcome_illus_on": {
-    "message": "Bật"
+    "message": "Trang này"
   },
   "welcome_lead": {
-    "message": "Xem mọi mức giá bằng đồng tiền của bạn — TransPrice tự tìm giá trên mọi trang web và quy đổi giúp bạn."
+    "message": "Xem mọi mức giá bằng đồng tiền của bạn — bật TransPrice cho những trang bạn hay mua sắm, giá sẽ được quy đổi giúp bạn."
   },
   "welcome_open_settings": {
     "message": "Mở cài đặt"
@@ -662,10 +744,10 @@
     "message": "Quy đổi ngay tại chỗ"
   },
   "welcome_step3_desc": {
-    "message": "Bấm biểu tượng TransPrice trên thanh công cụ để bật hoặc tắt quy đổi — cho mọi trang hoặc chỉ riêng một trang."
+    "message": "Mở một trang mua sắm, bấm biểu tượng TransPrice rồi bật “Trang này”. TransPrice sẽ nhớ trang đó."
   },
   "welcome_step3_title": {
-    "message": "Bật/tắt chỉ một cú bấm"
+    "message": "Bật cho trang bạn hay mua"
   },
   "welcome_tip_pin_desc": {
     "message": "Bấm biểu tượng mảnh ghép trên thanh công cụ của Chrome, rồi bấm ghim cạnh TransPrice."
@@ -674,7 +756,7 @@
     "message": "Ghim TransPrice lên thanh công cụ"
   },
   "welcome_tip_shortcut_desc": {
-    "message": "Bật/tắt tự động quy đổi ở bất kỳ trang nào."
+    "message": "Bật/tắt TransPrice cho trang bạn đang xem."
   },
   "welcome_tip_shortcut_set": {
     "message": "Đặt phím tắt"

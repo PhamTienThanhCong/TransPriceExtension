@@ -229,8 +229,50 @@ body {
 .site {
   transition: opacity var(--dur) var(--ease);
 }
-.site.is-dimmed .site-main {
-  opacity: 0.62;
+/* Global pause: the whole card is muted and its switch disabled. */
+.site[data-state='paused'] .site-main {
+  opacity: 0.6;
+}
+.site[data-state='paused'] .site-switch {
+  cursor: not-allowed;
+}
+.site[data-state='paused'] .site-switch input {
+  cursor: not-allowed;
+}
+/* Inactive (the default): a calm one-liner inviting the user to switch the site on. */
+.site[data-state='inactive'] .site-status {
+  color: var(--text-2);
+}
+.site[data-state='inactive'] .site-avatar {
+  filter: grayscale(0.35);
+}
+
+/* Details appear smoothly when a site is switched on. */
+.site-remember:not([hidden]),
+.site-symbols:not([hidden]) {
+  animation: site-in 220ms var(--ease);
+}
+@keyframes site-in {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+}
+.site-remember {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: -4px 0 0;
+  padding: 0 12px 10px 54px;
+  color: var(--success);
+  font-size: 12px;
+  font-weight: 550;
+}
+.site-remember .icon {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  stroke-width: 2.5;
 }
 
 .site-loading {
@@ -316,6 +358,15 @@ body {
 }
 .site-status.is-warn .status-dot {
   background: var(--warning);
+}
+.site-status.is-busy .status-dot {
+  background: var(--primary);
+  animation: status-pulse 1s var(--ease) infinite alternate;
+}
+@keyframes status-pulse {
+  to {
+    opacity: 0.3;
+  }
 }
 
 .site-symbols {

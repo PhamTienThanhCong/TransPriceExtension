@@ -20,8 +20,8 @@
     "description": "Toolbar button tooltip"
   },
   "cmdToggleEnabled": {
-    "en": "Turn automatic price conversion on/off",
-    "vi": "Bật/tắt tự động quy đổi giá",
+    "en": "Turn price conversion on/off for this site",
+    "vi": "Bật/tắt quy đổi giá cho trang này",
     "description": "Keyboard shortcut description (chrome://extensions/shortcuts)"
   }
 }

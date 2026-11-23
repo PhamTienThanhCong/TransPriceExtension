@@ -516,6 +516,85 @@ label.row-title {
 
 /* ============================== Sites ============================== */
 
+/* "Where to convert": two stacked radio choices */
+.choice-list {
+  display: grid;
+  gap: 8px;
+}
+.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  text-align: start;
+  cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.choice:hover {
+  border-color: var(--border-strong);
+}
+.choice[aria-checked='true'] {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary-soft) 55%, var(--surface));
+  box-shadow: 0 0 0 1px var(--primary);
+}
+.choice:focus-visible {
+  box-shadow: 0 0 0 1px var(--primary), var(--focus-ring);
+}
+.choice-radio {
+  position: relative;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  transition: border-color var(--dur) var(--ease);
+}
+.choice[aria-checked='true'] .choice-radio {
+  border-color: var(--primary);
+}
+.choice[aria-checked='true'] .choice-radio::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+.choice-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.choice-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.choice-title .badge {
+  height: 20px;
+  font-size: 11px;
+}
+.choice-desc {
+  color: var(--text-2);
+  font-size: 13px;
+  line-height: 1.45;
+}
+.card-head-icon--on {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
 .site-form {
   display: flex;
   gap: 8px;
