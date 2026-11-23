@@ -1,0 +1,57 @@
+name: Bug report
+description: A price is missed or misread, or something doesn't work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a problem! A public page URL and the exact price text make it much easier to fix.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+      placeholder: "On https://item.taobao.com/… the price ¥43.65 was not converted / was shown as 4.365.000 ₫ instead of ~165.000 ₫"
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Page URL (if public)
+      placeholder: "https://…"
+  - type: input
+    id: price
+    attributes:
+      label: Price text as shown on the page
+      placeholder: "¥43.65  /  US$1,299.99  /  12,99 €"
+  - type: input
+    id: version
+    attributes:
+      label: TransPrice version
+      description: Shown in Settings → About, or on chrome://extensions
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser & OS
+      placeholder: "Chrome 131 on macOS 15 / Edge 131 on Windows 11"
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Display mode
+      options: [Replace (default), Append, Not sure]
+  - type: input
+    id: home
+    attributes:
+      label: Home currency
+      placeholder: "VND"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Errors (optional)
+      description: chrome://extensions → TransPrice → "Errors", or the page / service worker console
+      render: text

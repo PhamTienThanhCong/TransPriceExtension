@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TransPrice dev</title>
+    <link rel="icon" href="/extension/icons/icon32.png" />
+    <!-- Dev hub (served by `npm run dev`). ?view=split&demo=/dev/demo.html shows a demo page next to the real popup:
+         the popup (iframe) reaches the demo's content script through the chrome mock's BroadcastChannel bus. -->
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #faf8f5;
+        --card: #fff;
+        --text: #1c1917;
+        --muted: #78716c;
+        --border: #ebe5dc;
+        --brand: #b45309;
+      }
+      :root[data-theme='dark'] {
+        color-scheme: dark;
+        --bg: #121110;
+        --card: #1a1917;
+        --text: #f2efeb;
+        --muted: #a8a29e;
+        --border: #2f2c28;
+        --brand: #fbbf24;
+      }
+      * { box-sizing: border-box; }
+      [hidden] { display: none !important; }
+      body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.55 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+      a { color: var(--brand); }
+      header { display: flex; align-items: center; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--card); flex-wrap: wrap; }
+      header img { width: 32px; height: 32px; }
+      header h1 { font-size: 18px; margin: 0; }
+      header .spacer { flex: 1; }
+      .controls { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+      button { font: inherit; font-size: 13px; border: 1px solid var(--border); background: var(--card); color: var(--text); border-radius: 7px; padding: 4px 10px; cursor: pointer; }
+      button[aria-pressed='true'] { background: var(--brand); border-color: var(--brand); color: #fff; }
+      main { max-width: 860px; margin: 28px auto; padding: 0 20px; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+      .card { display: block; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; text-decoration: none; color: inherit; }
+      .card:hover { border-color: var(--brand); }
+      .card b { display: block; color: var(--brand); }
+      .card span { color: var(--muted); font-size: 13px; }
+      h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin: 28px 0 10px; }
+      code { font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; }
+      .split { display: grid; grid-template-columns: 1fr 380px; gap: 0; height: calc(100vh - 61px); }
+      .split iframe { border: 0; width: 100%; height: 100%; background: #fff; }
+      .split .side { border-left: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding: 10px; gap: 8px; overflow: auto; }
+      .split .side iframe { width: 362px; height: 600px; flex: none; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18); }
+      .split .side p { font-size: 12px; color: var(--muted); margin: 0; text-align: center; max-width: 340px; }
+      @media (max-width: 760px) { .split { grid-template-columns: 1fr; height: auto; } .split > iframe { height: 70vh; } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="/extension/icons/logo.svg" alt="" />
+      <h1>TransPrice dev harness</h1>
+      <span class="spacer"></span>
+      <div class="controls">
+        lang <button data-lang="en">en</button><button data-lang="vi">vi</button>
+        · theme <button data-theme="auto">auto</button><button data-theme="light">light</button><button data-theme="dark">dark</button>
+        · <button id="reset" title="Clear the mocked chrome.storage + install flag (next page load fires runtime.onInstalled)">reset storage</button>
+        <a id="back" href="/dev/index.html" hidden>← hub</a>
+      </div>
+    </header>
+
+    <main id="hub">
+      <h2>Pages</h2>
+      <div class="grid" id="pages">
+        <a class="card" href="/dev/index.html?view=split"><b>Demo + popup</b><span>Demo shop page with the real popup next to it</span></a>
+        <a class="card" href="/dev/playground.html"><b>Algorithm playground</b><span>Type text, see what the parser finds (engine)</span></a>
+        <a class="card" href="/extension/src/popup/popup.html"><b>Popup</b><span>Toolbar popup (360 px)</span></a>
+        <a class="card" href="/extension/src/options/options.html"><b>Options</b><span>Settings page</span></a>
+        <a class="card" href="/extension/src/welcome/welcome.html"><b>Welcome</b><span>Onboarding page opened on install</span></a>
+      </div>
+      <h2>Demo pages</h2>
+      <div class="grid" id="demos"><span class="card"><span>Loading…</span></span></div>
+
+      <h2>How it works</h2>
+      <p>
+        Every <code>/extension/src/**.html</code> and <code>/dev/demo*.html</code> page gets <code>/dev/chrome-mock.js</code>
+        and the real <code>service-worker.js</code> injected by <code>scripts/dev-server.mjs</code>; demo pages also get the
+        manifest's content scripts. Storage lives in <code>localStorage</code> (shared by all tabs), the toolbar badge is
+        shown in the small dev bar at the bottom-right, <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> fires the
+        <code>toggle-enabled</code> command. Language / theme: <code>?lang=vi</code>, <code>?theme=dark</code> or the buttons above
+        (they apply to every page, including the split-view frames).
+      </p>
+    </main>
+
+    <div class="split" id="split" hidden>
+      <iframe id="demo-frame" title="Demo page"></iframe>
+      <div class="side">
+        <iframe id="popup-frame" title="TransPrice popup" src="about:blank"></iframe>
+        <p>The real popup, talking to the demo frame's content script (GET_PAGE_INFO, RESCAN) over the mock's bus.</p>
+        <button id="reload-popup">Reload popup</button>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        const LANG_KEY = 'transprice-dev:lang';
+        const SYNC_KEY = 'transprice-mock:sync';
+        const THEMES = ['auto', 'light', 'dark'];
+        const params = new URLSearchParams(location.search);
+        const readSync = () => {
+          try {
+            return JSON.parse(localStorage.getItem(SYNC_KEY) || '{}') || {};
+          } catch {
+            return {};
+          }
+        };
+        /** Patch the mocked chrome.storage.sync `settings` (other tabs/frames get a `storage` event → onChanged). */
+        const patchSettings = (patch) => {
+          const all = readSync();
+          all.settings = { ...(all.settings || {}), ...patch };
+          localStorage.setItem(SYNC_KEY, JSON.stringify(all));
+        };
+        const theme = () => (readSync().settings || {}).theme || 'auto';
+        /**
+         * The dev language plays the role of the BROWSER language (chrome.i18n). Persist it so every page and frame
+         * follows, and keep an explicit Display-language setting in line so the switch always takes effect.
+         */
+        const setLang = (value) => {
+          localStorage.setItem(LANG_KEY, value);
+          const ui = (readSync().settings || {}).uiLanguage;
+          if (ui && ui !== 'auto' && ui !== value) patchSettings({ uiLanguage: value });
+        };
+        const lang = (() => {
+          const fromUrl = params.get('lang');
+          const v = fromUrl || localStorage.getItem(LANG_KEY) || navigator.language || 'en';
+          const picked = /^vi/i.test(v) ? 'vi' : 'en';
+          if (fromUrl) setLang(picked); // ?lang=vi on the hub → the frames and other tabs use it too
+          return picked;
+        })();
+        if (THEMES.includes(params.get('theme')) && params.get('theme') !== theme()) patchSettings({ theme: params.get('theme') });
+        const dark = matchMedia('(prefers-color-scheme: dark)');
+        const paintTheme = () => {
+          const t = theme();
+          document.documentElement.dataset.theme = t === 'auto' ? (dark.matches ? 'dark' : 'light') : t;
+        };
+        dark.addEventListener('change', paintTheme);
+        window.addEventListener('storage', (e) => {
+          if (e.key === SYNC_KEY) {
+            paintTheme();
+            mark();
+          }
+        });
+        const mark = () => {
+          document.querySelectorAll('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
+          document.querySelectorAll('[data-theme]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.theme === theme())));
+        };
+        paintTheme();
+        document.querySelectorAll('[data-lang]').forEach((b) =>
+          b.addEventListener('click', () => {
+            setLang(b.dataset.lang);
+            const u = new URL(location.href);
+            u.searchParams.delete('lang');
+            location.href = u.href;
+          }),
+        );
+        document.querySelectorAll('[data-theme]').forEach((b) =>
+          b.addEventListener('click', () => {
+            patchSettings({ theme: b.dataset.theme }); // open pages re-apply it via chrome.storage.onChanged
+            paintTheme();
+            mark();
+            if (!document.getElementById('split').hidden) loadSplit(); // and the split frames reload with it
+          }),
+        );
+        document.getElementById('reset').addEventListener('click', () => {
+          for (const k of Object.keys(localStorage)) if (k.startsWith('transprice-mock:') || /^transprice-dev:(installed|action|active-tab)$/.test(k)) localStorage.removeItem(k);
+          location.reload();
+        });
+        mark();
+
+        const card = (href, title, sub) => {
+          const a = document.createElement('a');
+          a.className = 'card';
+          a.href = href;
+          const b = document.createElement('b');
+          b.textContent = title;
+          const s = document.createElement('span');
+          s.textContent = sub;
+          a.append(b, s);
+          return a;
+        };
+
+        // Split view: demo (left) + popup (right).
+        // Both frames get the hub's language explicitly (the theme travels through the shared mocked storage).
+        const frameUrl = (url, extra) => {
+          const u = new URL(url, location.origin);
+          for (const [k, v] of Object.entries(extra)) u.searchParams.set(k, v);
+          return u.pathname + u.search + u.hash;
+        };
+        function loadSplit() {
+          const demo = params.get('demo') || '/dev/demo.html';
+          document.getElementById('demo-frame').src = frameUrl(demo, { devbar: '1', lang });
+          document.getElementById('popup-frame').src = frameUrl('/extension/src/popup/popup.html', { lang });
+        }
+        if (params.get('view') === 'split') {
+          document.getElementById('hub').hidden = true;
+          document.getElementById('split').hidden = false;
+          document.getElementById('back').hidden = false;
+          document.title = 'TransPrice dev — demo + popup';
+          loadSplit();
+          document.getElementById('reload-popup').addEventListener('click', () => {
+            document.getElementById('popup-frame').contentWindow.location.reload();
+          });
+          return;
+        }
+
+        fetch('/__dev/pages.json')
+          .then((r) => r.json())
+          .then(({ dev }) => {
+            const demos = dev.filter((p) => /^\/dev\/demo[^/]*\.html$/.test(p));
+            const box = document.getElementById('demos');
+            box.replaceChildren();
+            if (!demos.length) box.append(card('/dev/demo.html', 'No demo page yet', 'dev/demo*.html (content agent)'));
+            for (const p of demos) {
+              const name = p.replace('/dev/', '');
+              box.append(card(p, name, 'mock + service worker + content scripts'));
+              box.append(card(`/dev/index.html?view=split&demo=${encodeURIComponent(p)}`, `${name} + popup`, 'side by side with the real popup'));
+            }
+            const others = dev.filter((p) => !demos.includes(p) && p !== '/dev/playground.html');
+            for (const p of others) box.append(card(p, p.replace('/dev/', ''), 'other dev page'));
+          })
+          .catch(() => {
+            document.getElementById('demos').replaceChildren(card('/dev/demo.html', 'demo.html', 'start the server with npm run dev'));
+          });
+      })();
+    </script>
+  </body>
+</html>

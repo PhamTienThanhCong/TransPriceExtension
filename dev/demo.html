@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TransPrice demo — 淘宝-style shop (¥ = CNY)</title>
+    <!-- Acceptance page for the content script (docs/ARCHITECTURE.md §6). Served by `npm run dev`
+         (http://localhost:5180/dev/demo.html): the dev server injects the chrome mock + the real service worker
+         into <head>. The content scripts are loaded below in manifest order. -->
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="/dev/demo.css" />
+  </head>
+  <body>
+    <header class="tb-header">
+      <div class="tb-header__inner">
+        <div class="tb-logo" aria-label="Taobao-style shop">淘宝<span>Taobao-style</span></div>
+        <form class="tb-search" role="search">
+          <input type="search" value="¥189 cup set" aria-label="Search (inputs are never converted)" />
+          <button type="button">Search</button>
+        </form>
+      </div>
+    </header>
+
+    <aside class="dev-panel" data-transprice-ignore aria-label="TransPrice dev controls">
+      <div class="dev-panel__row">
+        <strong>TransPrice demo</strong>
+        <label><input type="checkbox" id="dev-enabled" checked /> enabled</label>
+        <label>mode
+          <select id="dev-mode">
+            <option value="replace">replace</option>
+            <option value="append">append</option>
+          </select>
+        </label>
+        <label><input type="checkbox" id="dev-highlight" checked /> highlight</label>
+        <label><input type="checkbox" id="dev-compact" /> compact</label>
+        <label>home
+          <select id="dev-home">
+            <option>VND</option><option>USD</option><option>EUR</option><option>JPY</option><option>CNY</option><option>GBP</option>
+          </select>
+        </label>
+        <button type="button" id="dev-restore-check">Check restore</button>
+      </div>
+      <div class="dev-panel__row dev-panel__status">
+        <span id="dev-status">waiting for the content script…</span>
+        <span id="dev-restore-result"></span>
+      </div>
+      <p class="dev-panel__note">
+        Expected context: <b>¥ → CNY</b> (no domain rule on localhost — the Han text on this page and
+        <code>defaultYen = CNY</code> both say so), <b>$ → USD</b>. Home currency defaults to <b>VND</b> on this page
+        (URL params: <code>?home=USD&amp;mode=append&amp;highlight=0&amp;compact=1&amp;enabled=0</code>).
+      </p>
+    </aside>
+
+    <main id="static">
+      <!-- ───────────────────────── a. Taobao-like grid ───────────────────────── -->
+      <section class="tb-section" aria-labelledby="sec-grid">
+        <h2 id="sec-grid" class="tb-section__title">Guess you like <small>猜你喜欢 · 12 products, every price converts exactly once; orange promo lines never convert</small></h2>
+        <div class="tb-grid">
+          <!-- 1–4: exact Taobao search markup (split price + realSales + procity inside the wrapper) -->
+          <a class="Card--doubleCardWrapper" href="#item-1">
+            <div class="MainPic--mainPicWrapper"><div class="ph ph-1"></div></div>
+            <div class="Title--descWrapper"><div class="Title--title"><span>Deardali Shanhen Toasting Cup Set, Crystal Champagne Glasses for Two</span></div></div>
+            <div class="SalesPoint--subIconWrapper"><span class="promo">Selected for the new wine glass</span></div>
+            <div class="Price--priceWrapper"><span class="Price--unit">¥</span><span class="Price--priceInt">189</span><span class="Price--realSales">5 people bought</span><div class="Price--procity"><span>Guangdong</span></div></div>
+            <div class="ShopInfo--shopInfo"><span class="same">Same style</span></div>
+          </a>
+          <a class="Card--doubleCardWrapper" href="#item-2">
+            <div class="MainPic--mainPicWrapper"><div class="ph ph-2"></div></div>
+            <div class="Title--descWrapper"><div class="Title--title"><span>Birthday Gift for Best Friend: DIY Hand-knitted Flower Bouquet Material Pack</span></div></div>
+            <div class="SalesPoint--subIconWrapper"><span class="promo">7 off for every 6</span></div>
+            <div class="Price--priceWrapper"><span class="Price--unit">¥</span><span class="Price--priceInt">43</span><span class="Price--priceFloat">.65</span><span class="Price--realSales">5 people bought</span><div class="Price--procity"><span>Zhejiang</span></div></div>
+            <div class="ShopInfo--shopInfo"><span class="same">Same style</span></div>
+          </a>
+          <a class="Card--doubleCardWrapper" href="#item-3">
+            <div class="MainPic--mainPicWrapper"><div class="ph ph-3"></div></div>
+            <div class="Title--descWrapper"><div class="Title--title"><span>Moon Pendant Lamp Creative Dining Room Chandelier, Nordic Bedroom Light</span></div></div>
+            <div class="SalesPoint--subIconWrapper"><span class="promo">Free shipping</span></div>
+            <div class="Price--priceWrapper"><span class="Price--unit">¥</span><span class="Price--priceInt">126</span><span class="Price--realSales">200+ people bought</span><div class="Price--procity"><span>Jiangsu</span></div></div>
+            <div class="ShopInfo--shopInfo"><span class="same">Same style</span></div>
+          </a>
+          <a class="Card--doubleCardWrapper" href="#item-4">
+            <div class="MainPic--mainPicWrapper"><div class="ph ph-4"></div></div>
+            <div class="Title--descWrapper"><div class="Title--title"><span>Mist Gray Poem Sweet Academy Style Pleated Skirt, Autumn Winter</span></div></div>
+            <div class="SalesPoint--subIconWrapper"><span class="promo">10 off over 198</span></div>
+            <div class="Price--priceWrapper"><span class="Price--unit">¥</span><span class="Price--priceInt">109</span><span class="Price--realSales">1000+ people bought</span><div class="Price--procity"><span>Fujian</span></div></div>
+            <div class="ShopInfo--shopInfo"><span class="same">Same style</span></div>
+          </a>
+          <!-- 5: older Taobao card — the price wrapper holds only the price (ancestor climb), sales outside -->
+          <a class="item-card" href="#item-5">
+            <div class="MainPic--mainPicWrapper"><div class="ph ph-5"></div></div>
+            <div class="Title--descWrapper"><div class="Title--title"><span>Accept Urgent Orders! Customized 2027 desk calendar with your photos</span></div></div>
+            <div class="SalesPoint--subIconWrapper"><span class="promo">100 off 5</span></div>
+            <div class="price-row"><div class="price g_price"><span class="unit">¥</span><div class="int">140</div></div><div class="deal-cnt">5 people bought</div></div>
+            <div class="ShopInfo--shopInfo"><span class="same">Same style</span></div>
+          </a>
+          <!-- 6: unit / int / decimal spans, no extra text (ancestor climb) -->
+          <a class="item-card" href="#item-6">
+            <div class="MainPic--mainPicWrapper"><div class="ph ph-6"></div></div>
+            <div class="Title--descWrapper"><div class="Title--title"><span>Mamasa Thickened Woolen Knitted Squares, 10 Pieces Craft Pack</span></div></div>
+            <div class="SalesPoint--subIconWrapper"><span class="promo">Return treasure</span></div>
+            <div class="price-row"><span class="price"><span class="unit">¥</span><span class="int">3</span><span class="dec">.6</span></span><span class="deal-cnt">5 people bought</span></div>
+            <div class="ShopInfo--shopInfo"><span class="same">Same style</span></div>
+          </a>
+          <!-- 7: JD-style <strong><em>¥</em><i>157</i></strong> -->
+          <a class="item-card" href="#item-7">
+            <div class="MainPic--mainPicWrapper"><div class="ph ph-7"></div></div>
+            <div class="Title--descWrapper"><div class="Title--title"><span>New Trendy Dynamic Firefly Lights, 10 m Waterproof String</span></div></div>
+            <div class="SalesPoint--subIconWrapper"><span class="promo">Free shipping</span></div>
+            <div class="price-row p-price"><strong class="J_price"><em>¥</em><i>157</i></strong><span class="deal-cnt">5 people bought</span></div>
+            <div class="ShopInfo--shopInfo"><span class="same">Same style</span></div>
+          </a>
+          <!-- 8: Taobao wrapper whose sales counter is itself split ('.3' + '5' must never read as 10.35) -->
+          <a class="Card--doubleCardWrapper" href="#item-8">
+            <div class="MainPic--mainPicWrapper"><div class="ph ph-8"></div></div>
+            <div class="Title--descWrapper"><div class="Title--title"><span>Get Your Christmas Home Decoration — Pine Cone Garland Set</span></div></div>
+            <div class="SalesPoint--subIconWrapper"><span class="promo">7 off for every 6</span></div>
+            <div class="Price--priceWrapper"><span class="Price--unit">¥</span><span class="Price--priceInt">10</span><span class="Price--priceFloat">.3</span><span class="Price--realSales"><b>5</b> people bought</span><div class="Price--procity"><span>Shandong</span></div></div>
+            <div class="ShopInfo--shopInfo"><span class="same">Same style</span></div>
+          </a>
+          <!-- 9–12: plain text prices -->
+          <a class="item-card" href="#item-9">
+            <div class="MainPic--mainPicWrapper"><div class="ph ph-9"></div></div>
+            <div class="Title--descWrapper"><div class="Title--title"><span>【Chicmoon】Gray Island Smoke Blue Knit Cardigan</span></div></div>
+            <div class="SalesPoint--subIconWrapper"><span class="promo">Free shipping</span></div>
+            <div class="price-row"><span class="price-plain">¥16.8</span><span class="deal-cnt">5 people bought</span></div>
+            <div class="ShopInfo--shopInfo"><span class="same">Same style</span></div>
+          </a>
+          <a class="item-card" href="#item-10">
+            <div class="MainPic--mainPicWrapper"><div class="ph ph-10"></div></div>
+            <div class="Title--descWrapper"><div class="Title--title"><span>French-Style Winter Rabbit Fur Thick Coat, Short Cropped</span></div></div>
+            <div class="SalesPoint--subIconWrapper"><span class="promo">10 off over 198</span></div>
+            <div class="price-row"><div class="price-plain">¥296 <span class="deal-cnt">5 people bought</span></div></div>
+            <div class="ShopInfo--shopInfo"><span class="same">Same style</span></div>
+          </a>
+          <a class="item-card" href="#item-11">
+            <div class="MainPic--mainPicWrapper"><div class="ph ph-11"></div></div>
+            <div class="Title--descWrapper"><div class="Title--title"><span>【Puppetbombs】Cute Dark-Style Plush Keychain Pendant</span></div></div>
+            <div class="SalesPoint--subIconWrapper"><span class="promo">Return treasure</span></div>
+            <div class="price-row"><span class="price-plain">¥181.3</span><span class="deal-cnt">5 people bought</span></div>
+            <div class="ShopInfo--shopInfo"><span class="same">Same style</span></div>
+          </a>
+          <a class="item-card" href="#item-12">
+            <div class="MainPic--mainPicWrapper"><div class="ph ph-12"></div></div>
+            <div class="Title--descWrapper"><div class="Title--title"><span>Sakura House Creative Resin 3D Relief Fridge Magnet</span></div></div>
+            <div class="SalesPoint--subIconWrapper"><span class="promo">100 off 5</span></div>
+            <div class="price-row"><span class="price-plain">¥6.15</span><span class="deal-cnt">5 people bought</span></div>
+            <div class="ShopInfo--shopInfo"><span class="same">Same style</span></div>
+          </a>
+        </div>
+      </section>
+
+      <!-- ───────────────────────── b. other formats ───────────────────────── -->
+      <section class="tb-section" aria-labelledby="sec-formats">
+        <h2 id="sec-formats" class="tb-section__title">Other formats <small>expected result on the right</small></h2>
+        <div class="cases">
+          <div class="case">
+            <div class="case__label">Amazon split price (+ screen-reader copy)</div>
+            <div class="case__body amz">
+              <span class="a-price" data-a-size="xl" data-a-color="base"><span class="a-offscreen">$1,299.99</span><span aria-hidden="true"><span class="a-price-symbol">$</span><span class="a-price-whole">1,299<span class="a-price-decimal">.</span></span><span class="a-price-fraction">99</span></span></span>
+              <div class="amz-list">List Price: <span class="a-price a-text-price" data-a-strike="true"><span class="a-offscreen">$1,499.00</span><span aria-hidden="true">$1,499.00</span></span></div>
+            </div>
+            <div class="case__expect" data-transprice-ignore>one badge per price (offscreen copy ignored)</div>
+          </div>
+          <div class="case">
+            <div class="case__label">Walmart-style cents in &lt;sup&gt;</div>
+            <div class="case__body"><span class="wm-price">$<span class="wm-int">12</span><sup>99</sup></span></div>
+            <div class="case__expect" data-transprice-ignore>$12.99</div>
+          </div>
+          <div class="case">
+            <div class="case__label">EU formats</div>
+            <div class="case__body"><span class="eu">1.234,56 €</span> · <span class="eu">12,99 €</span></div>
+            <div class="case__expect" data-transprice-ignore>EUR 1234.56 · EUR 12.99</div>
+          </div>
+          <div class="case">
+            <div class="case__label">Inline sentence (one text node)</div>
+            <div class="case__body"><p>Only $5 today, was $12 — limited offer.</p></div>
+            <div class="case__expect" data-transprice-ignore>both rewritten in place (replace) / one badge after (append)</div>
+          </div>
+          <div class="case">
+            <div class="case__label">Inline sentence (marked-up prices)</div>
+            <div class="case__body"><p>Only <b>$5</b> today, was <s>$12</s>.</p></div>
+            <div class="case__expect" data-transprice-ignore>two badges</div>
+          </div>
+          <div class="case">
+            <div class="case__label">Ranges</div>
+            <div class="case__body"><p>Wholesale: ¥10-20 per piece</p><p><span class="range">$15 – $25</span> · <span class="range">¥99~199</span></p></div>
+            <div class="case__expect" data-transprice-ignore>≈ a – b ₫</div>
+          </div>
+          <div class="case">
+            <div class="case__label">Number-first yuan</div>
+            <div class="case__body"><span class="cn">189元</span> · <span class="cn-split"><span class="num">43.65</span><span class="yuan">元</span></span></div>
+            <div class="case__expect" data-transprice-ignore>CNY 189 · CNY 43.65 (split)</div>
+          </div>
+          <div class="case">
+            <div class="case__label">Japanese 万 multiplier</div>
+            <div class="case__body"><span class="jp">1.5万円</span></div>
+            <div class="case__expect" data-transprice-ignore>JPY 15 000</div>
+          </div>
+          <div class="case">
+            <div class="case__label">Home currency (VND)</div>
+            <div class="case__body"><span class="vn">250.000 ₫</span></div>
+            <div class="case__expect" data-transprice-ignore>untouched when home = VND</div>
+          </div>
+          <div class="case">
+            <div class="case__label">Editable / code (never converted)</div>
+            <div class="case__body editable">
+              <textarea rows="2" aria-label="textarea">Draft note: the cup set is ¥189 (keep as typed)</textarea>
+              <div class="ce" contenteditable="true">Editable: shipping costs $25 here</div>
+              <code>const PRICE = "$19.99";</code>
+              <pre>Total: ¥500 (preformatted)</pre>
+            </div>
+            <div class="case__expect" data-transprice-ignore>untouched</div>
+          </div>
+          <div class="case">
+            <div class="case__label">Not prices</div>
+            <div class="case__body muted">Version 1.2.3 · Call 0123 456 789 · Template ${price} · Order #4521 · In 2027 · 5 people bought</div>
+            <div class="case__expect" data-transprice-ignore>untouched</div>
+          </div>
+          <div class="case case--dark">
+            <div class="case__label">Dark product box</div>
+            <div class="case__body dark-box">
+              <div class="dark-title">Noise-cancelling headphones</div>
+              <div class="dark-price"><span class="cur">$</span><span class="int">249</span><span class="dec">.99</span> <s class="was">$299.99</s></div>
+            </div>
+            <div class="case__expect" data-transprice-ignore>tints stay readable</div>
+          </div>
+          <div class="case">
+            <div class="case__label">Web component (open shadow root)</div>
+            <div class="case__body"><pp-demo-widget id="shadow-host"></pp-demo-widget></div>
+            <div class="case__expect" data-transprice-ignore>split ¥59.90 + plain €12.50 inside the shadow root</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ───────────────────────── c. dynamic content ───────────────────────── -->
+    <section class="tb-section" id="dynamic" aria-labelledby="sec-dynamic">
+      <h2 id="sec-dynamic" class="tb-section__title">Dynamic content <small>MutationObserver · React-style re-renders · never duplicate badges</small></h2>
+      <div class="tickers">
+        <div class="ticker">
+          <div class="case__label">textContent re-render (2 s)</div>
+          <span class="price-plain ticker__price" id="tick-plain">¥12.30</span>
+        </div>
+        <div class="ticker">
+          <div class="case__label">split price re-render via replaceChildren (2 s)</div>
+          <div class="Price--priceWrapper" id="tick-split"><span class="Price--unit">¥</span><span class="Price--priceInt">88</span><span class="Price--priceFloat">.80</span><span class="Price--realSales">12 people bought</span></div>
+        </div>
+        <div class="ticker">
+          <div class="case__label">text node nodeValue update (2 s)</div>
+          <span class="price-plain ticker__price" id="tick-node">¥5.50</span>
+        </div>
+        <div class="ticker ticker--status" data-transprice-ignore>
+          <div class="case__label">ticker status</div>
+          <span id="tick-status">–</span>
+        </div>
+      </div>
+      <div class="tb-grid" id="more-grid"></div>
+      <div class="more-row">
+        <button type="button" class="more-btn" id="load-more">Load more</button>
+        <button type="button" class="more-btn" id="clone-card" title="cloneNode(true) of the first converted card, like carousel loops do">Clone a converted card</button>
+      </div>
+    </section>
+
+    <script src="/dev/demo.js"></script>
+    <!-- Content scripts, in manifest order (the dev server skips its own injection because content.js is here). -->
+    <script src="/extension/src/shared/currency-data.js"></script>
+    <script src="/extension/src/content/parser.js"></script>
+    <script src="/extension/src/content/scanner.js"></script>
+    <script src="/extension/src/content/render.js"></script>
+    <script src="/extension/src/content/content.js"></script>
+  </body>
+</html>

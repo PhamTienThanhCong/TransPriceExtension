@@ -1,0 +1,27 @@
+{
+  "extName": {
+    "en": "TransPrice — Currency Converter for Shopping",
+    "vi": "TransPrice — Quy đổi giá tiền khi mua sắm",
+    "description": "Extension name shown in Chrome and the Web Store (max 75 chars)"
+  },
+  "extShortName": {
+    "en": "TransPrice",
+    "vi": "TransPrice",
+    "description": "Short name (max 12 chars)"
+  },
+  "extDescription": {
+    "en": "See every price in your currency: prices on any site (Taobao ¥, Amazon $, € …) are converted to VND or your home currency.",
+    "vi": "Xem mọi giá tiền bằng tiền của bạn: giá trên mọi trang (Taobao ¥, Amazon $, € …) tự quy đổi sang VND hoặc loại tiền bạn chọn.",
+    "description": "Extension description (max 132 chars)"
+  },
+  "actionTitle": {
+    "en": "TransPrice — Convert prices",
+    "vi": "TransPrice — Quy đổi giá",
+    "description": "Toolbar button tooltip"
+  },
+  "cmdToggleEnabled": {
+    "en": "Turn automatic price conversion on/off",
+    "vi": "Bật/tắt tự động quy đổi giá",
+    "description": "Keyboard shortcut description (chrome://extensions/shortcuts)"
+  }
+}

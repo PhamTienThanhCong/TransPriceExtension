@@ -1,0 +1,202 @@
+{
+  "popup_page_title": {
+    "en": "TransPrice",
+    "vi": "TransPrice",
+    "description": "Popup document title."
+  },
+  "popup_settings": {
+    "en": "Settings",
+    "vi": "Cài đặt",
+    "description": "Header button that opens the options page."
+  },
+  "popup_power_title": {
+    "en": "Auto-convert prices",
+    "vi": "Tự động quy đổi giá",
+    "description": "Big master on/off toggle in the popup."
+  },
+  "popup_power_on": {
+    "en": "On · prices are shown in $1",
+    "vi": "Đang bật · giá hiển thị bằng $1",
+    "description": "State under the power toggle when ON. $1 = home currency code (shown bold), e.g. VND."
+  },
+  "popup_power_off": {
+    "en": "Off · click to turn on",
+    "vi": "Đang tắt · bấm để bật lại",
+    "description": "State under the power toggle when OFF."
+  },
+  "popup_site_label": {
+    "en": "This site",
+    "vi": "Trang này",
+    "description": "Section label above the current-site card."
+  },
+  "popup_site_switch": {
+    "en": "Convert on this site",
+    "vi": "Quy đổi trên trang này",
+    "description": "Accessible label / tooltip of the per-site switch."
+  },
+  "popup_site_count_one": {
+    "en": "Converted $1 price",
+    "vi": "Đã quy đổi $1 giá",
+    "description": "Site status, singular. $1 = number of prices converted on the page."
+  },
+  "popup_site_count_other": {
+    "en": "Converted $1 prices",
+    "vi": "Đã quy đổi $1 giá",
+    "description": "Site status, plural. $1 = number of prices converted on the page."
+  },
+  "popup_site_none": {
+    "en": "No prices found on this page yet",
+    "vi": "Chưa thấy giá nào trên trang này",
+    "description": "Site status when the content script found nothing to convert."
+  },
+  "popup_site_disabled": {
+    "en": "Turned off on this site",
+    "vi": "Đã tắt trên trang này",
+    "description": "Site status when the site is in the disabled list."
+  },
+  "popup_site_global_off": {
+    "en": "Auto-convert is off",
+    "vi": "Tự động quy đổi đang tắt",
+    "description": "Site status when the master switch is off."
+  },
+  "popup_site_symbol": {
+    "en": "$1 on this site means",
+    "vi": "$1 trên trang này là",
+    "description": "Label before the select that picks what an ambiguous symbol means. $1 = the symbol, e.g. ¥ or $."
+  },
+  "popup_reason_site_pin": {
+    "en": "You picked this for this site",
+    "vi": "Bạn đã chọn cho trang này",
+    "description": "Why the ambiguous symbol has this meaning: the user pinned it."
+  },
+  "popup_reason_domain": {
+    "en": "Detected from the website address",
+    "vi": "Nhận diện theo tên miền",
+    "description": "Why the ambiguous symbol has this meaning: the domain (e.g. taobao.com → CNY)."
+  },
+  "popup_reason_lang": {
+    "en": "Detected from the page language",
+    "vi": "Nhận diện theo ngôn ngữ của trang",
+    "description": "Why the ambiguous symbol has this meaning: <html lang>."
+  },
+  "popup_reason_script": {
+    "en": "Detected from the page text",
+    "vi": "Nhận diện theo chữ viết trên trang",
+    "description": "Why the ambiguous symbol has this meaning: Chinese/Japanese characters on the page."
+  },
+  "popup_reason_default": {
+    "en": "Your default setting",
+    "vi": "Theo cài đặt mặc định của bạn",
+    "description": "Why the ambiguous symbol has this meaning: the user's global default."
+  },
+  "popup_reason_reset": {
+    "en": "Detect automatically",
+    "vi": "Để tự nhận diện",
+    "description": "Link that removes the per-site pin for a symbol."
+  },
+  "popup_unavailable_title": {
+    "en": "Can't read prices on this page",
+    "vi": "Không đọc được giá trên trang này",
+    "description": "Notice when the content script doesn't answer."
+  },
+  "popup_unavailable_desc": {
+    "en": "Browser pages (chrome://, Chrome Web Store) are off-limits. If this tab was open before you installed TransPrice, reload it.",
+    "vi": "TransPrice không chạy được trên trang của trình duyệt (chrome://, Chrome Web Store). Nếu tab này mở từ trước khi cài TransPrice, hãy tải lại trang.",
+    "description": "Explanation under the notice title."
+  },
+  "popup_reload": {
+    "en": "Reload page",
+    "vi": "Tải lại trang",
+    "description": "Button that reloads the active tab."
+  },
+  "popup_home_label": {
+    "en": "Your currency",
+    "vi": "Tiền của bạn",
+    "description": "Label of the home-currency picker (prices are converted into it)."
+  },
+  "popup_converter_title": {
+    "en": "Quick converter",
+    "vi": "Đổi tiền nhanh",
+    "description": "Section label of the converter."
+  },
+  "popup_amount": {
+    "en": "Amount",
+    "vi": "Số tiền",
+    "description": "Accessible label of the converter amount input."
+  },
+  "popup_amount_placeholder": {
+    "en": "Enter an amount",
+    "vi": "Nhập số tiền",
+    "description": "Placeholder of the converter amount input."
+  },
+  "popup_from": {
+    "en": "Convert from",
+    "vi": "Đổi từ",
+    "description": "Accessible label of the converter source currency."
+  },
+  "popup_to": {
+    "en": "Convert to",
+    "vi": "Đổi sang",
+    "description": "Accessible label of the converter target currency."
+  },
+  "popup_swap": {
+    "en": "Swap currencies",
+    "vi": "Đảo chiều quy đổi",
+    "description": "Button that swaps the converter currencies."
+  },
+  "popup_invalid_amount": {
+    "en": "Enter a number, e.g. 1,299.99",
+    "vi": "Hãy nhập một số, ví dụ 1.299,99",
+    "description": "Converter result when the amount can't be read."
+  },
+  "popup_no_rate": {
+    "en": "No exchange rate for this currency",
+    "vi": "Chưa có tỷ giá cho loại tiền này",
+    "description": "Converter result when a rate is missing."
+  },
+  "popup_rates_line": {
+    "en": "Rates $1 · $2",
+    "vi": "Tỷ giá $1 · $2",
+    "description": "Footer. $1 = date of the rates (localized), $2 = source name."
+  },
+  "popup_rates_updated": {
+    "en": "Downloaded $1",
+    "vi": "Đã tải $1",
+    "description": "Footer tooltip. $1 = relative time, e.g. '5 minutes ago'."
+  },
+  "popup_rates_missing": {
+    "en": "Exchange rates unavailable",
+    "vi": "Chưa có tỷ giá",
+    "description": "Footer when no rate table could be loaded."
+  },
+  "popup_source_snapshot": {
+    "en": "built-in",
+    "vi": "dự phòng",
+    "description": "Name of the bundled offline rate table, shown as the source in the footer."
+  },
+  "popup_snapshot_hint": {
+    "en": "Offline rates — live rates couldn't be downloaded yet",
+    "vi": "Tỷ giá dự phòng — chưa tải được tỷ giá mới",
+    "description": "Warning above the footer when the rates come from the bundled snapshot."
+  },
+  "popup_refresh": {
+    "en": "Refresh rates",
+    "vi": "Cập nhật tỷ giá",
+    "description": "Footer button that forces a rate download."
+  },
+  "popup_refreshed": {
+    "en": "Rates updated",
+    "vi": "Đã cập nhật tỷ giá",
+    "description": "Toast after a successful refresh."
+  },
+  "popup_refresh_failed": {
+    "en": "Couldn't update rates — check your connection",
+    "vi": "Không cập nhật được tỷ giá — hãy kiểm tra kết nối mạng",
+    "description": "Toast after a failed refresh."
+  },
+  "popup_error": {
+    "en": "Something went wrong. Please try again.",
+    "vi": "Có lỗi xảy ra, bạn thử lại nhé.",
+    "description": "Generic error toast."
+  }
+}

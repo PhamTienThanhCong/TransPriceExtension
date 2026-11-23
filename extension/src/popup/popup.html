@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en" data-i18n-doc-title="popup_page_title">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>TransPrice</title>
+    <link rel="stylesheet" href="../ui/tokens.css" />
+    <link rel="stylesheet" href="../options/ui-kit.css" />
+    <link rel="stylesheet" href="popup.css" />
+    <script type="module" src="popup.js"></script>
+  </head>
+  <body>
+    <div class="app is-loading" id="app">
+      <!-- ============================== Header ============================== -->
+      <header class="app-header">
+        <div class="brand">
+          <img class="logo" src="../../icons/logo.svg" width="24" height="24" alt="" />
+          <span class="brand-name">TransPrice</span>
+        </div>
+        <button
+          type="button"
+          class="icon-btn"
+          id="btn-settings"
+          data-i18n-aria-label="popup_settings"
+          data-i18n-title="popup_settings"
+        >
+          <i data-icon="settings"></i>
+        </button>
+      </header>
+
+      <main class="app-main" id="main">
+        <!-- ============================ Power toggle ============================ -->
+        <button type="button" class="power" id="power" aria-pressed="true" aria-labelledby="power-title" aria-describedby="power-state">
+          <span class="power-knob" aria-hidden="true"><i data-icon="power" data-icon-size="22"></i></span>
+          <span class="power-text">
+            <span class="power-title" id="power-title" data-i18n="popup_power_title">Auto-convert prices</span>
+            <span class="power-state" id="power-state"></span>
+          </span>
+          <span class="power-switch" aria-hidden="true"><span class="power-switch-thumb"></span></span>
+        </button>
+
+        <!-- ============================= This site ============================= -->
+        <section class="block" aria-labelledby="site-title">
+          <h2 class="block-label" id="site-title" data-i18n="popup_site_label">This site</h2>
+          <div class="card site" id="site">
+            <div class="site-loading" id="site-loading" aria-hidden="true">
+              <span class="skeleton sk-avatar"></span>
+              <span class="sk-lines"><span class="skeleton sk-line"></span><span class="skeleton sk-line sk-line--short"></span></span>
+            </div>
+
+            <div class="site-main" id="site-main" hidden>
+              <div class="site-head">
+                <span class="site-avatar" id="site-avatar" aria-hidden="true"></span>
+                <div class="site-titles">
+                  <span class="site-host" id="site-host" dir="ltr"></span>
+                  <span class="site-status" id="site-status" aria-live="polite"></span>
+                </div>
+                <label class="switch site-switch" data-i18n-title="popup_site_switch">
+                  <input type="checkbox" id="sw-site" data-i18n-aria-label="popup_site_switch" />
+                  <span class="switch-track"></span>
+                </label>
+              </div>
+              <div class="site-symbols" id="site-symbols" hidden></div>
+            </div>
+
+            <div class="site-notice" id="site-notice" hidden>
+              <span class="notice-icon" aria-hidden="true"><i data-icon="info" data-icon-size="18"></i></span>
+              <div class="notice-body">
+                <p class="notice-title" data-i18n="popup_unavailable_title">Can't read prices on this page</p>
+                <p class="notice-desc" data-i18n="popup_unavailable_desc"></p>
+                <button type="button" class="btn btn-sm notice-btn" id="btn-reload">
+                  <i data-icon="refresh"></i><span data-i18n="popup_reload">Reload page</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =========================== Home currency =========================== -->
+        <section class="home" aria-labelledby="home-label">
+          <span class="home-text">
+            <span class="home-icon" aria-hidden="true"><i data-icon="wallet" data-icon-size="16"></i></span>
+            <span class="home-label" id="home-label" data-i18n="popup_home_label">Your currency</span>
+          </span>
+          <div class="home-picker" id="home-picker"></div>
+        </section>
+
+        <!-- ========================== Quick converter ========================== -->
+        <section class="block" aria-labelledby="conv-title">
+          <h2 class="block-label" id="conv-title" data-i18n="popup_converter_title">Quick converter</h2>
+          <div class="card conv">
+            <div class="conv-row conv-row--from">
+              <label class="sr-only" for="conv-amount" data-i18n="popup_amount">Amount</label>
+              <input
+                id="conv-amount"
+                class="conv-input"
+                type="text"
+                inputmode="decimal"
+                autocomplete="off"
+                spellcheck="false"
+                maxlength="32"
+                data-i18n-placeholder="popup_amount_placeholder"
+              />
+              <div class="conv-picker" id="conv-from"></div>
+            </div>
+            <div class="conv-divider">
+              <button
+                type="button"
+                class="swap-btn"
+                id="btn-swap"
+                data-i18n-aria-label="popup_swap"
+                data-i18n-title="popup_swap"
+              >
+                <i data-icon="swap-vertical" data-icon-size="16"></i>
+              </button>
+            </div>
+            <div class="conv-row conv-row--to">
+              <output class="conv-result" id="conv-result" for="conv-amount" aria-live="polite"></output>
+              <div class="conv-picker" id="conv-to"></div>
+            </div>
+          </div>
+          <p class="conv-rate" id="conv-rate"></p>
+        </section>
+      </main>
+
+      <!-- ============================== Footer ============================== -->
+      <footer class="app-footer">
+        <p class="rates-hint" id="rates-hint" hidden>
+          <i data-icon="alert-triangle" data-icon-size="14"></i><span data-i18n="popup_snapshot_hint"></span>
+        </p>
+        <div class="footer-bar">
+          <span class="rates-info" id="rates-info">
+            <i data-icon="clock" data-icon-size="14"></i><span id="rates-text"></span>
+          </span>
+          <button
+            type="button"
+            class="icon-btn icon-btn-sm"
+            id="btn-refresh"
+            data-i18n-aria-label="popup_refresh"
+            data-i18n-title="popup_refresh"
+          >
+            <i data-icon="refresh" data-icon-size="16"></i>
+          </button>
+        </div>
+      </footer>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

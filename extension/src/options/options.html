@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en" data-i18n-doc-title="options_doc_title">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>TransPrice</title>
+    <link rel="icon" href="../../icons/icon32.png" />
+    <link rel="stylesheet" href="../ui/tokens.css" />
+    <link rel="stylesheet" href="ui-kit.css" />
+    <link rel="stylesheet" href="options.css" />
+    <script type="module" src="options.js"></script>
+  </head>
+  <body>
+    <div class="layout">
+      <!-- ============================== Sidebar ============================== -->
+      <aside class="sidebar">
+        <div class="sidebar-inner">
+          <a class="brand" href="#general" data-section="general">
+            <img class="logo" src="../../icons/logo.svg" width="28" height="28" alt="" />
+            <span class="brand-text">
+              <span class="brand-name">TransPrice</span>
+              <span class="brand-version" id="brand-version"></span>
+            </span>
+          </a>
+          <nav class="nav" id="nav" data-i18n-aria-label="options_nav_label" aria-label="Settings sections">
+            <a class="nav-link" href="#general" data-section="general">
+              <i data-icon="settings" data-icon-size="16"></i><span data-i18n="options_nav_general">General</span>
+            </a>
+            <a class="nav-link" href="#display" data-section="display">
+              <i data-icon="eye" data-icon-size="16"></i><span data-i18n="options_nav_display">Price display</span>
+            </a>
+            <a class="nav-link" href="#symbols" data-section="symbols">
+              <i data-icon="banknote" data-icon-size="16"></i><span data-i18n="options_nav_symbols">$ and ¥</span>
+            </a>
+            <a class="nav-link" href="#sites" data-section="sites">
+              <i data-icon="globe" data-icon-size="16"></i><span data-i18n="options_nav_sites">Websites</span>
+            </a>
+            <a class="nav-link" href="#appearance" data-section="appearance">
+              <i data-icon="sun" data-icon-size="16"></i><span data-i18n="options_nav_appearance">Appearance</span>
+            </a>
+            <a class="nav-link" href="#rates" data-section="rates">
+              <i data-icon="refresh" data-icon-size="16"></i><span data-i18n="options_nav_rates">Exchange rates</span>
+            </a>
+            <a class="nav-link" href="#about" data-section="about">
+              <i data-icon="info" data-icon-size="16"></i><span data-i18n="options_nav_about">About</span>
+            </a>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- ============================== Content ============================== -->
+      <main class="main" id="main">
+        <div class="content">
+          <!-- ---------------------------- General ---------------------------- -->
+          <section class="section" id="general" aria-labelledby="general-title">
+            <header class="section-header">
+              <h2 class="section-title" id="general-title" tabindex="-1" data-i18n="options_nav_general">General</h2>
+              <p class="section-desc" data-i18n="options_general_desc">Which currency you think in, and whether TransPrice converts prices for you.</p>
+            </header>
+            <div class="card">
+              <div class="row">
+                <div class="row-text">
+                  <label class="row-title" for="s-enabled" data-i18n="options_enabled_title">Auto-convert prices</label>
+                  <p class="row-desc" id="s-enabled-desc" data-i18n="options_enabled_desc">Find prices on web pages and show them in your currency.</p>
+                </div>
+                <label class="switch row-control">
+                  <input type="checkbox" id="s-enabled" data-setting="enabled" aria-describedby="s-enabled-desc" />
+                  <span class="switch-track"></span>
+                </label>
+              </div>
+              <div class="row row--wrap">
+                <div class="row-text">
+                  <span class="row-title" id="home-title" data-i18n="options_home_title">Your currency</span>
+                  <p class="row-desc" id="home-desc" data-i18n="options_home_desc">Every price TransPrice finds is converted into this currency.</p>
+                </div>
+                <div class="row-control row-control--picker" id="home-picker"></div>
+              </div>
+            </div>
+
+            <div class="card card--spaced">
+              <div class="card-head">
+                <span class="card-head-icon" aria-hidden="true"><i data-icon="keyboard" data-icon-size="18"></i></span>
+                <div class="row-text">
+                  <span class="row-title" data-i18n="options_shortcuts_title">Keyboard shortcuts</span>
+                  <p class="row-desc" data-i18n="options_shortcuts_desc">Turn conversion on or off without leaving the page.</p>
+                </div>
+              </div>
+              <ul class="shortcut-list" id="shortcut-list"></ul>
+              <div class="card-footer">
+                <p class="card-footer-text" data-i18n="options_shortcuts_hint">Shortcuts are managed by Chrome.</p>
+                <button type="button" class="btn btn-sm" id="customize-shortcuts">
+                  <span data-i18n="options_shortcuts_customize">Change shortcuts</span>
+                  <i data-icon="external-link" data-icon-size="14" class="btn-trailing"></i>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ---------------------------- Display ---------------------------- -->
+          <section class="section" id="display" aria-labelledby="display-title">
+            <header class="section-header">
+              <h2 class="section-title" id="display-title" tabindex="-1" data-i18n="options_nav_display">Price display</h2>
+              <p class="section-desc" data-i18n="options_display_desc">How converted prices look on the page.</p>
+            </header>
+            <div class="card">
+              <div class="card-block">
+                <span class="block-label" id="mode-label" data-i18n="options_mode_label">Show converted prices</span>
+                <div class="mode-cards" id="mode-cards" role="radiogroup" aria-labelledby="mode-label">
+                  <button type="button" class="mode-card" role="radio" aria-checked="false" data-value="replace" aria-describedby="mode-replace-desc">
+                    <span class="mode-preview" aria-hidden="true" data-preview="replace"></span>
+                    <span class="mode-card-body">
+                      <span class="mode-card-title" data-i18n="options_mode_replace_title">Replace the price</span>
+                      <span class="mode-card-desc" id="mode-replace-desc" data-i18n="options_mode_replace_desc">Only your currency is shown. Hover a price to see the original.</span>
+                    </span>
+                    <span class="mode-card-check" aria-hidden="true"><i data-icon="check" data-icon-size="12"></i></span>
+                  </button>
+                  <button type="button" class="mode-card" role="radio" aria-checked="false" data-value="append" aria-describedby="mode-append-desc">
+                    <span class="mode-preview" aria-hidden="true" data-preview="append"></span>
+                    <span class="mode-card-body">
+                      <span class="mode-card-title" data-i18n="options_mode_append_title">Show both</span>
+                      <span class="mode-card-desc" id="mode-append-desc" data-i18n="options_mode_append_desc">Keep the original price and add the converted one next to it.</span>
+                    </span>
+                    <span class="mode-card-check" aria-hidden="true"><i data-icon="check" data-icon-size="12"></i></span>
+                  </button>
+                </div>
+              </div>
+              <div class="row">
+                <div class="row-text">
+                  <label class="row-title" for="s-compact" data-i18n="options_compact_title">Compact numbers</label>
+                  <p class="row-desc" id="s-compact-desc"></p>
+                </div>
+                <label class="switch row-control">
+                  <input type="checkbox" id="s-compact" data-setting="compact" aria-describedby="s-compact-desc" />
+                  <span class="switch-track"></span>
+                </label>
+              </div>
+              <div class="row">
+                <div class="row-text">
+                  <label class="row-title" for="s-highlight" data-i18n="options_highlight_title">Highlight converted prices</label>
+                  <p class="row-desc" id="s-highlight-desc" data-i18n="options_highlight_desc">A subtle dotted underline, so you know which prices were converted.</p>
+                </div>
+                <label class="switch row-control">
+                  <input type="checkbox" id="s-highlight" data-setting="highlight" aria-describedby="s-highlight-desc" />
+                  <span class="switch-track"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <!-- ---------------------------- Symbols ---------------------------- -->
+          <section class="section" id="symbols" aria-labelledby="symbols-title">
+            <header class="section-header">
+              <h2 class="section-title" id="symbols-title" tabindex="-1" data-i18n="options_nav_symbols">$ and ¥</h2>
+              <p class="section-desc" data-i18n="options_symbols_desc">Several currencies share these symbols. TransPrice guesses from the website first and uses your choice below only when the page gives no hint.</p>
+            </header>
+            <div class="card">
+              <div class="row row--wrap">
+                <span class="row-icon row-icon--symbol" aria-hidden="true">$</span>
+                <div class="row-text">
+                  <label class="row-title" for="s-defaultDollar" data-i18n="options_dollar_title">A plain “$” means</label>
+                  <p class="row-desc" id="s-defaultDollar-desc" data-i18n="options_dollar_desc">Canadian, Australian and other shops are recognised by their address.</p>
+                </div>
+                <div class="row-control">
+                  <select class="select" id="s-defaultDollar" data-setting="defaultDollar" aria-describedby="s-defaultDollar-desc"></select>
+                </div>
+              </div>
+              <div class="row row--wrap">
+                <span class="row-icon row-icon--symbol" aria-hidden="true">¥</span>
+                <div class="row-text">
+                  <label class="row-title" for="s-defaultYen" data-i18n="options_yen_title">A plain “¥” means</label>
+                  <p class="row-desc" id="s-defaultYen-desc" data-i18n="options_yen_desc">Taobao, Tmall, 1688 and JD always use yuan; Japanese sites always use yen.</p>
+                </div>
+                <div class="row-control">
+                  <select class="select" id="s-defaultYen" data-setting="defaultYen" aria-describedby="s-defaultYen-desc"></select>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ----------------------------- Sites ----------------------------- -->
+          <section class="section" id="sites" aria-labelledby="sites-title">
+            <header class="section-header">
+              <h2 class="section-title" id="sites-title" tabindex="-1" data-i18n="options_nav_sites">Websites</h2>
+              <p class="section-desc" data-i18n="options_sites_desc">Turn TransPrice off on specific websites, and review the currencies you picked per site.</p>
+            </header>
+            <div class="card">
+              <div class="card-head">
+                <span class="card-head-icon" aria-hidden="true"><i data-icon="ban" data-icon-size="18"></i></span>
+                <div class="row-text">
+                  <span class="row-title" id="disabled-title" data-i18n="options_disabled_title">Turned off on</span>
+                  <p class="row-desc" data-i18n="options_disabled_desc">Prices on these sites are left untouched. Subdomains are included.</p>
+                </div>
+              </div>
+              <div class="card-block card-block--form">
+                <form class="site-form" id="site-form" novalidate>
+                  <label class="sr-only" for="site-input" data-i18n="options_sites_add_label">Website</label>
+                  <div class="input-icon-wrap">
+                    <i data-icon="globe" data-icon-size="16" class="input-icon"></i>
+                    <input
+                      class="input"
+                      id="site-input"
+                      type="text"
+                      inputmode="url"
+                      autocomplete="off"
+                      autocapitalize="off"
+                      spellcheck="false"
+                      data-i18n-placeholder="options_sites_placeholder"
+                      placeholder="example.com"
+                      aria-describedby="site-error"
+                    />
+                  </div>
+                  <button type="submit" class="btn btn-primary">
+                    <i data-icon="plus" data-icon-size="16"></i><span data-i18n="options_sites_add">Add</span>
+                  </button>
+                </form>
+                <p class="field-error" id="site-error" aria-live="polite"></p>
+              </div>
+              <ul class="site-list" id="site-list" aria-labelledby="disabled-title"></ul>
+              <div class="empty" id="site-empty" hidden>
+                <p class="empty-title" data-i18n="options_sites_empty_title">TransPrice works on every website</p>
+                <p class="empty-desc" data-i18n="options_sites_empty_desc">Add a site above, or use the switch in the popup while you are on it.</p>
+              </div>
+            </div>
+
+            <div class="card card--spaced">
+              <div class="card-head">
+                <span class="card-head-icon" aria-hidden="true"><i data-icon="pin" data-icon-size="18"></i></span>
+                <div class="row-text">
+                  <span class="row-title" id="pins-title" data-i18n="options_pins_title">Currency picked per site</span>
+                  <p class="row-desc" data-i18n="options_pins_desc">What $ or ¥ means on a particular site. Pick one in the popup when TransPrice guesses wrong.</p>
+                </div>
+              </div>
+              <ul class="site-list" id="pin-list" aria-labelledby="pins-title"></ul>
+              <div class="empty" id="pin-empty" hidden>
+                <p class="empty-title" data-i18n="options_pins_empty_title">No site-specific currencies yet</p>
+                <p class="empty-desc" data-i18n="options_pins_empty_desc">TransPrice detects them automatically for you.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- --------------------------- Appearance -------------------------- -->
+          <section class="section" id="appearance" aria-labelledby="appearance-title">
+            <header class="section-header">
+              <h2 class="section-title" id="appearance-title" tabindex="-1" data-i18n="options_nav_appearance">Appearance</h2>
+              <p class="section-desc" data-i18n="options_appearance_desc">Theme and language of the popup and these pages.</p>
+            </header>
+            <div class="card">
+              <div class="row row--wrap">
+                <div class="row-text">
+                  <span class="row-title" id="s-theme-label" data-i18n="options_theme_title">Theme</span>
+                  <p class="row-desc" id="s-theme-desc" data-i18n="options_theme_desc">Auto follows your system setting.</p>
+                </div>
+                <div class="row-control">
+                  <div class="segmented" role="radiogroup" data-setting="theme" aria-labelledby="s-theme-label" aria-describedby="s-theme-desc">
+                    <button type="button" role="radio" aria-checked="false" data-value="auto">
+                      <i data-icon="monitor" data-icon-size="15"></i><span data-i18n="options_theme_auto">Auto</span>
+                    </button>
+                    <button type="button" role="radio" aria-checked="false" data-value="light">
+                      <i data-icon="sun" data-icon-size="15"></i><span data-i18n="options_theme_light">Light</span>
+                    </button>
+                    <button type="button" role="radio" aria-checked="false" data-value="dark">
+                      <i data-icon="moon" data-icon-size="15"></i><span data-i18n="options_theme_dark">Dark</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="row row--wrap">
+                <div class="row-text">
+                  <label class="row-title" for="s-uiLanguage" data-i18n="options_ui_language_title">Display language</label>
+                  <p class="row-desc" id="s-uiLanguage-desc" data-i18n="options_ui_language_desc">Menus and buttons of TransPrice. Open pages reload to apply it.</p>
+                </div>
+                <div class="row-control">
+                  <select class="select" id="s-uiLanguage" data-setting="uiLanguage" aria-describedby="s-uiLanguage-desc"></select>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- ----------------------------- Rates ----------------------------- -->
+          <section class="section" id="rates" aria-labelledby="rates-title">
+            <header class="section-header">
+              <h2 class="section-title" id="rates-title" tabindex="-1" data-i18n="options_nav_rates">Exchange rates</h2>
+              <p class="section-desc" data-i18n="options_rates_desc">Daily reference rates from free public sources, refreshed automatically every few hours.</p>
+            </header>
+            <div class="card">
+              <div class="rates-warning" id="rates-warning" hidden>
+                <i data-icon="alert-triangle" data-icon-size="16"></i>
+                <span data-i18n="options_rates_snapshot">Live rates couldn't be downloaded yet, so TransPrice is using its built-in offline rates.</span>
+              </div>
+              <dl class="rates-meta">
+                <div class="rates-meta-item">
+                  <dt data-i18n="options_rates_date">Rates from</dt>
+                  <dd id="rates-date">—</dd>
+                </div>
+                <div class="rates-meta-item">
+                  <dt data-i18n="options_rates_updated">Downloaded</dt>
+                  <dd id="rates-updated">—</dd>
+                </div>
+                <div class="rates-meta-item">
+                  <dt data-i18n="options_rates_source">Source</dt>
+                  <dd id="rates-source">—</dd>
+                </div>
+              </dl>
+              <div class="card-block">
+                <span class="block-label" id="rates-sample-label"></span>
+                <ul class="rates-sample" id="rates-sample" aria-labelledby="rates-sample-label"></ul>
+              </div>
+              <div class="card-footer">
+                <p class="card-footer-text" data-i18n="options_rates_privacy">Only the public rate table is downloaded — nothing about the pages you visit.</p>
+                <button type="button" class="btn btn-sm" id="rates-refresh">
+                  <i data-icon="refresh" data-icon-size="16"></i><span data-i18n="options_rates_refresh">Refresh now</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- ------------------------------ About ---------------------------- -->
+          <section class="section" id="about" aria-labelledby="about-title">
+            <header class="section-header">
+              <h2 class="section-title" id="about-title" tabindex="-1" data-i18n="options_nav_about">About</h2>
+            </header>
+            <div class="card about">
+              <div class="about-logo">
+                <img class="logo" src="../../icons/logo.svg" width="64" height="64" alt="" />
+              </div>
+              <p class="about-name">TransPrice</p>
+              <p class="about-version" id="about-version"></p>
+              <p class="about-tagline" data-i18n="options_about_tagline">See every price in your currency. Free and open source.</p>
+              <div class="about-actions">
+                <a class="btn" id="link-repo" href="#" target="_blank" rel="noopener noreferrer">
+                  <i data-icon="github" data-icon-size="16"></i><span data-i18n="options_about_github">GitHub</span>
+                </a>
+                <a class="btn" id="link-issues" href="#" target="_blank" rel="noopener noreferrer">
+                  <i data-icon="message-square" data-icon-size="16"></i><span data-i18n="options_about_report">Report a problem</span>
+                </a>
+              </div>
+              <p class="about-license" data-i18n="options_about_license">MIT License · Icons: Lucide (ISC)</p>
+            </div>
+            <div class="privacy-note">
+              <span class="privacy-icon"><i data-icon="shield" data-icon-size="20"></i></span>
+              <div class="privacy-text">
+                <p class="privacy-title" data-i18n="options_privacy_title">Your privacy</p>
+                <p class="privacy-body" data-i18n="options_privacy_text">
+                  TransPrice works entirely in your browser. The only thing it downloads is the public exchange-rate table — no page content, no browsing history, no tracking.
+                </p>
+                <a class="privacy-link" id="privacy-link" href="#" target="_blank" rel="noopener noreferrer">
+                  <span data-i18n="options_privacy_link">Read the privacy policy</span><i data-icon="external-link" data-icon-size="14"></i>
+                </a>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

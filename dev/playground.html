@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TransPrice · Algorithm playground</title>
+    <link rel="icon" href="../extension/icons/icon32.png" />
+    <link rel="stylesheet" href="playground.css" />
+    <!-- The real engine, loaded exactly like the content script loads it (classic scripts, in manifest order). -->
+    <script src="../extension/src/shared/currency-data.js"></script>
+    <script src="../extension/src/content/parser.js"></script>
+    <script type="module" src="playground.js"></script>
+  </head>
+  <body>
+    <header class="top">
+      <img class="logo" src="../extension/icons/logo.svg" alt="" width="30" height="30" />
+      <div class="title">
+        <h1>Algorithm playground</h1>
+        <p>
+          Live view of <code>parser.js</code>: tokens → numbers → page context → conversion. The algorithm is explained in
+          <code>docs/ALGORITHM.md</code>.
+        </p>
+      </div>
+      <a class="back" href="./index.html">← Dev hub</a>
+    </header>
+
+    <main class="layout">
+      <section class="panel" aria-labelledby="in-title">
+        <div class="panel-head">
+          <h2 id="in-title">Input</h2>
+          <div class="actions">
+            <button type="button" id="reset">Reset sample</button>
+            <button type="button" id="clear">Clear</button>
+          </div>
+        </div>
+        <textarea id="text" spellcheck="false" aria-label="Text to scan for prices"></textarea>
+
+        <div class="fields">
+          <label class="field">
+            <span>Hostname</span>
+            <input id="hostname" list="hosts" autocomplete="off" spellcheck="false" />
+            <datalist id="hosts">
+              <option value="item.taobao.com"></option>
+              <option value="detail.1688.com"></option>
+              <option value="www.amazon.co.jp"></option>
+              <option value="www.amazon.com"></option>
+              <option value="www.amazon.ca"></option>
+              <option value="shopee.vn"></option>
+              <option value="shopee.tw"></option>
+              <option value="www.finn.no"></option>
+              <option value="www.otto.de"></option>
+            </datalist>
+          </label>
+          <label class="field">
+            <span>&lt;html lang&gt;</span>
+            <input id="lang" placeholder="zh-CN · ja · vi · en-CA" autocomplete="off" spellcheck="false" />
+          </label>
+          <label class="field">
+            <span>Home currency</span>
+            <select id="home"></select>
+          </label>
+          <label class="field">
+            <span>Default ¥ (settings.defaultYen)</span>
+            <select id="defaultYen">
+              <option value="CNY">CNY — yuan</option>
+              <option value="JPY">JPY — yen</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Default $ (settings.defaultDollar)</span>
+            <select id="defaultDollar"></select>
+          </label>
+          <label class="field check">
+            <input type="checkbox" id="compact" />
+            <span>Compact numbers</span>
+          </label>
+        </div>
+
+        <div class="ctx-head">Page context <code>resolveContext()</code></div>
+        <dl id="ctx" class="ctx" aria-live="polite"></dl>
+      </section>
+
+      <section class="panel" aria-labelledby="out-title">
+        <div class="panel-head">
+          <h2 id="out-title">Detected prices</h2>
+          <span id="stats" class="stats" aria-live="polite"></span>
+        </div>
+        <div class="legend">
+          <span><mark class="price">¥189</mark> explicit token</span>
+          <span><mark class="price amb">¥189</mark> currency from context</span>
+          <span class="conv">≈ converted</span>
+        </div>
+        <div id="highlight" class="highlight" aria-label="Text with detected prices highlighted"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Raw</th>
+                <th scope="col" class="num">Amount</th>
+                <th scope="col">Currency</th>
+                <th scope="col">Token</th>
+                <th scope="col">Ambiguous</th>
+                <th scope="col">Reason</th>
+                <th scope="col" class="num">Converted</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="foot">
+      <span id="rates"></span>
+      <span>Nothing leaves this page — the parser is pure and runs locally.</span>
+    </footer>
+  </body>
+</html>

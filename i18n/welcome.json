@@ -1,0 +1,112 @@
+{
+  "welcome_doc_title": {
+    "en": "Welcome to TransPrice",
+    "vi": "Chào mừng bạn đến với TransPrice",
+    "description": "Welcome page document title."
+  },
+  "welcome_title": {
+    "en": "Welcome to TransPrice",
+    "vi": "Chào mừng bạn đến với TransPrice",
+    "description": "Welcome page heading."
+  },
+  "welcome_lead": {
+    "en": "See every price in your currency — TransPrice finds prices on any website and converts them for you.",
+    "vi": "Xem mọi mức giá bằng đồng tiền của bạn — TransPrice tự tìm giá trên mọi trang web và quy đổi giúp bạn.",
+    "description": "Welcome page lead paragraph."
+  },
+  "welcome_home_title": {
+    "en": "Your currency",
+    "vi": "Đồng tiền của bạn",
+    "description": "Home-currency card title / picker label."
+  },
+  "welcome_home_desc": {
+    "en": "We picked it from your browser language — change it if you think in another currency.",
+    "vi": "TransPrice đã chọn sẵn theo ngôn ngữ trình duyệt — bạn có thể đổi nếu quen dùng loại tiền khác.",
+    "description": "Home-currency card description."
+  },
+  "welcome_how_title": {
+    "en": "How it works",
+    "vi": "Cách hoạt động",
+    "description": "Heading above the three steps."
+  },
+  "welcome_step1_title": {
+    "en": "Prices are detected",
+    "vi": "Tự nhận diện giá",
+    "description": "Step 1 title."
+  },
+  "welcome_step1_desc": {
+    "en": "On any shopping site: $1 and more.",
+    "vi": "Trên mọi trang mua sắm: $1 và nhiều kiểu khác.",
+    "description": "Step 1 description. $1 = a few example prices as written on shops (not translated)."
+  },
+  "welcome_step2_title": {
+    "en": "Converted right there",
+    "vi": "Quy đổi ngay tại chỗ",
+    "description": "Step 2 title."
+  },
+  "welcome_step2_desc": {
+    "en": "Each price shows up in your currency, in place. Hover it to see the original.",
+    "vi": "Mỗi mức giá hiện ngay bằng đồng tiền của bạn, đúng vị trí cũ. Rê chuột để xem giá gốc.",
+    "description": "Step 2 description."
+  },
+  "welcome_step3_title": {
+    "en": "One click to switch",
+    "vi": "Bật/tắt chỉ một cú bấm",
+    "description": "Step 3 title."
+  },
+  "welcome_step3_desc": {
+    "en": "Click the TransPrice icon in the toolbar to turn conversion on or off — for everything or just one site.",
+    "vi": "Bấm biểu tượng TransPrice trên thanh công cụ để bật hoặc tắt quy đổi — cho mọi trang hoặc chỉ riêng một trang.",
+    "description": "Step 3 description."
+  },
+  "welcome_illus_on": {
+    "en": "On",
+    "vi": "Bật",
+    "description": "Tiny label in the step-3 illustration (power switch ON)."
+  },
+  "welcome_tips_title": {
+    "en": "Tips",
+    "vi": "Mẹo nhỏ",
+    "description": "Hidden heading of the tips row."
+  },
+  "welcome_tip_shortcut_title": {
+    "en": "Keyboard shortcut",
+    "vi": "Phím tắt",
+    "description": "Tip title."
+  },
+  "welcome_tip_shortcut_desc": {
+    "en": "Turn auto-convert on or off from any page.",
+    "vi": "Bật/tắt tự động quy đổi ở bất kỳ trang nào.",
+    "description": "Tip description."
+  },
+  "welcome_tip_shortcut_set": {
+    "en": "Set a shortcut",
+    "vi": "Đặt phím tắt",
+    "description": "Link shown when the toggle shortcut is not set."
+  },
+  "welcome_tip_pin_title": {
+    "en": "Pin TransPrice to the toolbar",
+    "vi": "Ghim TransPrice lên thanh công cụ",
+    "description": "Tip title."
+  },
+  "welcome_tip_pin_desc": {
+    "en": "Click the puzzle icon in Chrome's toolbar, then the pin next to TransPrice.",
+    "vi": "Bấm biểu tượng mảnh ghép trên thanh công cụ của Chrome, rồi bấm ghim cạnh TransPrice.",
+    "description": "Tip description."
+  },
+  "welcome_footer_note": {
+    "en": "You can change all of this later in Settings.",
+    "vi": "Bạn có thể thay đổi những điều này bất cứ lúc nào trong phần Cài đặt.",
+    "description": "Footer note."
+  },
+  "welcome_open_settings": {
+    "en": "Open settings",
+    "vi": "Mở cài đặt",
+    "description": "Footer button."
+  },
+  "welcome_start": {
+    "en": "Start shopping",
+    "vi": "Bắt đầu mua sắm",
+    "description": "Footer primary button (closes the welcome tab)."
+  }
+}

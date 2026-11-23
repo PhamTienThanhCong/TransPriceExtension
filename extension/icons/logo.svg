@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- TransPrice logo: two overlapping coins. Back coin (outlined, ₫) peeks out behind the solid amber front coin ($).
+       Glyphs are paths (no fonts). Simplified small-size variant: store-assets/src/icon-16.svg. Render: npm run icons -->
+  <defs>
+    <linearGradient id="transprice-front" x1="10" y1="40" x2="86" y2="124" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#EA580C"/>
+    </linearGradient>
+    <mask id="transprice-cut" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+      <rect width="128" height="128" fill="#fff"/>
+      <circle cx="46" cy="82" r="42" fill="#000" stroke="#000" stroke-width="12"/>
+    </mask>
+  </defs>
+  <!-- back coin: ₫ -->
+  <g mask="url(#transprice-cut)">
+    <circle cx="84" cy="44" r="38.5" fill="#FFF7E6" stroke="#B45309" stroke-width="7"/>
+    <g fill="none" stroke="#B45309" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="91" cy="39" r="7.5"/>
+      <path d="M98.5 19v28M93 25h11M88.5 54.5h15.5"/>
+    </g>
+  </g>
+  <!-- front coin: $ -->
+  <circle cx="46" cy="82" r="42" fill="url(#transprice-front)"/>
+  <circle cx="46" cy="82" r="35" fill="none" stroke="#FFFFFF" stroke-opacity="0.32" stroke-width="2.5"/>
+  <path d="M59 66.5C56 62 51.5 60 46 60c-7.5 0-12.5 4-12.5 10s5.5 8.5 12.5 10.5c7.5 2 13 4.5 13 11.5 0 6.5-5.5 11-13 11-6 0-11.5-2.5-14-7M46 53v58" fill="none" stroke="#FFFFFF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

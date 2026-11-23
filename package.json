@@ -1,0 +1,20 @@
+{
+  "name": "transprice",
+  "private": true,
+  "description": "TransPrice — see every price in your currency. Open-source Chrome extension (Manifest V3) that detects prices on any page and converts them to your home currency.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "i18n": "node scripts/build-locales.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "node --test \"tests/**/*.test.{js,mjs}\"",
+    "package": "bash scripts/package.sh",
+    "dev": "node scripts/dev-server.mjs",
+    "icons": "node scripts/render-icons.mjs",
+    "rates:snapshot": "node scripts/update-rates-snapshot.mjs",
+    "sync:main": "bash scripts/sync-main.sh"
+  }
+}

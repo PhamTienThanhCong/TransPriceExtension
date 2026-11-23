@@ -1,0 +1,143 @@
+/* TransPrice demo page — a Taobao-like shop. Self-contained: no remote fonts/images (gradients as photos). */
+:root {
+  --tb-orange: #ff5000;
+  --tb-orange-2: #ff7a00;
+  --tb-bg: #f4f4f4;
+  --tb-text: #11192d;
+  --tb-muted: #7c889c;
+  --tb-card: #fff;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--tb-bg);
+  color: var(--tb-text);
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', Roboto, sans-serif;
+}
+a { color: inherit; text-decoration: none; }
+
+/* ── header ── */
+.tb-header { background: linear-gradient(90deg, var(--tb-orange-2), var(--tb-orange)); color: #fff; }
+.tb-header__inner { max-width: 1320px; margin: 0 auto; padding: 14px 20px; display: flex; align-items: center; gap: 28px; }
+.tb-logo { font-size: 28px; font-weight: 800; letter-spacing: 2px; display: flex; align-items: baseline; gap: 8px; }
+.tb-logo span { font-size: 13px; font-weight: 500; letter-spacing: 0; opacity: 0.9; }
+.tb-search { flex: 1; display: flex; max-width: 640px; background: #fff; border-radius: 22px; padding: 3px; }
+.tb-search input { flex: 1; border: 0; outline: 0; padding: 8px 16px; font: inherit; border-radius: 20px; }
+.tb-search button { border: 0; border-radius: 20px; padding: 0 24px; color: #fff; font: inherit; font-weight: 600; background: linear-gradient(90deg, var(--tb-orange-2), var(--tb-orange)); }
+
+/* ── dev panel ── */
+.dev-panel { max-width: 1320px; margin: 12px auto 0; padding: 10px 16px; background: #fffbe8; border: 1px solid #f3d27a; border-radius: 10px; font-size: 13px; }
+.dev-panel__row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.dev-panel__status { margin-top: 6px; color: #6b5200; gap: 18px; }
+.dev-panel__note { margin: 6px 0 0; color: #6b5200; }
+.dev-panel select, .dev-panel button { font: inherit; padding: 2px 6px; }
+#dev-restore-result.ok { color: #0a7a2f; font-weight: 600; }
+#dev-restore-result.bad { color: #b00020; font-weight: 600; }
+
+/* ── sections ── */
+.tb-section { max-width: 1320px; margin: 16px auto; padding: 0 20px; }
+.tb-section__title { font-size: 20px; margin: 18px 0 12px; }
+.tb-section__title small { font-size: 13px; font-weight: 400; color: var(--tb-muted); margin-left: 8px; }
+
+/* ── product grid (Taobao "猜你喜欢") ── */
+.tb-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 1200px) { .tb-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .tb-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.Card--doubleCardWrapper, .item-card {
+  display: flex; flex-direction: column; background: var(--tb-card); border-radius: 12px; overflow: hidden;
+  padding-bottom: 10px; transition: box-shadow .15s, transform .15s;
+}
+.Card--doubleCardWrapper:hover, .item-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.08); transform: translateY(-1px); }
+.MainPic--mainPicWrapper { aspect-ratio: 1 / 1; overflow: hidden; }
+.ph { width: 100%; height: 100%; }
+.ph-1 { background: radial-gradient(circle at 30% 30%, #fff7 0 18%, transparent 19%), linear-gradient(135deg, #f6d365, #fda085); }
+.ph-2 { background: radial-gradient(circle at 60% 40%, #ffe4ef 0 22%, transparent 23%), linear-gradient(135deg, #ff9a9e, #fecfef); }
+.ph-3 { background: radial-gradient(circle at 50% 35%, #fffbe0 0 20%, transparent 21%), linear-gradient(160deg, #2c3e50, #4ca1af); }
+.ph-4 { background: linear-gradient(135deg, #bdc3c7, #6b7b8c); }
+.ph-5 { background: repeating-linear-gradient(0deg, #fff 0 18px, #f0e6d8 18px 20px), linear-gradient(#c79081, #dfa579); background-blend-mode: multiply; }
+.ph-6 { background: conic-gradient(from 45deg, #f8b195, #f67280, #c06c84, #6c5b7b, #f8b195); }
+.ph-7 { background: radial-gradient(circle at 20% 30%, #fff59d 0 4%, transparent 5%), radial-gradient(circle at 70% 60%, #fff59d 0 3%, transparent 4%), radial-gradient(circle at 45% 80%, #fff59d 0 3%, transparent 4%), linear-gradient(160deg, #0f2027, #203a43, #2c5364); }
+.ph-8 { background: radial-gradient(circle at 50% 50%, #c0392b 0 12%, transparent 13%), linear-gradient(135deg, #134e5e, #71b280); }
+.ph-9 { background: linear-gradient(135deg, #a1c4fd, #c2e9fb); }
+.ph-10 { background: linear-gradient(135deg, #e0c3fc, #8ec5fc); }
+.ph-11 { background: radial-gradient(circle at 50% 45%, #222 0 25%, transparent 26%), linear-gradient(135deg, #f093fb, #f5576c); }
+.ph-12 { background: radial-gradient(circle at 40% 40%, #ffd1dc 0 20%, transparent 21%), linear-gradient(135deg, #fbc2eb, #a6c1ee); }
+.ph-13 { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+.ph-14 { background: linear-gradient(135deg, #fa709a, #fee140); }
+.ph-15 { background: linear-gradient(135deg, #30cfd0, #330867); }
+.ph-16 { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+.ph-17 { background: linear-gradient(135deg, #5ee7df, #b490ca); }
+.ph-18 { background: linear-gradient(135deg, #d299c2, #fef9d7); }
+
+.Title--descWrapper { padding: 8px 10px 0; }
+.Title--title { font-size: 14px; line-height: 20px; height: 40px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.SalesPoint--subIconWrapper { padding: 6px 10px 0; }
+.promo { display: inline-block; color: var(--tb-orange); border: 1px solid #ffc8a8; border-radius: 4px; font-size: 12px; line-height: 16px; padding: 0 4px; }
+
+/* Taobao search price row: ¥ small, integer big, decimals medium, sales grey — all in one flex wrapper */
+.Price--priceWrapper { display: flex; align-items: baseline; flex-wrap: wrap; padding: 6px 10px 0; color: var(--tb-orange); }
+.Price--unit { font-size: 14px; font-weight: 700; }
+.Price--priceInt { font-size: 22px; font-weight: 700; line-height: 26px; }
+.Price--priceFloat { font-size: 16px; font-weight: 700; }
+.Price--realSales { color: var(--tb-muted); font-size: 12px; margin-left: 8px; }
+.Price--realSales b { font-weight: 400; }
+.Price--procity { color: var(--tb-muted); font-size: 12px; margin-left: auto; }
+
+.price-row { display: flex; align-items: baseline; gap: 8px; padding: 6px 10px 0; }
+.price { color: var(--tb-orange); font-weight: 700; display: flex; align-items: baseline; }
+.price .unit { font-size: 14px; }
+.price .int { font-size: 22px; line-height: 26px; }
+.price .dec { font-size: 16px; }
+.p-price strong { color: var(--tb-orange); font-weight: 700; }
+.p-price em { font-style: normal; font-size: 14px; }
+.p-price i { font-style: normal; font-size: 22px; line-height: 26px; }
+.price-plain { color: var(--tb-orange); font-size: 20px; font-weight: 700; line-height: 26px; }
+.price-plain .deal-cnt { font-size: 12px; font-weight: 400; margin-left: 6px; }
+.deal-cnt { color: var(--tb-muted); font-size: 12px; }
+.ShopInfo--shopInfo { padding: 6px 10px 0; }
+.same { display: inline-block; font-size: 12px; color: var(--tb-muted); border: 1px solid #e3e6ec; border-radius: 10px; padding: 0 8px; }
+
+/* ── format cases ── */
+.cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 900px) { .cases { grid-template-columns: 1fr; } }
+.case { display: grid; grid-template-columns: 190px 1fr 170px; gap: 12px; align-items: center; background: #fff; border-radius: 10px; padding: 10px 14px; }
+.case__label { color: var(--tb-muted); font-size: 12px; }
+.case__expect { color: #0a7a2f; font-size: 12px; }
+.case__body p { margin: 2px 0; }
+.case__body.muted { color: var(--tb-muted); }
+.amz { font-family: 'Amazon Ember', Arial, sans-serif; }
+.a-price { color: #0f1111; }
+.a-offscreen { position: absolute !important; left: -10000px !important; width: 1px; height: 1px; overflow: hidden; }
+.a-price[data-a-size='xl'] .a-price-symbol { font-size: 14px; position: relative; top: -0.75em; }
+.a-price[data-a-size='xl'] .a-price-whole { font-size: 28px; }
+.a-price[data-a-size='xl'] .a-price-fraction { font-size: 14px; position: relative; top: -0.75em; }
+.amz-list { color: #565959; font-size: 13px; }
+.a-text-price { color: #565959; text-decoration: line-through; }
+.wm-price { font-size: 26px; font-weight: 700; color: #2a8703; }
+.wm-price sup { font-size: 14px; }
+.eu, .cn, .jp, .vn, .range { font-weight: 600; }
+.cn-split .num { font-size: 18px; font-weight: 700; color: #c7000b; }
+.cn-split .yuan { font-size: 13px; color: #c7000b; }
+.editable { display: grid; gap: 4px; }
+.editable textarea { font: inherit; width: 100%; }
+.ce { border: 1px dashed #ccc; padding: 4px 6px; border-radius: 6px; }
+.editable code, .editable pre { margin: 0; background: #f2f3f5; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+.case--dark { background: #15171c; }
+.case--dark .case__label { color: #9aa3b2; }
+.case--dark .case__expect { color: #6ee7a0; }
+.dark-box { color: #e9edf3; }
+.dark-title { font-size: 13px; color: #b8c0cc; }
+.dark-price { font-size: 15px; }
+.dark-price .int { font-size: 24px; font-weight: 700; color: #fbbf24; }
+.dark-price .cur, .dark-price .dec { color: #fbbf24; font-weight: 700; }
+.dark-price .was { color: #8792a2; }
+
+/* ── dynamic ── */
+.tickers { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+@media (max-width: 900px) { .tickers { grid-template-columns: 1fr 1fr; } }
+.ticker { background: #fff; border-radius: 10px; padding: 10px 14px; }
+.ticker .Price--priceWrapper { padding: 4px 0 0; }
+.ticker--status { font-size: 12px; color: var(--tb-muted); }
+.more-row { text-align: center; margin: 14px 0 40px; }
+.more-btn { border: 1px solid var(--tb-orange); color: var(--tb-orange); background: #fff; border-radius: 18px; padding: 8px 36px; font: inherit; font-weight: 600; cursor: pointer; }
+.more-btn:hover { background: #fff3ec; }

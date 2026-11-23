@@ -1,0 +1,7 @@
+{
+  "bg_action_title_off": {
+    "en": "TransPrice — automatic conversion is off",
+    "vi": "TransPrice — đang tắt tự động quy đổi giá",
+    "description": "Toolbar icon tooltip while settings.enabled is false (the badge shows 'off'). Uses the browser language."
+  }
+}

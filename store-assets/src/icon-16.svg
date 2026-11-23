@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- TransPrice logo, simplified for 16/32 px: no ₫ glyph, thicker strokes, bigger front coin. Master: extension/icons/logo.svg -->
+  <defs>
+    <linearGradient id="transprice-front-s" x1="0" y1="34" x2="94" y2="128" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#EA580C"/>
+    </linearGradient>
+    <mask id="transprice-cut-s" maskUnits="userSpaceOnUse" x="0" y="0" width="128" height="128">
+      <rect width="128" height="128" fill="#fff"/>
+      <circle cx="48" cy="80" r="48" fill="#000" stroke="#000" stroke-width="16"/>
+    </mask>
+  </defs>
+  <g mask="url(#transprice-cut-s)">
+    <circle cx="86" cy="42" r="34" fill="#FFF7E6" stroke="#B45309" stroke-width="14"/>
+  </g>
+  <circle cx="48" cy="80" r="48" fill="url(#transprice-front-s)"/>
+  <path d="M64 61c-3.5-5-9-7-16-7-9 0-15 4.5-15 11.5S40 75 48 77.5c9 2.5 15.5 5 15.5 13 0 7.5-6.5 12.5-15.5 12.5-7.5 0-13.5-3-16-8M48 44v72" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

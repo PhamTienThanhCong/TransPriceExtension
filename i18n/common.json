@@ -1,0 +1,82 @@
+{
+  "common_on": { "en": "On", "vi": "Bật" },
+  "common_off": { "en": "Off", "vi": "Tắt" },
+  "common_save": { "en": "Save", "vi": "Lưu" },
+  "common_saved": { "en": "Saved", "vi": "Đã lưu" },
+  "common_cancel": { "en": "Cancel", "vi": "Hủy" },
+  "common_reset": { "en": "Reset", "vi": "Đặt lại" },
+  "common_close": { "en": "Close", "vi": "Đóng" },
+  "common_done": { "en": "Done", "vi": "Xong" },
+  "common_add": { "en": "Add", "vi": "Thêm" },
+  "common_remove": { "en": "Remove", "vi": "Xóa" },
+  "common_search": { "en": "Search", "vi": "Tìm kiếm" },
+  "common_loading": { "en": "Loading…", "vi": "Đang tải…" },
+  "common_settings": { "en": "Settings", "vi": "Cài đặt" },
+  "common_open_settings": { "en": "Open settings", "vi": "Mở cài đặt" },
+  "common_learn_more": { "en": "Learn more", "vi": "Tìm hiểu thêm" },
+  "common_error_generic": {
+    "en": "Something went wrong. Please try again.",
+    "vi": "Đã có lỗi xảy ra. Vui lòng thử lại."
+  },
+  "common_currency": { "en": "Currency", "vi": "Loại tiền" },
+  "common_home_currency": {
+    "en": "Home currency",
+    "vi": "Tiền tệ của bạn",
+    "description": "The currency every price is converted to (e.g. VND)"
+  },
+  "common_home_currency_hint": {
+    "en": "Prices on web pages are converted to this currency.",
+    "vi": "Giá trên các trang web sẽ được quy đổi sang loại tiền này."
+  },
+  "common_search_currency": {
+    "en": "Search currency…",
+    "vi": "Tìm loại tiền…",
+    "description": "Placeholder of the searchable currency picker"
+  },
+  "common_no_results": { "en": "No matches", "vi": "Không tìm thấy" },
+  "common_amount": { "en": "Amount", "vi": "Số tiền" },
+  "common_from": { "en": "From", "vi": "Từ", "description": "Converter: source currency" },
+  "common_to": { "en": "To", "vi": "Sang", "description": "Converter: target currency" },
+  "common_swap_currencies": { "en": "Swap currencies", "vi": "Đảo chiều quy đổi" },
+  "common_exchange_rate": { "en": "Exchange rate", "vi": "Tỷ giá" },
+  "common_refresh_rates": { "en": "Refresh rates", "vi": "Cập nhật tỷ giá" },
+  "common_refreshing_rates": { "en": "Updating rates…", "vi": "Đang cập nhật tỷ giá…" },
+  "common_rates_updated": { "en": "Exchange rates updated", "vi": "Đã cập nhật tỷ giá" },
+  "common_rates_date": {
+    "en": "Rates of $1",
+    "vi": "Tỷ giá ngày $1",
+    "description": "$1 = localized date of the rate table, e.g. 22/11/2026"
+  },
+  "common_rates_source": {
+    "en": "Source: $1",
+    "vi": "Nguồn: $1",
+    "description": "$1 = rate provider name"
+  },
+  "common_rates_offline": {
+    "en": "Offline — using built-in rates, which may be out of date.",
+    "vi": "Đang ngoại tuyến — dùng tỷ giá có sẵn trong tiện ích, có thể đã cũ."
+  },
+  "common_rates_error": {
+    "en": "Couldn't update the rates. Please try again later.",
+    "vi": "Chưa cập nhật được tỷ giá. Vui lòng thử lại sau."
+  },
+  "common_rates_attribution": {
+    "en": "Rates By Exchange Rate API",
+    "vi": "Rates By Exchange Rate API",
+    "description": "Attribution required by ExchangeRate-API's open access terms — keep it verbatim, link it to https://www.exchangerate-api.com"
+  },
+  "common_theme": { "en": "Theme", "vi": "Giao diện" },
+  "common_theme_auto": { "en": "System", "vi": "Theo hệ thống" },
+  "common_theme_light": { "en": "Light", "vi": "Sáng" },
+  "common_theme_dark": { "en": "Dark", "vi": "Tối" },
+  "common_display_language": { "en": "Display language", "vi": "Ngôn ngữ hiển thị" },
+  "common_language_auto": { "en": "Same as browser", "vi": "Theo trình duyệt" },
+  "common_privacy_policy": { "en": "Privacy policy", "vi": "Chính sách quyền riêng tư" },
+  "common_source_code": { "en": "Source code", "vi": "Mã nguồn" },
+  "common_report_issue": { "en": "Report a problem", "vi": "Báo lỗi" },
+  "common_version": {
+    "en": "Version $1",
+    "vi": "Phiên bản $1",
+    "description": "$1 = extension version, e.g. 0.1.0"
+  }
+}

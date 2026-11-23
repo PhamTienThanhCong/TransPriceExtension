@@ -1,0 +1,691 @@
+{
+  "actionTitle": {
+    "message": "TransPrice — Quy đổi giá"
+  },
+  "bg_action_title_off": {
+    "message": "TransPrice — đang tắt tự động quy đổi giá"
+  },
+  "cmdToggleEnabled": {
+    "message": "Bật/tắt tự động quy đổi giá"
+  },
+  "common_add": {
+    "message": "Thêm"
+  },
+  "common_amount": {
+    "message": "Số tiền"
+  },
+  "common_cancel": {
+    "message": "Hủy"
+  },
+  "common_close": {
+    "message": "Đóng"
+  },
+  "common_currency": {
+    "message": "Loại tiền"
+  },
+  "common_display_language": {
+    "message": "Ngôn ngữ hiển thị"
+  },
+  "common_done": {
+    "message": "Xong"
+  },
+  "common_error_generic": {
+    "message": "Đã có lỗi xảy ra. Vui lòng thử lại."
+  },
+  "common_exchange_rate": {
+    "message": "Tỷ giá"
+  },
+  "common_from": {
+    "message": "Từ"
+  },
+  "common_home_currency": {
+    "message": "Tiền tệ của bạn"
+  },
+  "common_home_currency_hint": {
+    "message": "Giá trên các trang web sẽ được quy đổi sang loại tiền này."
+  },
+  "common_language_auto": {
+    "message": "Theo trình duyệt"
+  },
+  "common_learn_more": {
+    "message": "Tìm hiểu thêm"
+  },
+  "common_loading": {
+    "message": "Đang tải…"
+  },
+  "common_no_results": {
+    "message": "Không tìm thấy"
+  },
+  "common_off": {
+    "message": "Tắt"
+  },
+  "common_on": {
+    "message": "Bật"
+  },
+  "common_open_settings": {
+    "message": "Mở cài đặt"
+  },
+  "common_privacy_policy": {
+    "message": "Chính sách quyền riêng tư"
+  },
+  "common_rates_attribution": {
+    "message": "Rates By Exchange Rate API"
+  },
+  "common_rates_date": {
+    "message": "Tỷ giá ngày $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "common_rates_error": {
+    "message": "Chưa cập nhật được tỷ giá. Vui lòng thử lại sau."
+  },
+  "common_rates_offline": {
+    "message": "Đang ngoại tuyến — dùng tỷ giá có sẵn trong tiện ích, có thể đã cũ."
+  },
+  "common_rates_source": {
+    "message": "Nguồn: $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "common_rates_updated": {
+    "message": "Đã cập nhật tỷ giá"
+  },
+  "common_refresh_rates": {
+    "message": "Cập nhật tỷ giá"
+  },
+  "common_refreshing_rates": {
+    "message": "Đang cập nhật tỷ giá…"
+  },
+  "common_remove": {
+    "message": "Xóa"
+  },
+  "common_report_issue": {
+    "message": "Báo lỗi"
+  },
+  "common_reset": {
+    "message": "Đặt lại"
+  },
+  "common_save": {
+    "message": "Lưu"
+  },
+  "common_saved": {
+    "message": "Đã lưu"
+  },
+  "common_search": {
+    "message": "Tìm kiếm"
+  },
+  "common_search_currency": {
+    "message": "Tìm loại tiền…"
+  },
+  "common_settings": {
+    "message": "Cài đặt"
+  },
+  "common_source_code": {
+    "message": "Mã nguồn"
+  },
+  "common_swap_currencies": {
+    "message": "Đảo chiều quy đổi"
+  },
+  "common_theme": {
+    "message": "Giao diện"
+  },
+  "common_theme_auto": {
+    "message": "Theo hệ thống"
+  },
+  "common_theme_dark": {
+    "message": "Tối"
+  },
+  "common_theme_light": {
+    "message": "Sáng"
+  },
+  "common_to": {
+    "message": "Sang"
+  },
+  "common_version": {
+    "message": "Phiên bản $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "extDescription": {
+    "message": "Xem mọi giá tiền bằng tiền của bạn: giá trên mọi trang (Taobao ¥, Amazon $, € …) tự quy đổi sang VND hoặc loại tiền bạn chọn."
+  },
+  "extName": {
+    "message": "TransPrice — Quy đổi giá tiền khi mua sắm"
+  },
+  "extShortName": {
+    "message": "TransPrice"
+  },
+  "options_about_github": {
+    "message": "GitHub"
+  },
+  "options_about_license": {
+    "message": "Giấy phép MIT · Biểu tượng: Lucide (ISC)"
+  },
+  "options_about_report": {
+    "message": "Báo lỗi"
+  },
+  "options_about_tagline": {
+    "message": "Xem mọi mức giá bằng đồng tiền của bạn. Miễn phí và mã nguồn mở."
+  },
+  "options_appearance_desc": {
+    "message": "Chủ đề và ngôn ngữ của cửa sổ TransPrice và các trang cài đặt."
+  },
+  "options_compact_desc": {
+    "message": "Viết gọn số lớn: $P1$ thành $P2$.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "options_compact_title": {
+    "message": "Rút gọn số"
+  },
+  "options_disabled_desc": {
+    "message": "Giá trên các trang này được giữ nguyên. Áp dụng cho cả tên miền con."
+  },
+  "options_disabled_title": {
+    "message": "Đã tắt trên"
+  },
+  "options_display_desc": {
+    "message": "Giá sau khi quy đổi sẽ trông như thế nào trên trang."
+  },
+  "options_doc_title": {
+    "message": "Cài đặt TransPrice"
+  },
+  "options_dollar_desc": {
+    "message": "Các trang của Canada, Úc, Singapore… được nhận diện tự động qua tên miền."
+  },
+  "options_dollar_title": {
+    "message": "Ký hiệu “$$” đứng riêng là"
+  },
+  "options_enabled_desc": {
+    "message": "Tìm giá trên các trang web và hiển thị bằng đồng tiền của bạn. Bấm biểu tượng trên thanh công cụ cũng bật/tắt được."
+  },
+  "options_enabled_title": {
+    "message": "Tự động quy đổi giá"
+  },
+  "options_general_desc": {
+    "message": "Chọn đồng tiền bạn quen dùng và bật/tắt việc tự động quy đổi giá."
+  },
+  "options_highlight_desc": {
+    "message": "Gạch chân chấm nhẹ để bạn biết giá nào đã được quy đổi."
+  },
+  "options_highlight_title": {
+    "message": "Đánh dấu giá đã quy đổi"
+  },
+  "options_home_desc": {
+    "message": "Mọi mức giá TransPrice tìm thấy sẽ được quy đổi sang đồng tiền này."
+  },
+  "options_home_title": {
+    "message": "Đồng tiền của bạn"
+  },
+  "options_mode_append_desc": {
+    "message": "Giữ nguyên giá gốc và thêm giá đã quy đổi ngay bên cạnh."
+  },
+  "options_mode_append_title": {
+    "message": "Hiện cả hai"
+  },
+  "options_mode_label": {
+    "message": "Cách hiện giá đã quy đổi"
+  },
+  "options_mode_replace_desc": {
+    "message": "Chỉ hiện giá bằng đồng tiền của bạn. Rê chuột vào giá để xem giá gốc."
+  },
+  "options_mode_replace_title": {
+    "message": "Thay giá gốc"
+  },
+  "options_nav_about": {
+    "message": "Giới thiệu"
+  },
+  "options_nav_appearance": {
+    "message": "Giao diện"
+  },
+  "options_nav_display": {
+    "message": "Cách hiển thị giá"
+  },
+  "options_nav_general": {
+    "message": "Chung"
+  },
+  "options_nav_label": {
+    "message": "Các mục cài đặt"
+  },
+  "options_nav_rates": {
+    "message": "Tỷ giá"
+  },
+  "options_nav_sites": {
+    "message": "Trang web"
+  },
+  "options_nav_symbols": {
+    "message": "Ký hiệu $$ và ¥"
+  },
+  "options_picker_all": {
+    "message": "Tất cả loại tiền"
+  },
+  "options_picker_empty": {
+    "message": "Không tìm thấy loại tiền nào"
+  },
+  "options_picker_results": {
+    "message": "Kết quả"
+  },
+  "options_picker_search": {
+    "message": "Tìm theo mã, tên hoặc ký hiệu"
+  },
+  "options_picker_search_label": {
+    "message": "Tìm loại tiền"
+  },
+  "options_picker_suggested": {
+    "message": "Gợi ý"
+  },
+  "options_pins_desc": {
+    "message": "Ý nghĩa của $$ hoặc ¥ trên từng trang. Nếu TransPrice đoán sai, hãy chọn lại trong cửa sổ TransPrice."
+  },
+  "options_pins_empty_desc": {
+    "message": "TransPrice đang tự nhận diện giúp bạn."
+  },
+  "options_pins_empty_title": {
+    "message": "Chưa chọn riêng cho trang nào"
+  },
+  "options_pins_remove": {
+    "message": "Để TransPrice tự nhận diện lại loại tiền trên $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "options_pins_title": {
+    "message": "Loại tiền đã chọn cho từng trang"
+  },
+  "options_privacy_link": {
+    "message": "Đọc chính sách quyền riêng tư"
+  },
+  "options_privacy_text": {
+    "message": "TransPrice chạy hoàn toàn trong trình duyệt của bạn. Thứ duy nhất được tải về là bảng tỷ giá công khai — không gửi nội dung trang, không lưu lịch sử duyệt web, không theo dõi."
+  },
+  "options_privacy_title": {
+    "message": "Quyền riêng tư"
+  },
+  "options_rates_date": {
+    "message": "Tỷ giá ngày"
+  },
+  "options_rates_desc": {
+    "message": "Tỷ giá tham khảo hằng ngày từ các nguồn công khai miễn phí, tự cập nhật vài giờ một lần."
+  },
+  "options_rates_never": {
+    "message": "Chưa tải"
+  },
+  "options_rates_privacy": {
+    "message": "TransPrice chỉ tải bảng tỷ giá công khai — không gửi đi bất cứ thông tin nào về trang bạn xem."
+  },
+  "options_rates_refresh": {
+    "message": "Cập nhật ngay"
+  },
+  "options_rates_refresh_failed": {
+    "message": "Không cập nhật được tỷ giá — hãy kiểm tra kết nối mạng"
+  },
+  "options_rates_refreshed": {
+    "message": "Đã cập nhật tỷ giá"
+  },
+  "options_rates_sample": {
+    "message": "Quy ra $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "options_rates_snapshot": {
+    "message": "Chưa tải được tỷ giá mới, TransPrice đang dùng bảng tỷ giá dự phòng có sẵn."
+  },
+  "options_rates_source": {
+    "message": "Nguồn"
+  },
+  "options_rates_source_snapshot": {
+    "message": "Bảng dự phòng (ngoại tuyến)"
+  },
+  "options_rates_updated": {
+    "message": "Lần tải gần nhất"
+  },
+  "options_save_failed": {
+    "message": "Chưa lưu được, bạn thử lại nhé."
+  },
+  "options_saved": {
+    "message": "Đã lưu"
+  },
+  "options_shortcut_not_set": {
+    "message": "Chưa đặt"
+  },
+  "options_shortcut_popup": {
+    "message": "Mở cửa sổ TransPrice"
+  },
+  "options_shortcut_toggle": {
+    "message": "Bật/tắt tự động quy đổi"
+  },
+  "options_shortcuts_customize": {
+    "message": "Đổi phím tắt"
+  },
+  "options_shortcuts_desc": {
+    "message": "Bật/tắt quy đổi mà không cần rời trang đang xem."
+  },
+  "options_shortcuts_hint": {
+    "message": "Phím tắt do Chrome quản lý."
+  },
+  "options_shortcuts_title": {
+    "message": "Phím tắt"
+  },
+  "options_sites_add": {
+    "message": "Thêm"
+  },
+  "options_sites_add_label": {
+    "message": "Trang web"
+  },
+  "options_sites_desc": {
+    "message": "Tắt TransPrice trên từng trang web cụ thể và xem lại loại tiền bạn đã chọn cho từng trang."
+  },
+  "options_sites_empty_desc": {
+    "message": "Thêm trang ở ô phía trên, hoặc dùng công tắc trong cửa sổ TransPrice khi đang ở trang đó."
+  },
+  "options_sites_empty_title": {
+    "message": "TransPrice đang hoạt động trên mọi trang web"
+  },
+  "options_sites_error_duplicate": {
+    "message": "$P1$ đã có trong danh sách",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "options_sites_error_invalid": {
+    "message": "Hãy nhập địa chỉ trang web, ví dụ example.com"
+  },
+  "options_sites_placeholder": {
+    "message": "ví dụ: example.com"
+  },
+  "options_sites_remove": {
+    "message": "Bật lại TransPrice cho $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "options_symbols_desc": {
+    "message": "Nhiều loại tiền dùng chung các ký hiệu này. TransPrice sẽ tự đoán theo trang web trước, chỉ dùng lựa chọn bên dưới khi trang không có gợi ý nào."
+  },
+  "options_theme_auto": {
+    "message": "Tự động"
+  },
+  "options_theme_dark": {
+    "message": "Tối"
+  },
+  "options_theme_desc": {
+    "message": "Tự động sẽ theo cài đặt của hệ thống."
+  },
+  "options_theme_light": {
+    "message": "Sáng"
+  },
+  "options_theme_title": {
+    "message": "Chủ đề"
+  },
+  "options_ui_language_auto": {
+    "message": "Tự động (theo trình duyệt)"
+  },
+  "options_ui_language_desc": {
+    "message": "Ngôn ngữ của menu và nút bấm trong TransPrice. Các trang đang mở sẽ tải lại để áp dụng."
+  },
+  "options_ui_language_title": {
+    "message": "Ngôn ngữ hiển thị"
+  },
+  "options_version": {
+    "message": "Phiên bản $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "options_yen_desc": {
+    "message": "Taobao, Tmall, 1688, JD luôn được tính là nhân dân tệ; các trang Nhật là yên."
+  },
+  "options_yen_title": {
+    "message": "Ký hiệu “¥” đứng riêng là"
+  },
+  "popup_amount": {
+    "message": "Số tiền"
+  },
+  "popup_amount_placeholder": {
+    "message": "Nhập số tiền"
+  },
+  "popup_converter_title": {
+    "message": "Đổi tiền nhanh"
+  },
+  "popup_error": {
+    "message": "Có lỗi xảy ra, bạn thử lại nhé."
+  },
+  "popup_from": {
+    "message": "Đổi từ"
+  },
+  "popup_home_label": {
+    "message": "Tiền của bạn"
+  },
+  "popup_invalid_amount": {
+    "message": "Hãy nhập một số, ví dụ 1.299,99"
+  },
+  "popup_no_rate": {
+    "message": "Chưa có tỷ giá cho loại tiền này"
+  },
+  "popup_page_title": {
+    "message": "TransPrice"
+  },
+  "popup_power_off": {
+    "message": "Đang tắt · bấm để bật lại"
+  },
+  "popup_power_on": {
+    "message": "Đang bật · giá hiển thị bằng $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popup_power_title": {
+    "message": "Tự động quy đổi giá"
+  },
+  "popup_rates_line": {
+    "message": "Tỷ giá $P1$ · $P2$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "popup_rates_missing": {
+    "message": "Chưa có tỷ giá"
+  },
+  "popup_rates_updated": {
+    "message": "Đã tải $P1$",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popup_reason_default": {
+    "message": "Theo cài đặt mặc định của bạn"
+  },
+  "popup_reason_domain": {
+    "message": "Nhận diện theo tên miền"
+  },
+  "popup_reason_lang": {
+    "message": "Nhận diện theo ngôn ngữ của trang"
+  },
+  "popup_reason_reset": {
+    "message": "Để tự nhận diện"
+  },
+  "popup_reason_script": {
+    "message": "Nhận diện theo chữ viết trên trang"
+  },
+  "popup_reason_site_pin": {
+    "message": "Bạn đã chọn cho trang này"
+  },
+  "popup_refresh": {
+    "message": "Cập nhật tỷ giá"
+  },
+  "popup_refresh_failed": {
+    "message": "Không cập nhật được tỷ giá — hãy kiểm tra kết nối mạng"
+  },
+  "popup_refreshed": {
+    "message": "Đã cập nhật tỷ giá"
+  },
+  "popup_reload": {
+    "message": "Tải lại trang"
+  },
+  "popup_settings": {
+    "message": "Cài đặt"
+  },
+  "popup_site_count_one": {
+    "message": "Đã quy đổi $P1$ giá",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popup_site_count_other": {
+    "message": "Đã quy đổi $P1$ giá",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popup_site_disabled": {
+    "message": "Đã tắt trên trang này"
+  },
+  "popup_site_global_off": {
+    "message": "Tự động quy đổi đang tắt"
+  },
+  "popup_site_label": {
+    "message": "Trang này"
+  },
+  "popup_site_none": {
+    "message": "Chưa thấy giá nào trên trang này"
+  },
+  "popup_site_switch": {
+    "message": "Quy đổi trên trang này"
+  },
+  "popup_site_symbol": {
+    "message": "$P1$ trên trang này là",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popup_snapshot_hint": {
+    "message": "Tỷ giá dự phòng — chưa tải được tỷ giá mới"
+  },
+  "popup_source_snapshot": {
+    "message": "dự phòng"
+  },
+  "popup_swap": {
+    "message": "Đảo chiều quy đổi"
+  },
+  "popup_to": {
+    "message": "Đổi sang"
+  },
+  "popup_unavailable_desc": {
+    "message": "TransPrice không chạy được trên trang của trình duyệt (chrome://, Chrome Web Store). Nếu tab này mở từ trước khi cài TransPrice, hãy tải lại trang."
+  },
+  "popup_unavailable_title": {
+    "message": "Không đọc được giá trên trang này"
+  },
+  "welcome_doc_title": {
+    "message": "Chào mừng bạn đến với TransPrice"
+  },
+  "welcome_footer_note": {
+    "message": "Bạn có thể thay đổi những điều này bất cứ lúc nào trong phần Cài đặt."
+  },
+  "welcome_home_desc": {
+    "message": "TransPrice đã chọn sẵn theo ngôn ngữ trình duyệt — bạn có thể đổi nếu quen dùng loại tiền khác."
+  },
+  "welcome_home_title": {
+    "message": "Đồng tiền của bạn"
+  },
+  "welcome_how_title": {
+    "message": "Cách hoạt động"
+  },
+  "welcome_illus_on": {
+    "message": "Bật"
+  },
+  "welcome_lead": {
+    "message": "Xem mọi mức giá bằng đồng tiền của bạn — TransPrice tự tìm giá trên mọi trang web và quy đổi giúp bạn."
+  },
+  "welcome_open_settings": {
+    "message": "Mở cài đặt"
+  },
+  "welcome_start": {
+    "message": "Bắt đầu mua sắm"
+  },
+  "welcome_step1_desc": {
+    "message": "Trên mọi trang mua sắm: $P1$ và nhiều kiểu khác.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "welcome_step1_title": {
+    "message": "Tự nhận diện giá"
+  },
+  "welcome_step2_desc": {
+    "message": "Mỗi mức giá hiện ngay bằng đồng tiền của bạn, đúng vị trí cũ. Rê chuột để xem giá gốc."
+  },
+  "welcome_step2_title": {
+    "message": "Quy đổi ngay tại chỗ"
+  },
+  "welcome_step3_desc": {
+    "message": "Bấm biểu tượng TransPrice trên thanh công cụ để bật hoặc tắt quy đổi — cho mọi trang hoặc chỉ riêng một trang."
+  },
+  "welcome_step3_title": {
+    "message": "Bật/tắt chỉ một cú bấm"
+  },
+  "welcome_tip_pin_desc": {
+    "message": "Bấm biểu tượng mảnh ghép trên thanh công cụ của Chrome, rồi bấm ghim cạnh TransPrice."
+  },
+  "welcome_tip_pin_title": {
+    "message": "Ghim TransPrice lên thanh công cụ"
+  },
+  "welcome_tip_shortcut_desc": {
+    "message": "Bật/tắt tự động quy đổi ở bất kỳ trang nào."
+  },
+  "welcome_tip_shortcut_set": {
+    "message": "Đặt phím tắt"
+  },
+  "welcome_tip_shortcut_title": {
+    "message": "Phím tắt"
+  },
+  "welcome_tips_title": {
+    "message": "Mẹo nhỏ"
+  },
+  "welcome_title": {
+    "message": "Chào mừng bạn đến với TransPrice"
+  }
+}
