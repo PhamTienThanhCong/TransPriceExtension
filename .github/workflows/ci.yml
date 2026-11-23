@@ -14,15 +14,20 @@ concurrency:
 
 jobs:
   check:
-    name: Check & test
+    name: Check & test (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        # 22 = V8 12.4 (≈ Chrome 124): catches regex/perf regressions that only show on older V8 (manifest allows Chrome ≥ 116).
+        node: [22, 24]
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ matrix.node }}
 
       # No dependencies to install: the project has no build step and no npm packages.
       - name: Static checks (manifest, files, CSP rules, i18n)
@@ -35,6 +40,7 @@ jobs:
         run: npm run package
 
       - name: Upload packaged zip
+        if: matrix.node == 24
         uses: actions/upload-artifact@v4
         with:
           name: transprice-zip

@@ -107,13 +107,31 @@ cùng vị trí — vì nó là dấu nhóm nghìn chắc chắn hơn dấu các
 
 ### Một regex duy nhất, dựng một lần
 
-Khi `parser.js` được nạp, toàn bộ token được **sắp xếp dài trước – ngắn sau** (`US$` trước `$`, `CN¥` trước `¥`,
-`日元` trước `元`), escape ký tự đặc biệt, rồi ghép thành **một** biểu thức chính quy. Regex này được dùng lại cho mọi
-lời gọi — không bao giờ dựng lại.
+Khi `parser.js` được nạp, toàn bộ token được ghép thành **một** biểu thức chính quy dạng **cây tiền tố (trie)**.
+Regex này được dùng lại cho mọi lời gọi — không bao giờ dựng lại:
 
-Token bắt đầu/kết thúc bằng chữ cái (Latin, tiếng Việt, Cyrillic, Ả Rập) được bọc thêm **ranh giới chữ**:
-`(?<![chữ])USD(?![chữ])`. Vì vậy `USD` khớp, còn `USDT`, `Skr`, `Mrs` thì không; `đ` trong `đi được` cũng không.
-Chữ Hán/Thái **không** tính là ranh giới (tiếng Trung không có dấu cách: `价格¥189起` phải khớp).
+```
+(?<![chữ])(?:U(?:S(?:\$|D(?![chữ])| \$)|…)|R(?:M|p\.?|s\.?|…)|…)  |  \$  |  ¥  |  元  |  日元  |  …
+└─ mọi token bắt đầu bằng chữ cái: CHUNG một lookbehind ─┘            └─ token bắt đầu bằng ký hiệu ─┘
+```
+
+- **Dài trước – ngắn sau**: tại mỗi nút của cây, nhánh đi tiếp (token dài hơn) được thử trước lựa chọn "token kết thúc
+  ở đây". Vì vậy `US$` thắng `$`, `CN¥` thắng `¥`, `kr.` thắng `kr`, `日元` thắng `元`, đúng như một danh sách sắp
+  xếp từ dài đến ngắn.
+- **Ranh giới chữ**: token bắt đầu/kết thúc bằng chữ cái (Latin, tiếng Việt, Cyrillic, Ả Rập) cần ranh giới chữ.
+  Vì vậy `USD` khớp, còn `USDT`, `Skr`, `Mrs` thì không; `đ` trong `đi được` cũng không. Có cần lookbehind hay không
+  chỉ phụ thuộc vào **ký tự đầu**, nên mọi token bắt đầu bằng chữ cái dùng **chung một** `(?<![chữ])`. Lookahead
+  `(?![chữ])` gắn vào nút cuối của token kết thúc bằng chữ cái.
+- Chữ Hán/Thái **không** tính là ranh giới (tiếng Trung không có dấu cách: `价格¥189起` phải khớp).
+
+Vì sao không ghép ~260 token thành một danh sách `A|B|C|…` phẳng? Bản đầu tiên làm vậy, và V8 đời cũ (Node 22,
+Chrome ≤ 124, mà manifest vẫn cho phép từ Chrome 116) thử **từng nhánh ở từng vị trí**: chậm hơn 15–75 lần
+(quét 1 MB: ~750 ms so với ~10 ms). Dạng trie cho phép engine rẽ nhánh ngay theo ký tự đầu. Test
+`token trie ≡ the flat longest-first alternation` so sánh hai cách trên mọi cửa sổ của một đoạn văn mẫu để chắc
+chắn kết quả giống hệt.
+
+`quickTest` và `hasToken` còn có hai bộ lọc rẻ chạy trước regex: không có chữ số thì trả `false` ngay (chỉ
+`quickTest`), không có ký tự nào thuộc tập "ký tự đầu của token" thì cũng trả `false` ngay.
 
 Một ký hiệu dính sau một từ (`abc$5`, `Price$5`) không thể mở đầu một giá — trừ khi từ đó chính là token (`USD$5`).
 
@@ -443,15 +461,19 @@ rateText('CNY', 'VND')         →  "1 CNY = 3.865 ₫"
 
 ## 12. Hiệu năng
 
-Đo trên MacBook (Node 24), có trong `tests/engine/perf.test.mjs`:
+Đo trên MacBook (Apple Silicon), có trong `tests/engine/perf.test.mjs`. Phải đạt trên **cả** V8 đời cũ:
+`npx -y node@22 --test tests/engine/perf.test.mjs`.
 
-| Phép đo | Kết quả | Ngưỡng test |
-|---|---|---|
-| `findPrices` trên ~1 MB văn bản hỗn hợp (≈ 39 000 giá) | ~55 ms | < 300 ms |
-| `quickTest` trên 100 000 chuỗi ngắn | ~16 ms | < 150 ms |
-| Nạp `currency-data.js` + `parser.js` (lần đầu, chưa JIT) | ~1–2.5 ms (không gọi `Intl` lúc nạp) | – |
+| Phép đo | Node 22 (≈ Chrome 124) | Node 24 | Ngưỡng test |
+|---|---|---|---|
+| `findPrices` trên ~1 MB văn bản hỗn hợp (≈ 39 000 giá) | ~33 ms | ~35 ms | < 120 ms × `PERF_SCALE` |
+| `quickTest` trên 100 000 chuỗi ngắn | ~5 ms | ~5 ms | < 50 ms × `PERF_SCALE` |
+| Nạp `currency-data.js` + `parser.js` (lần đầu, chưa JIT) | ~1–2.5 ms (không gọi `Intl` lúc nạp) | | – |
 
-Bí quyết: chỉ một regex dựng sẵn để tìm token; mọi việc nặng hơn chỉ chạy quanh token; đọc số bằng vòng lặp ký tự
+`PERF_SCALE` lấy từ biến môi trường cùng tên; nếu không có thì mặc định là 3 trên CI (máy CI chậm hơn ~2–2,5 lần) và
+1 trên máy cá nhân. Trước khi chuyển sang trie, Node 22 cần 767 ms và 462 ms cho hai phép đo đầu.
+
+Bí quyết: chỉ một regex trie dựng sẵn để tìm token; mọi việc nặng hơn chỉ chạy quanh token; đọc số bằng vòng lặp ký tự
 (không tạo chuỗi con); cache `Intl.NumberFormat` / `Intl.DisplayNames`; dữ liệu tiền tệ viết sẵn thay vì hỏi `Intl`
 cho 161 đồng mỗi lần trang tải (~15 ms).
 
