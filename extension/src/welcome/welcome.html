@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en" data-i18n-doc-title="welcome_doc_title">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>TransPrice</title>
+    <link rel="icon" href="../../icons/icon32.png" />
+    <link rel="stylesheet" href="../ui/tokens.css" />
+    <link rel="stylesheet" href="../options/ui-kit.css" />
+    <link rel="stylesheet" href="welcome.css" />
+    <script type="module" src="welcome.js"></script>
+  </head>
+  <body>
+    <div class="glow" aria-hidden="true"></div>
+
+    <main class="wrap">
+      <!-- ------------------------------ Hero ------------------------------ -->
+      <header class="hero">
+        <div class="ui-lang">
+          <label class="sr-only" for="w-uiLanguage" data-i18n="options_ui_language_title">Display language</label>
+          <i data-icon="languages" data-icon-size="16" class="ui-lang-icon"></i>
+          <select class="select ui-lang-select" id="w-uiLanguage"></select>
+        </div>
+        <div class="hero-logo">
+          <img class="logo" src="../../icons/logo.svg" width="64" height="64" alt="" />
+        </div>
+        <h1 class="hero-title" data-i18n="welcome_title">Welcome to TransPrice</h1>
+        <p class="hero-lead" data-i18n="welcome_lead">See every price in your currency — TransPrice finds prices on any website and converts them for you.</p>
+      </header>
+
+      <!-- -------------------------- Home currency ------------------------- -->
+      <section class="card home-card" aria-labelledby="home-title">
+        <div class="home-card-text">
+          <span class="home-card-icon" aria-hidden="true"><i data-icon="wallet" data-icon-size="20"></i></span>
+          <div>
+            <h2 class="home-card-title" id="home-title" data-i18n="welcome_home_title">Your currency</h2>
+            <p class="home-card-desc" id="home-desc" data-i18n="welcome_home_desc">We picked it from your browser language — change it if you think in another currency.</p>
+          </div>
+        </div>
+        <div class="home-card-picker" id="w-home"></div>
+      </section>
+
+      <!-- ------------------------------ Steps ----------------------------- -->
+      <section class="how" aria-labelledby="how-title">
+        <h2 class="how-title" id="how-title" data-i18n="welcome_how_title">How it works</h2>
+        <ol class="steps">
+          <li class="step card">
+            <div class="step-illus" aria-hidden="true" id="illus-detect"></div>
+            <div class="step-text">
+              <span class="step-num" aria-hidden="true">1</span>
+              <h3 class="step-title" data-i18n="welcome_step1_title">Prices are detected</h3>
+              <p class="step-desc" id="step1-desc"></p>
+            </div>
+          </li>
+          <li class="step card">
+            <div class="step-illus" aria-hidden="true" id="illus-convert"></div>
+            <div class="step-text">
+              <span class="step-num" aria-hidden="true">2</span>
+              <h3 class="step-title" data-i18n="welcome_step2_title">Converted right there</h3>
+              <p class="step-desc" data-i18n="welcome_step2_desc">Each price shows up in your currency, in place. Hover it to see the original.</p>
+            </div>
+          </li>
+          <li class="step card">
+            <div class="step-illus" aria-hidden="true" id="illus-toggle"></div>
+            <div class="step-text">
+              <span class="step-num" aria-hidden="true">3</span>
+              <h3 class="step-title" data-i18n="welcome_step3_title">One click to switch</h3>
+              <p class="step-desc" data-i18n="welcome_step3_desc">Click the TransPrice icon in the toolbar to turn conversion on or off — for everything or just one site.</p>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- ------------------------------ Tips ------------------------------ -->
+      <section class="tips" aria-labelledby="tips-title">
+        <h2 class="sr-only" id="tips-title" data-i18n="welcome_tips_title">Tips</h2>
+        <div class="tip card">
+          <span class="tip-icon" aria-hidden="true"><i data-icon="keyboard" data-icon-size="18"></i></span>
+          <div class="tip-text">
+            <h3 class="tip-title" data-i18n="welcome_tip_shortcut_title">Keyboard shortcut</h3>
+            <p class="tip-desc" data-i18n="welcome_tip_shortcut_desc">Turn auto-convert on or off from any page.</p>
+          </div>
+          <span class="tip-keys" id="tip-keys"></span>
+        </div>
+        <div class="tip card">
+          <span class="tip-icon" aria-hidden="true"><i data-icon="pin" data-icon-size="18"></i></span>
+          <div class="tip-text">
+            <h3 class="tip-title" data-i18n="welcome_tip_pin_title">Pin TransPrice to the toolbar</h3>
+            <p class="tip-desc" data-i18n="welcome_tip_pin_desc">Click the puzzle icon in Chrome's toolbar, then the pin next to TransPrice.</p>
+          </div>
+          <span class="mini-toolbar" aria-hidden="true">
+            <i data-icon="puzzle" data-icon-size="16"></i>
+            <i data-icon="chevron-right" data-icon-size="14" class="mini-arrow"></i>
+            <span class="mini-ext" id="mini-ext-logo"></span>
+            <span class="mini-pin"><i data-icon="pin" data-icon-size="13"></i></span>
+          </span>
+        </div>
+      </section>
+
+      <!-- ----------------------------- Actions ---------------------------- -->
+      <footer class="actions">
+        <p class="actions-note" data-i18n="welcome_footer_note">You can change all of this later in Settings.</p>
+        <div class="actions-buttons">
+          <button type="button" class="btn btn-lg" id="w-open-settings">
+            <i data-icon="settings" data-icon-size="16"></i><span data-i18n="welcome_open_settings">Open settings</span>
+          </button>
+          <button type="button" class="btn btn-gradient btn-lg" id="w-start">
+            <span data-i18n="welcome_start">Start shopping</span><i data-icon="arrow-right" data-icon-size="16"></i>
+          </button>
+        </div>
+      </footer>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </body>
+</html>

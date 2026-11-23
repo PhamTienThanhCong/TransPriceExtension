@@ -1,0 +1,856 @@
+{
+  "actionTitle": {
+    "message": "TransPrice — Convert prices",
+    "description": "Toolbar button tooltip"
+  },
+  "bg_action_title_off": {
+    "message": "TransPrice — automatic conversion is off",
+    "description": "Toolbar icon tooltip while settings.enabled is false (the badge shows 'off'). Uses the browser language."
+  },
+  "cmdToggleEnabled": {
+    "message": "Turn automatic price conversion on/off",
+    "description": "Keyboard shortcut description (chrome://extensions/shortcuts)"
+  },
+  "common_add": {
+    "message": "Add"
+  },
+  "common_amount": {
+    "message": "Amount"
+  },
+  "common_cancel": {
+    "message": "Cancel"
+  },
+  "common_close": {
+    "message": "Close"
+  },
+  "common_currency": {
+    "message": "Currency"
+  },
+  "common_display_language": {
+    "message": "Display language"
+  },
+  "common_done": {
+    "message": "Done"
+  },
+  "common_error_generic": {
+    "message": "Something went wrong. Please try again."
+  },
+  "common_exchange_rate": {
+    "message": "Exchange rate"
+  },
+  "common_from": {
+    "message": "From",
+    "description": "Converter: source currency"
+  },
+  "common_home_currency": {
+    "message": "Home currency",
+    "description": "The currency every price is converted to (e.g. VND)"
+  },
+  "common_home_currency_hint": {
+    "message": "Prices on web pages are converted to this currency."
+  },
+  "common_language_auto": {
+    "message": "Same as browser"
+  },
+  "common_learn_more": {
+    "message": "Learn more"
+  },
+  "common_loading": {
+    "message": "Loading…"
+  },
+  "common_no_results": {
+    "message": "No matches"
+  },
+  "common_off": {
+    "message": "Off"
+  },
+  "common_on": {
+    "message": "On"
+  },
+  "common_open_settings": {
+    "message": "Open settings"
+  },
+  "common_privacy_policy": {
+    "message": "Privacy policy"
+  },
+  "common_rates_attribution": {
+    "message": "Rates By Exchange Rate API",
+    "description": "Attribution required by ExchangeRate-API's open access terms — keep it verbatim, link it to https://www.exchangerate-api.com"
+  },
+  "common_rates_date": {
+    "message": "Rates of $P1$",
+    "description": "$1 = localized date of the rate table, e.g. 22/11/2026",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "common_rates_error": {
+    "message": "Couldn't update the rates. Please try again later."
+  },
+  "common_rates_offline": {
+    "message": "Offline — using built-in rates, which may be out of date."
+  },
+  "common_rates_source": {
+    "message": "Source: $P1$",
+    "description": "$1 = rate provider name",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "common_rates_updated": {
+    "message": "Exchange rates updated"
+  },
+  "common_refresh_rates": {
+    "message": "Refresh rates"
+  },
+  "common_refreshing_rates": {
+    "message": "Updating rates…"
+  },
+  "common_remove": {
+    "message": "Remove"
+  },
+  "common_report_issue": {
+    "message": "Report a problem"
+  },
+  "common_reset": {
+    "message": "Reset"
+  },
+  "common_save": {
+    "message": "Save"
+  },
+  "common_saved": {
+    "message": "Saved"
+  },
+  "common_search": {
+    "message": "Search"
+  },
+  "common_search_currency": {
+    "message": "Search currency…",
+    "description": "Placeholder of the searchable currency picker"
+  },
+  "common_settings": {
+    "message": "Settings"
+  },
+  "common_source_code": {
+    "message": "Source code"
+  },
+  "common_swap_currencies": {
+    "message": "Swap currencies"
+  },
+  "common_theme": {
+    "message": "Theme"
+  },
+  "common_theme_auto": {
+    "message": "System"
+  },
+  "common_theme_dark": {
+    "message": "Dark"
+  },
+  "common_theme_light": {
+    "message": "Light"
+  },
+  "common_to": {
+    "message": "To",
+    "description": "Converter: target currency"
+  },
+  "common_version": {
+    "message": "Version $P1$",
+    "description": "$1 = extension version, e.g. 0.1.0",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "extDescription": {
+    "message": "See every price in your currency: prices on any site (Taobao ¥, Amazon $, € …) are converted to VND or your home currency.",
+    "description": "Extension description (max 132 chars)"
+  },
+  "extName": {
+    "message": "TransPrice — Currency Converter for Shopping",
+    "description": "Extension name shown in Chrome and the Web Store (max 75 chars)"
+  },
+  "extShortName": {
+    "message": "TransPrice",
+    "description": "Short name (max 12 chars)"
+  },
+  "options_about_github": {
+    "message": "GitHub",
+    "description": "About link."
+  },
+  "options_about_license": {
+    "message": "MIT License · Icons: Lucide (ISC)",
+    "description": "About card footer."
+  },
+  "options_about_report": {
+    "message": "Report a problem",
+    "description": "About link to GitHub issues."
+  },
+  "options_about_tagline": {
+    "message": "See every price in your currency. Free and open source.",
+    "description": "About card tagline."
+  },
+  "options_appearance_desc": {
+    "message": "Theme and language of the popup and these pages.",
+    "description": "Appearance section description."
+  },
+  "options_compact_desc": {
+    "message": "Shorten big amounts: $P1$ becomes $P2$.",
+    "description": "Compact switch description. $1 = full amount, $2 = the same amount in compact form.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "options_compact_title": {
+    "message": "Compact numbers",
+    "description": "Compact switch title."
+  },
+  "options_disabled_desc": {
+    "message": "Prices on these sites are left untouched. Subdomains are included.",
+    "description": "Disabled-sites card description."
+  },
+  "options_disabled_title": {
+    "message": "Turned off on",
+    "description": "Disabled-sites card title."
+  },
+  "options_display_desc": {
+    "message": "How converted prices look on the page.",
+    "description": "Display section description."
+  },
+  "options_doc_title": {
+    "message": "TransPrice settings",
+    "description": "Options page document title."
+  },
+  "options_dollar_desc": {
+    "message": "Canadian, Australian, Singaporean… shops are recognised by their web address.",
+    "description": "Default dollar description."
+  },
+  "options_dollar_title": {
+    "message": "A plain “$$” means",
+    "description": "Default dollar select label. $$ = a literal dollar sign."
+  },
+  "options_enabled_desc": {
+    "message": "Find prices on web pages and show them in your currency. The toolbar icon toggles this too.",
+    "description": "Master switch row description."
+  },
+  "options_enabled_title": {
+    "message": "Auto-convert prices",
+    "description": "Master switch row title."
+  },
+  "options_general_desc": {
+    "message": "Which currency you think in, and whether TransPrice converts prices for you.",
+    "description": "General section description."
+  },
+  "options_highlight_desc": {
+    "message": "A subtle dotted underline, so you can tell which prices were converted.",
+    "description": "Highlight switch description."
+  },
+  "options_highlight_title": {
+    "message": "Highlight converted prices",
+    "description": "Highlight switch title."
+  },
+  "options_home_desc": {
+    "message": "Every price TransPrice finds is converted into this currency.",
+    "description": "Home-currency row description."
+  },
+  "options_home_title": {
+    "message": "Your currency",
+    "description": "Home-currency row title / picker label."
+  },
+  "options_mode_append_desc": {
+    "message": "Keep the original price and add the converted one next to it.",
+    "description": "Display mode card description."
+  },
+  "options_mode_append_title": {
+    "message": "Show both",
+    "description": "Display mode card title."
+  },
+  "options_mode_label": {
+    "message": "Show converted prices",
+    "description": "Label above the two display-mode cards."
+  },
+  "options_mode_replace_desc": {
+    "message": "Only your currency is shown. Hover a price to see the original.",
+    "description": "Display mode card description."
+  },
+  "options_mode_replace_title": {
+    "message": "Replace the price",
+    "description": "Display mode card title."
+  },
+  "options_nav_about": {
+    "message": "About",
+    "description": "Sidebar / section title."
+  },
+  "options_nav_appearance": {
+    "message": "Appearance",
+    "description": "Sidebar / section title."
+  },
+  "options_nav_display": {
+    "message": "Price display",
+    "description": "Sidebar / section title."
+  },
+  "options_nav_general": {
+    "message": "General",
+    "description": "Sidebar / section title."
+  },
+  "options_nav_label": {
+    "message": "Settings sections",
+    "description": "Accessible label of the sidebar navigation."
+  },
+  "options_nav_rates": {
+    "message": "Exchange rates",
+    "description": "Sidebar / section title."
+  },
+  "options_nav_sites": {
+    "message": "Websites",
+    "description": "Sidebar / section title."
+  },
+  "options_nav_symbols": {
+    "message": "$$ and ¥",
+    "description": "Sidebar / section title about ambiguous currency symbols. $$ = a literal dollar sign (Chrome message syntax)."
+  },
+  "options_picker_all": {
+    "message": "All currencies",
+    "description": "Currency picker group label."
+  },
+  "options_picker_empty": {
+    "message": "No currency found",
+    "description": "Currency picker: no search results."
+  },
+  "options_picker_results": {
+    "message": "Results",
+    "description": "Currency picker group label while searching."
+  },
+  "options_picker_search": {
+    "message": "Search by code, name or symbol",
+    "description": "Placeholder of the currency picker search box (shared by popup, options, welcome)."
+  },
+  "options_picker_search_label": {
+    "message": "Search currencies",
+    "description": "Accessible label of the currency picker search box."
+  },
+  "options_picker_suggested": {
+    "message": "Suggested",
+    "description": "Currency picker group label."
+  },
+  "options_pins_desc": {
+    "message": "What $$ or ¥ means on a particular site. Pick one in the popup when TransPrice guesses wrong.",
+    "description": "Per-site pins card description."
+  },
+  "options_pins_empty_desc": {
+    "message": "TransPrice detects them automatically for you.",
+    "description": "Empty pins list description."
+  },
+  "options_pins_empty_title": {
+    "message": "No site-specific currencies yet",
+    "description": "Empty pins list title."
+  },
+  "options_pins_remove": {
+    "message": "Let TransPrice detect the currency on $P1$ again",
+    "description": "Remove-pin button label. $1 = hostname.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "options_pins_title": {
+    "message": "Currency picked per site",
+    "description": "Per-site pins card title."
+  },
+  "options_privacy_link": {
+    "message": "Read the privacy policy",
+    "description": "Privacy policy link."
+  },
+  "options_privacy_text": {
+    "message": "TransPrice works entirely in your browser. The only thing it downloads is the public exchange-rate table — no page content, no browsing history, no tracking.",
+    "description": "Privacy note body."
+  },
+  "options_privacy_title": {
+    "message": "Your privacy",
+    "description": "Privacy note title."
+  },
+  "options_rates_date": {
+    "message": "Rates from",
+    "description": "Label: date of the rate table."
+  },
+  "options_rates_desc": {
+    "message": "Daily reference rates from free public sources, refreshed automatically every few hours.",
+    "description": "Rates section description."
+  },
+  "options_rates_never": {
+    "message": "Not yet",
+    "description": "Downloaded value for the bundled snapshot."
+  },
+  "options_rates_privacy": {
+    "message": "Only the public rate table is downloaded — nothing about the pages you visit.",
+    "description": "Rates card footer."
+  },
+  "options_rates_refresh": {
+    "message": "Refresh now",
+    "description": "Rates refresh button."
+  },
+  "options_rates_refresh_failed": {
+    "message": "Couldn't update rates — check your connection",
+    "description": "Toast."
+  },
+  "options_rates_refreshed": {
+    "message": "Rates updated",
+    "description": "Toast."
+  },
+  "options_rates_sample": {
+    "message": "In $P1$",
+    "description": "Label above the sample rates. $1 = home currency code.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "options_rates_snapshot": {
+    "message": "Live rates couldn't be downloaded yet, so TransPrice is using its built-in offline rates.",
+    "description": "Warning when the bundled snapshot is in use."
+  },
+  "options_rates_source": {
+    "message": "Source",
+    "description": "Label: rate provider."
+  },
+  "options_rates_source_snapshot": {
+    "message": "Built-in (offline)",
+    "description": "Source value for the bundled snapshot."
+  },
+  "options_rates_updated": {
+    "message": "Downloaded",
+    "description": "Label: when the table was downloaded."
+  },
+  "options_save_failed": {
+    "message": "Couldn't save. Please try again.",
+    "description": "Toast when saving fails."
+  },
+  "options_saved": {
+    "message": "Saved",
+    "description": "Toast after a setting is saved."
+  },
+  "options_shortcut_not_set": {
+    "message": "Not set",
+    "description": "Shown when a command has no shortcut."
+  },
+  "options_shortcut_popup": {
+    "message": "Open the TransPrice popup",
+    "description": "Name of the open-popup command."
+  },
+  "options_shortcut_toggle": {
+    "message": "Turn auto-convert on/off",
+    "description": "Name of the toggle-enabled command."
+  },
+  "options_shortcuts_customize": {
+    "message": "Change shortcuts",
+    "description": "Button opening chrome://extensions/shortcuts."
+  },
+  "options_shortcuts_desc": {
+    "message": "Turn conversion on or off without leaving the page.",
+    "description": "Shortcuts card description."
+  },
+  "options_shortcuts_hint": {
+    "message": "Shortcuts are managed by Chrome.",
+    "description": "Shortcuts card footer."
+  },
+  "options_shortcuts_title": {
+    "message": "Keyboard shortcuts",
+    "description": "Shortcuts card title."
+  },
+  "options_sites_add": {
+    "message": "Add",
+    "description": "Add-site button."
+  },
+  "options_sites_add_label": {
+    "message": "Website",
+    "description": "Accessible label of the add-site input."
+  },
+  "options_sites_desc": {
+    "message": "Turn TransPrice off on specific websites, and review the currencies you picked per site.",
+    "description": "Websites section description."
+  },
+  "options_sites_empty_desc": {
+    "message": "Add a site above, or use the switch in the popup while you're on it.",
+    "description": "Empty disabled list description."
+  },
+  "options_sites_empty_title": {
+    "message": "TransPrice works on every website",
+    "description": "Empty disabled list title."
+  },
+  "options_sites_error_duplicate": {
+    "message": "$P1$ is already in the list",
+    "description": "Add-site duplicate error. $1 = hostname.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "options_sites_error_invalid": {
+    "message": "Enter a website address, e.g. example.com",
+    "description": "Add-site validation error."
+  },
+  "options_sites_placeholder": {
+    "message": "e.g. example.com",
+    "description": "Placeholder of the add-site input."
+  },
+  "options_sites_remove": {
+    "message": "Turn TransPrice back on for $P1$",
+    "description": "Remove-site button label. $1 = hostname.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "options_symbols_desc": {
+    "message": "Several currencies share these symbols. TransPrice guesses from the website first and uses your choice below only when the page gives no hint.",
+    "description": "Symbols section description."
+  },
+  "options_theme_auto": {
+    "message": "Auto",
+    "description": "Theme option."
+  },
+  "options_theme_dark": {
+    "message": "Dark",
+    "description": "Theme option."
+  },
+  "options_theme_desc": {
+    "message": "Auto follows your system setting.",
+    "description": "Theme row description."
+  },
+  "options_theme_light": {
+    "message": "Light",
+    "description": "Theme option."
+  },
+  "options_theme_title": {
+    "message": "Theme",
+    "description": "Theme row title."
+  },
+  "options_ui_language_auto": {
+    "message": "Auto (browser language)",
+    "description": "First option of the display-language select."
+  },
+  "options_ui_language_desc": {
+    "message": "Menus and buttons of TransPrice. Open pages reload to apply it.",
+    "description": "Display-language row description."
+  },
+  "options_ui_language_title": {
+    "message": "Display language",
+    "description": "Display-language row title."
+  },
+  "options_version": {
+    "message": "Version $P1$",
+    "description": "About card. $1 = version number.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "options_yen_desc": {
+    "message": "Taobao, Tmall, 1688 and JD always count as yuan; Japanese sites as yen.",
+    "description": "Default yen description."
+  },
+  "options_yen_title": {
+    "message": "A plain “¥” means",
+    "description": "Default yen select label."
+  },
+  "popup_amount": {
+    "message": "Amount",
+    "description": "Accessible label of the converter amount input."
+  },
+  "popup_amount_placeholder": {
+    "message": "Enter an amount",
+    "description": "Placeholder of the converter amount input."
+  },
+  "popup_converter_title": {
+    "message": "Quick converter",
+    "description": "Section label of the converter."
+  },
+  "popup_error": {
+    "message": "Something went wrong. Please try again.",
+    "description": "Generic error toast."
+  },
+  "popup_from": {
+    "message": "Convert from",
+    "description": "Accessible label of the converter source currency."
+  },
+  "popup_home_label": {
+    "message": "Your currency",
+    "description": "Label of the home-currency picker (prices are converted into it)."
+  },
+  "popup_invalid_amount": {
+    "message": "Enter a number, e.g. 1,299.99",
+    "description": "Converter result when the amount can't be read."
+  },
+  "popup_no_rate": {
+    "message": "No exchange rate for this currency",
+    "description": "Converter result when a rate is missing."
+  },
+  "popup_page_title": {
+    "message": "TransPrice",
+    "description": "Popup document title."
+  },
+  "popup_power_off": {
+    "message": "Off · click to turn on",
+    "description": "State under the power toggle when OFF."
+  },
+  "popup_power_on": {
+    "message": "On · prices are shown in $P1$",
+    "description": "State under the power toggle when ON. $1 = home currency code (shown bold), e.g. VND.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popup_power_title": {
+    "message": "Auto-convert prices",
+    "description": "Big master on/off toggle in the popup."
+  },
+  "popup_rates_line": {
+    "message": "Rates $P1$ · $P2$",
+    "description": "Footer. $1 = date of the rates (localized), $2 = source name.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      },
+      "p2": {
+        "content": "$2"
+      }
+    }
+  },
+  "popup_rates_missing": {
+    "message": "Exchange rates unavailable",
+    "description": "Footer when no rate table could be loaded."
+  },
+  "popup_rates_updated": {
+    "message": "Downloaded $P1$",
+    "description": "Footer tooltip. $1 = relative time, e.g. '5 minutes ago'.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popup_reason_default": {
+    "message": "Your default setting",
+    "description": "Why the ambiguous symbol has this meaning: the user's global default."
+  },
+  "popup_reason_domain": {
+    "message": "Detected from the website address",
+    "description": "Why the ambiguous symbol has this meaning: the domain (e.g. taobao.com → CNY)."
+  },
+  "popup_reason_lang": {
+    "message": "Detected from the page language",
+    "description": "Why the ambiguous symbol has this meaning: <html lang>."
+  },
+  "popup_reason_reset": {
+    "message": "Detect automatically",
+    "description": "Link that removes the per-site pin for a symbol."
+  },
+  "popup_reason_script": {
+    "message": "Detected from the page text",
+    "description": "Why the ambiguous symbol has this meaning: Chinese/Japanese characters on the page."
+  },
+  "popup_reason_site_pin": {
+    "message": "You picked this for this site",
+    "description": "Why the ambiguous symbol has this meaning: the user pinned it."
+  },
+  "popup_refresh": {
+    "message": "Refresh rates",
+    "description": "Footer button that forces a rate download."
+  },
+  "popup_refresh_failed": {
+    "message": "Couldn't update rates — check your connection",
+    "description": "Toast after a failed refresh."
+  },
+  "popup_refreshed": {
+    "message": "Rates updated",
+    "description": "Toast after a successful refresh."
+  },
+  "popup_reload": {
+    "message": "Reload page",
+    "description": "Button that reloads the active tab."
+  },
+  "popup_settings": {
+    "message": "Settings",
+    "description": "Header button that opens the options page."
+  },
+  "popup_site_count_one": {
+    "message": "Converted $P1$ price",
+    "description": "Site status, singular. $1 = number of prices converted on the page.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popup_site_count_other": {
+    "message": "Converted $P1$ prices",
+    "description": "Site status, plural. $1 = number of prices converted on the page.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popup_site_disabled": {
+    "message": "Turned off on this site",
+    "description": "Site status when the site is in the disabled list."
+  },
+  "popup_site_global_off": {
+    "message": "Auto-convert is off",
+    "description": "Site status when the master switch is off."
+  },
+  "popup_site_label": {
+    "message": "This site",
+    "description": "Section label above the current-site card."
+  },
+  "popup_site_none": {
+    "message": "No prices found on this page yet",
+    "description": "Site status when the content script found nothing to convert."
+  },
+  "popup_site_switch": {
+    "message": "Convert on this site",
+    "description": "Accessible label / tooltip of the per-site switch."
+  },
+  "popup_site_symbol": {
+    "message": "$P1$ on this site means",
+    "description": "Label before the select that picks what an ambiguous symbol means. $1 = the symbol, e.g. ¥ or $.",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "popup_snapshot_hint": {
+    "message": "Offline rates — live rates couldn't be downloaded yet",
+    "description": "Warning above the footer when the rates come from the bundled snapshot."
+  },
+  "popup_source_snapshot": {
+    "message": "built-in",
+    "description": "Name of the bundled offline rate table, shown as the source in the footer."
+  },
+  "popup_swap": {
+    "message": "Swap currencies",
+    "description": "Button that swaps the converter currencies."
+  },
+  "popup_to": {
+    "message": "Convert to",
+    "description": "Accessible label of the converter target currency."
+  },
+  "popup_unavailable_desc": {
+    "message": "Browser pages (chrome://, Chrome Web Store) are off-limits. If this tab was open before you installed TransPrice, reload it.",
+    "description": "Explanation under the notice title."
+  },
+  "popup_unavailable_title": {
+    "message": "Can't read prices on this page",
+    "description": "Notice when the content script doesn't answer."
+  },
+  "welcome_doc_title": {
+    "message": "Welcome to TransPrice",
+    "description": "Welcome page document title."
+  },
+  "welcome_footer_note": {
+    "message": "You can change all of this later in Settings.",
+    "description": "Footer note."
+  },
+  "welcome_home_desc": {
+    "message": "We picked it from your browser language — change it if you think in another currency.",
+    "description": "Home-currency card description."
+  },
+  "welcome_home_title": {
+    "message": "Your currency",
+    "description": "Home-currency card title / picker label."
+  },
+  "welcome_how_title": {
+    "message": "How it works",
+    "description": "Heading above the three steps."
+  },
+  "welcome_illus_on": {
+    "message": "On",
+    "description": "Tiny label in the step-3 illustration (power switch ON)."
+  },
+  "welcome_lead": {
+    "message": "See every price in your currency — TransPrice finds prices on any website and converts them for you.",
+    "description": "Welcome page lead paragraph."
+  },
+  "welcome_open_settings": {
+    "message": "Open settings",
+    "description": "Footer button."
+  },
+  "welcome_start": {
+    "message": "Start shopping",
+    "description": "Footer primary button (closes the welcome tab)."
+  },
+  "welcome_step1_desc": {
+    "message": "On any shopping site: $P1$ and more.",
+    "description": "Step 1 description. $1 = a few example prices as written on shops (not translated).",
+    "placeholders": {
+      "p1": {
+        "content": "$1"
+      }
+    }
+  },
+  "welcome_step1_title": {
+    "message": "Prices are detected",
+    "description": "Step 1 title."
+  },
+  "welcome_step2_desc": {
+    "message": "Each price shows up in your currency, in place. Hover it to see the original.",
+    "description": "Step 2 description."
+  },
+  "welcome_step2_title": {
+    "message": "Converted right there",
+    "description": "Step 2 title."
+  },
+  "welcome_step3_desc": {
+    "message": "Click the TransPrice icon in the toolbar to turn conversion on or off — for everything or just one site.",
+    "description": "Step 3 description."
+  },
+  "welcome_step3_title": {
+    "message": "One click to switch",
+    "description": "Step 3 title."
+  },
+  "welcome_tip_pin_desc": {
+    "message": "Click the puzzle icon in Chrome's toolbar, then the pin next to TransPrice.",
+    "description": "Tip description."
+  },
+  "welcome_tip_pin_title": {
+    "message": "Pin TransPrice to the toolbar",
+    "description": "Tip title."
+  },
+  "welcome_tip_shortcut_desc": {
+    "message": "Turn auto-convert on or off from any page.",
+    "description": "Tip description."
+  },
+  "welcome_tip_shortcut_set": {
+    "message": "Set a shortcut",
+    "description": "Link shown when the toggle shortcut is not set."
+  },
+  "welcome_tip_shortcut_title": {
+    "message": "Keyboard shortcut",
+    "description": "Tip title."
+  },
+  "welcome_tips_title": {
+    "message": "Tips",
+    "description": "Hidden heading of the tips row."
+  },
+  "welcome_title": {
+    "message": "Welcome to TransPrice",
+    "description": "Welcome page heading."
+  }
+}
