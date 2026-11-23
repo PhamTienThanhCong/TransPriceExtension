@@ -3,7 +3,7 @@
 TransPrice ("See every price in your currency") is an open-source (MIT) Chrome MV3 extension: it detects prices on any
 page (`¥189`, `$1,299.99`, `12,99 €`, `189元` …) and converts them to the user's home currency (e.g. VND), with a
 toolbar popup (on/off toggle, per-site switch, quick converter) and an options page.
-Repo: https://github.com/PhamTienThanhCong/transprice — owner **PhamTienThanhCong**, who writes in Vietnamese
+Repo: https://github.com/PhamTienThanhCong/TransPriceExtension — owner **PhamTienThanhCong**, who writes in Vietnamese
 (reply in Vietnamese). Sister project of TransPop (same conventions).
 
 ## ⚠️ Branch workflow — mandatory on every change
@@ -22,7 +22,7 @@ Repo: https://github.com/PhamTienThanhCong/transprice — owner **PhamTienThanhC
    Never list product files there: `extension/`, `README.md`, `LICENSE`, `CHANGELOG.md`, `docs/PRIVACY.md`,
    images shown by `README.md`, `.github/ISSUE_TEMPLATE`, `.gitignore`.
 5. `README.md` is shared by both branches: link dev-only files with absolute URLs on the dev branch
-   (`https://github.com/PhamTienThanhCong/transprice/blob/dev/<path>`), never relative paths.
+   (`https://github.com/PhamTienThanhCong/TransPriceExtension/blob/dev/<path>`), never relative paths.
 6. Release tags `vX.Y.Z` go on `dev` (the CI and release workflows exist only on `dev`).
 
 > Tóm tắt: code chính ở `dev`. Mỗi lần code xong phải push song song cả 2 nhánh bằng `npm run sync:main`. Nhánh `main`

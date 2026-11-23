@@ -50,7 +50,7 @@ Tải file zip lên [Chrome Web Store Developer Dashboard](https://chrome.google
   > • Big on/off switch, per-site switch, Alt+Shift+C shortcut, converted-price count on the toolbar icon.
   > • Quick converter for 40+ currencies. Rates refreshed every 6 hours; works offline with built-in rates.
   > • Private: page text never leaves your device. The only request downloads the public exchange-rate table.
-  > • Free and open source (MIT): https://github.com/PhamTienThanhCong/transprice
+  > • Free and open source (MIT): https://github.com/PhamTienThanhCong/TransPriceExtension
   >
   > Rates By Exchange Rate API (https://www.exchangerate-api.com) and fawazahmed0/exchange-api.
 
@@ -73,7 +73,7 @@ Tải file zip lên [Chrome Web Store Developer Dashboard](https://chrome.google
 - **Remote code:** No, I am not using remote code.
 - **Data usage:** không đánh dấu loại dữ liệu nào (tiện ích không thu thập dữ liệu người dùng); tích cả ba cam kết
   (không bán, không dùng cho mục đích khác, không dùng để xét tín dụng).
-- **Privacy policy URL:** `https://github.com/PhamTienThanhCong/transprice/blob/main/docs/PRIVACY.md`
+- **Privacy policy URL:** `https://github.com/PhamTienThanhCong/TransPriceExtension/blob/main/docs/PRIVACY.md`
 
 ## 5. Checklist trước khi bấm "Submit for review"
 

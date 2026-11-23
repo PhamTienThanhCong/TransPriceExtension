@@ -163,7 +163,7 @@ elif [ "$HAS_ORIGIN" = 0 ]; then
   cat <<'EOF'
 
 Hint: publish both branches once the GitHub repository exists:
-  git remote add origin https://github.com/PhamTienThanhCong/transprice.git
+  git remote add origin https://github.com/PhamTienThanhCong/TransPriceExtension.git
   npm run sync:main
 EOF
 fi

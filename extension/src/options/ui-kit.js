@@ -11,7 +11,7 @@ import { ICON_NAMES, icon } from '../ui/icons.js';
 import { buildCurrencyList, filterCurrencies } from './ui-helpers.js';
 
 export const LOGO_SRC = '../../icons/logo.svg';
-export const REPO_URL = 'https://github.com/PhamTienThanhCong/transprice';
+export const REPO_URL = 'https://github.com/PhamTienThanhCong/TransPriceExtension';
 export const ISSUES_URL = `${REPO_URL}/issues`;
 export const PRIVACY_URL = `${REPO_URL}/blob/main/docs/PRIVACY.md`;
 export const SHORTCUTS_URL = 'chrome://extensions/shortcuts';

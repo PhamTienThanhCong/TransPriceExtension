@@ -13,7 +13,7 @@
 <p align="center">
   <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-B45309.svg"></a>
   <a href="https://developer.chrome.com/docs/extensions/develop/migrate/what-is-mv3"><img alt="Manifest V3" src="https://img.shields.io/badge/manifest-v3-EA580C.svg"></a>
-  <a href="https://github.com/PhamTienThanhCong/transprice/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/PhamTienThanhCong/transprice/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/PhamTienThanhCong/TransPriceExtension/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/PhamTienThanhCong/TransPriceExtension/actions/workflows/ci.yml/badge.svg"></a>
 </p>
 
 <p align="center">
@@ -52,8 +52,8 @@
 
 **From source / a release zip** (developer mode — Chrome, Edge, Brave and other Chromium browsers 116+):
 
-1. Download the source (`git clone https://github.com/PhamTienThanhCong/transprice.git`) or the `transprice-v*.zip`
-   from [Releases](https://github.com/PhamTienThanhCong/transprice/releases) and unzip it.
+1. Download the source (`git clone https://github.com/PhamTienThanhCong/TransPriceExtension.git`) or the `transprice-v*.zip`
+   from [Releases](https://github.com/PhamTienThanhCong/TransPriceExtension/releases) and unzip it.
 2. Open `chrome://extensions` and turn on **Developer mode** (top right).
 3. Click **Load unpacked** and select the **`extension/`** folder (the folder that contains `manifest.json`; for a
    release zip, the unzipped folder itself).
@@ -80,7 +80,7 @@ symbols from the context (per-site pin → domain → page language → script o
 with the latest rates. Split prices are found by climbing a few levels up from the currency marker.
 
 The full write-up with examples and edge cases:
-[docs/ALGORITHM.md](https://github.com/PhamTienThanhCong/transprice/blob/dev/docs/ALGORITHM.md).
+[docs/ALGORITHM.md](https://github.com/PhamTienThanhCong/TransPriceExtension/blob/dev/docs/ALGORITHM.md).
 
 ## Exchange rates
 
@@ -105,14 +105,14 @@ no ads, no tracking. Full policy: [docs/PRIVACY.md](docs/PRIVACY.md).
 ## Development
 
 > **Branches:** `main` is the product branch — only the extension and the essentials. All development happens on
-> [`dev`](https://github.com/PhamTienThanhCong/transprice/tree/dev), which also holds the tooling, tests, the dev
+> [`dev`](https://github.com/PhamTienThanhCong/TransPriceExtension/tree/dev), which also holds the tooling, tests, the dev
 > harness and the guides. Clone `dev` to contribute and open pull requests against `dev`.
 
 No build step, no frameworks, no npm dependencies — plain ES2022, HTML and CSS. The `extension/` folder is loaded
 unpacked and zipped as-is. You need **Node.js 22+** and **Chrome 116+**.
 
 ```bash
-git clone -b dev https://github.com/PhamTienThanhCong/transprice.git && cd transprice
+git clone -b dev https://github.com/PhamTienThanhCong/TransPriceExtension.git && cd transprice
 npm run check      # manifest + referenced files, MV3/CSP rules, JS syntax, i18n keys, .mainignore
 npm test           # unit tests (node --test)
 npm run dev        # http://localhost:5180 — popup, options and a demo shop page with a mocked chrome.* API
@@ -129,9 +129,9 @@ npm run dev        # http://localhost:5180 — popup, options and a demo shop pa
 | `npm run rates:snapshot` | Refresh the bundled offline rate table |
 | `npm run sync:main` | Push `dev` and regenerate + push `main` |
 
-More: [contributing guide](https://github.com/PhamTienThanhCong/transprice/blob/dev/CONTRIBUTING.md) ·
-[architecture & team contract](https://github.com/PhamTienThanhCong/transprice/blob/dev/docs/ARCHITECTURE.md) ·
-[publishing guide](https://github.com/PhamTienThanhCong/transprice/blob/dev/docs/PUBLISHING.md) ·
+More: [contributing guide](https://github.com/PhamTienThanhCong/TransPriceExtension/blob/dev/CONTRIBUTING.md) ·
+[architecture & team contract](https://github.com/PhamTienThanhCong/TransPriceExtension/blob/dev/docs/ARCHITECTURE.md) ·
+[publishing guide](https://github.com/PhamTienThanhCong/TransPriceExtension/blob/dev/docs/PUBLISHING.md) ·
 [changelog](CHANGELOG.md).
 
 ## License
@@ -159,9 +159,9 @@ Dự án anh em của [TransPop](https://github.com/PhamTienThanhCong/transpop):
 - **Riêng tư**: chỉ tải bảng tỷ giá công khai, không gửi nội dung trang, không theo dõi, không quảng cáo.
 
 **Cài đặt (chế độ nhà phát triển):** tải mã nguồn hoặc file `transprice-v*.zip` ở mục
-[Releases](https://github.com/PhamTienThanhCong/transprice/releases) → mở `chrome://extensions` → bật **Developer mode**
+[Releases](https://github.com/PhamTienThanhCong/TransPriceExtension/releases) → mở `chrome://extensions` → bật **Developer mode**
 → **Load unpacked** → chọn thư mục **`extension/`**. Bản trên Chrome Web Store sẽ có sớm.
 
 **Phát triển:** mọi thay đổi làm trên nhánh `dev` (có công cụ, kiểm thử, trang demo, tài liệu); nhánh `main` là bản
 sản phẩm được tạo tự động từ `dev` bằng `npm run sync:main`. Cách nhận diện giá được giải thích chi tiết trong
-[docs/ALGORITHM.md](https://github.com/PhamTienThanhCong/transprice/blob/dev/docs/ALGORITHM.md).
+[docs/ALGORITHM.md](https://github.com/PhamTienThanhCong/TransPriceExtension/blob/dev/docs/ALGORITHM.md).

@@ -61,7 +61,7 @@ TransPrice is a general-purpose tool and does not knowingly collect any informat
 
 Changes to this policy are published in this file, with a new effective date, and summarised in the
 [changelog](../CHANGELOG.md). Questions: open an issue at
-[github.com/PhamTienThanhCong/transprice/issues](https://github.com/PhamTienThanhCong/transprice/issues).
+[github.com/PhamTienThanhCong/TransPriceExtension/issues](https://github.com/PhamTienThanhCong/TransPriceExtension/issues).
 
 ---
 
@@ -110,4 +110,4 @@ Dữ liệu của bạn không bị bán, chia sẻ hay chuyển cho bất kỳ 
 ### 5. Thay đổi và liên hệ
 
 Mọi thay đổi chính sách được đăng trong tệp này kèm ngày hiệu lực mới. Mọi thắc mắc xin mở issue tại
-[github.com/PhamTienThanhCong/transprice/issues](https://github.com/PhamTienThanhCong/transprice/issues).
+[github.com/PhamTienThanhCong/TransPriceExtension/issues](https://github.com/PhamTienThanhCong/TransPriceExtension/issues).

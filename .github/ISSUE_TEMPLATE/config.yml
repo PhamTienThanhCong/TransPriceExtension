@@ -1,5 +1,5 @@
 blank_issues_enabled: true
 contact_links:
   - name: Privacy policy
-    url: https://github.com/PhamTienThanhCong/transprice/blob/main/docs/PRIVACY.md
+    url: https://github.com/PhamTienThanhCong/TransPriceExtension/blob/main/docs/PRIVACY.md
     about: What TransPrice processes and stores (spoiler — nothing leaves your device except a rate-table download).

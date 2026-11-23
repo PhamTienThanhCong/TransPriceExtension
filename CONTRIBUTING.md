@@ -39,7 +39,7 @@ When you add a guide, demo, test or tooling file, list it in `.mainignore` so it
 Requirements: **Node.js 22+** and **Chrome 116+**. Nothing to install.
 
 ```bash
-git clone -b dev https://github.com/PhamTienThanhCong/transprice.git
+git clone -b dev https://github.com/PhamTienThanhCong/TransPriceExtension.git
 cd transprice
 npm run check
 npm test

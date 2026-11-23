@@ -127,7 +127,7 @@ test('sync-main.sh without origin: builds local main from dev minus .mainignore,
     const out1 = sync(repo);
     assert.match(out1, /No 'origin' remote/);
     assert.match(out1, /dev@\w+ → main@\w+/);
-    assert.match(out1, /git remote add origin https:\/\/github\.com\/PhamTienThanhCong\/transprice\.git/);
+    assert.match(out1, /git remote add origin https:\/\/github\.com\/PhamTienThanhCong\/TransPriceExtension\.git/);
     const tree = git(repo, 'ls-tree', '-r', '--name-only', 'main').split('\n').sort();
     assert.deepEqual(tree, [
       '.github/ISSUE_TEMPLATE/bug.yml',
